@@ -1,0 +1,30 @@
+#!/bin/sh
+
+SCRIPTDIR=/var/lib/vdr
+
+case "$1" in
+  restart)
+    $0 start
+    ;;
+  start)
+    #${SCRIPTDIR}/fixmtrr.sh
+    NOX=`grep nox /proc/cmdline`
+	  if [ "$NOX" != "" ]; then
+		  exit 0
+	  fi
+	  killall -9 startvdrclient 2>&1 >/dev/null 2>&1 >/dev/null
+	  su vdr sh -c "${SCRIPTDIR}/startvdrclient start" 2>&1 >/dev/null 2>&1 >/dev/null &
+    ;;
+  stop)
+	  killall -9 startvdrclient 2>&1 >/dev/null 2>&1 >/dev/null
+	  killall -9 vdr-client 2>&1 >/dev/null 2>&1 >/dev/null
+	  $SCRIPTDIR/vdr-client stop
+	  ;;
+  *)
+    N=/etc/rc.d/$NAME
+    echo "Usage: $N {start|stop|restart}" >&2
+    exit 1
+    ;;
+esac
+
+exit 0

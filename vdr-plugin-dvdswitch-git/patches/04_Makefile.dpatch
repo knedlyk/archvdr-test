@@ -1,0 +1,18 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 04_Makefile.dpatch by Holger Schvestka <hotzenplotz5@gmx.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad vdr-plugin-dvdswitch-0.1.6+git20110114~/Makefile vdr-plugin-dvdswitch-0.1.6+git20110114/Makefile
+--- vdr-plugin-dvdswitch-0.1.6+git20110114~/Makefile	2011-01-12 21:02:47.000000000 +0100
++++ vdr-plugin-dvdswitch-0.1.6+git20110114/Makefile	2011-01-15 15:16:38.183032935 +0100
+@@ -46,6 +46,7 @@
+ INCLUDES += -I$(VDRDIR)/include
+ 
+ DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
++DEFINES += -U_FORTIFY_SOURCE
+ 
+ ### The object files (add further files here):
+ 

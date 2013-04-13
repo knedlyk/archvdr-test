@@ -1,0 +1,48 @@
+Warning :
+
+See xineliboutput plugin as experimental and do not use it
+for production use. For production systems use vdr-plugin-xine.
+This plugin works way more relaiable. 
+
+The patches : xine_input_vdr.diff device.diff are take from 
+
+http://vdrportal.de/board/thread.php?threadid=95964&hilight=xineliboutput+vdpau
+
+Recomended xineliboutput settings :
+
+# number of buffers for HD content
+# numeric, default: 2500
+#media.xvdr.num_buffers_hd:2500
+
+# SCR-Treshold for HD-Playback (%)
+# numeric, default: 40
+#media.xvdr.scr_treshold_hd:40
+
+# SCR-Treshold for SD-Playback (%)
+# numeric, default: 50
+media.xvdr.scr_treshold_sd:20
+
+# SRC tuning step
+# numeric, default: 5000
+media.xvdr.scr_tuning_step:1000
+
+# Smoother SRC tuning
+# bool, default: 0
+#media.xvdr.smooth_scr_tuning:0
+
+# Anzahl der Audiopuffer
+# numeric, default: 230
+engine.buffers.audio_num_buffers:1000
+
+# number of video buffers
+# numeric, default: 500
+engine.buffers.video_num_buffers:1000
+
+# Standardanzahl von Videobildern
+# numeric, default: 15
+engine.buffers.video_num_frames:22 
+
+Make the config file of xine readonly. Xineliboutput overwrites
+it without a warning and your settings are gone.
+
+chmod -w xineliboutput_config_file

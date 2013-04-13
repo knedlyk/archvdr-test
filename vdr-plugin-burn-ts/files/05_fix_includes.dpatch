@@ -1,0 +1,12 @@
+diff -uNr burn-0.2.0/Makefile burn-0.2.0-patched/Makefile
+--- burn-0.2.0/Makefile	2011-12-27 18:41:26.000000000 +0100
++++ burn-0.2.0-patched/Makefile	2012-04-02 11:15:31.426917524 +0200
+@@ -58,7 +58,7 @@
+ 
+ ### Includes and Defines (add further entries here):
+ 
+-INCLUDES += -I$(VDRDIR)/include -I. $(shell gdlib-config --cflags)
++INCLUDES += -I$(VDRDIR) -I. $(shell gdlib-config --cflags)
+ LIBS     += $(shell gdlib-config --ldflags --libs) -lgd
+ DEFINES  += -DPLUGIN_NAME='"$(PLUGIN)"' -DPLUGIN_NAME_I18N='"$(PLUGIN)"' -D_GNU_SOURCE -D_LARGEFILE_SOURCE
+ 

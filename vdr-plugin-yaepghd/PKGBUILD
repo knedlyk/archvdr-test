@@ -1,0 +1,57 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=yaepghd
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=0.0.1.git
+pkgrel=1
+gitid="ac9f1b88b38a254b981e8b30f182779c8112aa6f"
+pkgdesc="VDR plugin EPG."
+arch=('i686' 'x86_64')
+url="http://projects.vdr-developer.org/projects/show/plg-yaepghd"
+license=('GPL2')
+depends=('vdr' 'imagemagick')
+makedepends=('gcc' 'vdr' 'git' 'imagemagick')
+source=(01_yaepghd.dpatch
+        02_vdrispatched.dpatch)
+conflicts=()
+md5sums=('6ef2c68628e57ca45bf6673d42b394be'
+         '0a4868b000e5a4525d9094a4d0496c44')
+
+build() {
+  cd "$srcdir/"	|| return 1
+  
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="vdr-plugin-yaepghd.git"
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname} ]; then	  
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git rebase origin
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout $gitid
+  fi
+
+  cd "$srcdir/" || return 1
+  
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/vdr-plugin-${_pluginname} $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  patch -p1 -i ../01_yaepghd.dpatch || return 1
+  patch -p1 -i ../02_vdrispatched.dpatch || return 1
+
+  make VDRDIR="/usr/include/vdr"  LIBDIR="." \
+    LOCALEDIR="$pkgdir/usr/share/locale" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
+  mkdir -p ${pkgdir}/var/lib/vdr/plugins/yaepghd/
+
+}

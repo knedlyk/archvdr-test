@@ -1,0 +1,68 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=dvdswitch
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=0.2.0.git
+pkgrel=1
+gitid=ab66bd249f4b59f15006e0185b0b7a0f0a6cc68b
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin manage dvd iso's"
+url="http://www.vdr-wiki.de/wiki/index.php/Dvdswitch-plugin"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=('etc/vdr/plugins/plugin.dvdswitch.conf')
+source=()
+install=$pkgname.install
+conflicts=(vdr-plugin-$_pluginname)
+md5sums=('589ba84fec5cac9c3c2a084aece452a0'
+         '8b278f97f16dd52866d4c67792f64359')
+
+build() {
+  unset CXXFLAGS
+
+  cd "$srcdir/"	|| return 1
+  
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="vdr-plugin-dvdswitch.git"
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname} ]; then	  
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git rebase origin
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout $gitid
+  fi
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/vdr-plugin-${_pluginname} $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  patch -p1 -i $startdir/patches/02_debian-paths.dpatch                   || return 1
+  patch -p1 -i $startdir/patches/03_no-files-crash.dpatch                 || return 1
+  patch -p1 -i $startdir/patches/04_Makefile.dpatch                       || return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins							|| return 1
+  install -m 644 $startdir/files/plugin.dvdswitch.conf	$pkgdir/etc/vdr/plugins			|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-plugin-dvdswitch					|| return 1
+  install -m 755 $startdir/files/*.sh			$pkgdir/usr/share/vdr-plugin-dvdswitch	|| return 1
+
+  mkdir -p $pkgdir/var/lib/video/film/dvd						|| return 1
+
+}

@@ -1,0 +1,21 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 40_fix-reconnect.dpatch by  <gda@master>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad vdr-plugin-xineliboutput-1.0.4+cvs20091013.1200~/xine_frontend_main.c vdr-plugin-xineliboutput-1.0.4+cvs20091013.1200/xine_frontend_main.c
+--- vdr-plugin-xineliboutput-1.0.4+cvs20091013.1200~/xine_frontend_main.c	2009-08-18 14:23:09.000000000 +0200
++++ vdr-plugin-xineliboutput-1.0.4+cvs20091013.1200/xine_frontend_main.c	2009-10-31 13:20:44.000000000 +0100
+@@ -808,9 +808,8 @@
+     fflush(stdout);
+     fflush(stderr);
+ 
+-    while (!last_signal && fe->fe_run(fe))
++    while (!last_signal && !(xine_finished = fe->xine_is_finished(fe,0)) && fe->fe_run(fe))
+       ;
+-    xine_finished = fe->xine_is_finished(fe,0);
+ 
+     fe->xine_close(fe);
+     firsttry = 0;

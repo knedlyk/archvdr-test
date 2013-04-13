@@ -1,0 +1,62 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=vnsi
+pkgname=vdr-plugin-${_pluginname}
+pkgver=20130115
+pkgrel=1
+gitid=a9780e023c8b7728017851bfd12d4df9e5c26993
+pkgdesc="VDR vsni server"
+arch=('i686' 'x86_64' 'arm')
+url="https://github.com/opdenkamp/xbmc-pvr-addons"
+license=('GPL2')
+depends=('vdr')
+makedepends=('gcc' 'vdr' 'git')
+backup=('etc/vdr/plugins/vnsiserver/allowed_hosts.conf')
+install=vdr-plugin-$_pluginname.install
+conflicts=()
+source=()
+md5sums=()
+
+build() {
+
+  export MAKEFLAGS="-j1"
+
+  cd "$srcdir/"	|| return 1
+  
+  _githost="https://github.com/opdenkamp"
+  _gitrepo="xbmc-pvr-addons.git"
+
+  if [ -e $srcdir/xbmc-pvr-addons ]; then
+    rm -rf $srcdir/xbmc-pvr-addons
+  fi
+
+  git clone ${_githost}/${_gitrepo}
+  cd $srcdir/xbmc-pvr-addons
+  git checkout $gitid
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cd $srcdir/xbmc-pvr-addons/
+
+  cp -r $srcdir/xbmc-pvr-addons/addons/pvr.vdr.vnsi/vdr-plugin-vnsiserver $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  make VDRDIR="/usr/include/vdr"  LIBDIR="." \
+    LOCALEDIR="$pkgdir/usr/share/locale" \
+    INCLUDES="-I /usr/include/vdr -I./src" all || return 1
+  
+  mkdir -p $pkgdir/etc/vdr/plugins/vnsiserver			|| return 1
+  install -m 644 vnsiserver/allowed_hosts.conf $pkgdir/etc/vdr/plugins/vnsiserver/ || return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+  
+  mkdir -p $pkgdir/usr/share/vdr-plugin-vnsiserver   		|| return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins/vnsiserver				|| return 1
+  cd $pkgdir/var/lib/vdr/plugins/vnsiserver			        || return 1
+  ln -s ../../../../..//etc/vdr/plugins/vnsiserver/allowed_hosts.conf . || return 1
+}

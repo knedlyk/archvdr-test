@@ -1,0 +1,48 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=xvdr
+pkgname=xbmc-addon-${_pluginname}
+pkgver=20121228
+pkgrel=1
+gitid=8fc86072c0cd6e9a6ea480bb0952634f9c092732
+pkgdesc="XBMC-pvr XVDR addon"
+arch=('i686' 'x86_64' 'arm')
+url="https://github.com/pipelka/xbmc-addon-xvdr"
+license=('GPL2')
+depends=('vdr' 'xbmc-git')
+makedepends=('gcc' 'vdr' 'git' 'xbmc-git')
+backup=()
+conflicts=()
+source=()
+md5sums=('a8dc570bb3671570f7e57c04be111181')
+
+build() {
+  cd "$srcdir/"	|| return 1
+  
+  _githost="https://github.com/pipelka"
+  _gitrepo="xbmc-addon-xvdr.git"
+
+  if [ -e $srcdir/xbmc-addon-${_pluginname} ]; then	  
+    cd $srcdir/xbmc-addon-${_pluginname}
+    git checkout master
+    git pull --rebase
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/xbmc-addon-${_pluginname}
+    git checkout $gitid
+  fi
+
+  if [ -e $srcdir/xbmc-addon-${_pluginname}-build ]; then
+    rm -rf $srcdir/xbmc-addon-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/xbmc-addon-${_pluginname} $srcdir/xbmc-addon-${_pluginname}-build
+
+  cd $srcdir/xbmc-addon-${_pluginname}-build
+
+  sh autogen.sh
+  ./configure --prefix=/usr/lib/xbmc
+  make
+  make DESTDIR=${pkgdir}/ install
+}

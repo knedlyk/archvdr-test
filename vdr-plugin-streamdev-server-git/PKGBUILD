@@ -1,0 +1,67 @@
+# Contributor: Sebastian Pohle <sepo at users dot berlios dot de>
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=streamdev
+pkgname=vdr-plugin-${_pluginname}-server-git
+pkgver=20120911
+pkgrel=1
+pkgdesc="Plugin that adds streaming capabilities to your VDR."
+arch=('i686' 'x86_64' 'arm')
+url="http://projects.vdr-developer.org/projects/plg-streamdev"
+license=('GPL')
+depends=('vdr')
+backup=('etc/vdr/plugins/streamdev-server/streamdevhosts.conf')
+conflicts=('vdr-plugin-streamdev-server')
+options=()
+install=
+source=(makefile_fix-patch)
+md5sums=('4fa78c03a61f1b89e55f660fc40a540b')
+
+build() {
+  cd ${srcdir}
+
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="vdr-plugin-streamdev.git"
+#  _gitid=84db6323a6cddc7d48bfa4e89086e407894739d7
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname} ]; then	  
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout master
+    git pull --rebase
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout $_gitid
+  fi
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/vdr-plugin-${_pluginname} $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  patch -p1 -i ../makefile_fix-patch || return 1
+  echo "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" >> Makefile
+
+  make VDRDIR="/usr/include/vdr" LIBDIR="." \
+    LOCALEDIR="$pkgdir/usr/share/locale" \
+    INCLUDES="-I/usr/include -I/usr/include/vdr -I.." all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins 						|| return 1
+  install -m 755 libvdr-streamdev-server.so.* \
+    $pkgdir/usr/lib/vdr/plugins/			|| return 1
+  install -m 755 libvdr-streamdev-client.so.* \
+    $pkgdir/usr/lib/vdr/plugins/			|| return 1
+  
+  mkdir -p $pkgdir/etc/vdr/plugins/streamdev-server					|| return 1
+  install -m 644 streamdev-server/streamdevhosts.conf \
+    $pkgdir/etc/vdr/plugins/streamdev-server/streamdevhosts.conf 			|| return 1  
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins						|| return 1
+  cd $pkgdir/var/lib/vdr/plugins						|| return 1
+  ln -s ../../../../etc/vdr/plugins/streamdev-server		streamdev-server			|| return 1
+}
+
+# vim:set ts=2 sw=2 et:

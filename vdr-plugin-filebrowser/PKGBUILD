@@ -1,0 +1,51 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=filebrowser
+pkgname=vdr-plugin-$_pkgname
+pkgver=0.2.0
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin filemanager."
+url="http://vdr.nasenbaeren.net/filebrowser/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=('etc/vdr/plugins/filebrowser/commands.conf'
+	'etc/vdr/plugins/filebrowser/order.conf'
+	'etc/vdr/plugins/filebrowser/othercommands.conf'
+	'etc/vdr/plugins/filebrowser/sources.conf')
+source=(http://vdr.nasenbaeren.net/filebrowser/vdr-$_pkgname-$pkgver.tgz
+        01_vdr1.7.9+gcc44.dpatch)
+md5sums=('c3600c38eebb45bf225b3b8226da57aa'
+       '99ab1081362748c89a4e55f1c0ab551a')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  patch -p1 -i ../01_vdr1.7.9+gcc44.dpatch    || return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins/filebrowser					|| return 1
+  install -m 644 $startdir/files/commands.conf         $pkgdir/etc/vdr/plugins/filebrowser/	|| return 1
+  install -m 644 $startdir/files/order.conf            $pkgdir/etc/vdr/plugins/filebrowser/	|| return 1
+  install -m 644 $startdir/files/othercommands.conf    $pkgdir/etc/vdr/plugins/filebrowser/	|| return 1
+  install -m 644 $startdir/files/sources.conf          $pkgdir/etc/vdr/plugins/filebrowser/	|| return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins/filebrowser				|| return 1
+  cd $pkgdir/var/lib/vdr/plugins/filebrowser					|| return 1
+
+  ln -s ../../../../../etc/vdr/plugins/filebrowser/commands.conf         commands.conf	|| return 1
+  ln -s ../../../../../etc/vdr/plugins/filebrowser/order.conf            order.conf		|| return 1
+  ln -s ../../../../../etc/vdr/plugins/filebrowser/othercommands.conf    othercommands.conf	|| return 1
+  ln -s ../../../../../etc/vdr/plugins/filebrowser/sources.conf          sources.conf		|| return 1
+}

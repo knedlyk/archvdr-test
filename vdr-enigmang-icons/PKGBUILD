@@ -1,0 +1,59 @@
+## Maintainer :  Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr-enigmang-icons
+pkgver=20070702
+revision=2
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc=""EnigmaNG" iconpack"
+url="http://firefly.vdr-developer.org/avards/"
+license="GPL"
+makedepends=()
+depends=('vdr-plugin-skinenigmang-git')
+optdepend=('vdr-enigma-icons')
+backup=()
+source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons//${pkgname}_${pkgver}-${revision}.diff.gz
+	http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons//${pkgname}_${pkgver}.orig.tar.gz
+	http://vdr-portal.de/board/attachment.php?attachmentid=19932)
+backup=('etc/vdr/plugins/plugin.skinenigmang.conf')
+md5sums=('b0f90598aa24206cb1704a105dbdf7e8'
+         '6c100acb09010348185071efb5edf695'
+         'a9e3792306a644c7826b4335d45c3d9e')
+
+build() {
+
+    cd $startdir/src/vdr-enigmang-icons-$pkgver.orig
+
+    patch -p1 -i ../${pkgname}_${pkgver}-${revision}.diff || return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/hqlogos/						|| return 1
+    install -m 644 skinenigmang/hqlogos/*	$pkgdir/usr/share/vdr-enigmang-icons/hqlogos/		|| return 1
+    install -m 644 ../hqlogos/*			$pkgdir/usr/share/vdr-enigmang-icons/hqlogos/		|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/logos							|| return 1
+    install -m 644 skinenigmang/logos/*		$pkgdir/usr/share/vdr-enigmang-icons/logos/		|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/flags							|| return 1
+    install -m 644 skinenigmang/flags/*		$pkgdir/usr/share/vdr-enigmang-icons/flags/		|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/icons							|| return 1
+    cp -r skinenigmang/icons/*		$pkgdir/usr/share/vdr-enigmang-icons/icons/   || return 1
+    #install -m 644 skinenigmang/icons/*		$pkgdir/usr/share/vdr-enigmang-icons/icons/   || return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/icons/audio						|| return 1
+    install -m 644 skinenigmang/icons/audio/*	$pkgdir/usr/share/vdr-enigmang-icons/icons/audio/	|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/icons/menu						|| return 1
+    install -m 644 skinenigmang/icons/menu/*	$pkgdir/usr/share/vdr-enigmang-icons/icons/menu/	|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/icons/message						|| return 1
+    install -m 644 skinenigmang/icons/message/*	$pkgdir/usr/share/vdr-enigmang-icons/icons/message/	|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/icons/replay						|| return 1
+    install -m 644 skinenigmang/icons/replay/*	$pkgdir/usr/share/vdr-enigmang-icons/icons/replay/	|| return 1
+
+    mkdir -p $pkgdir/usr/share/vdr-enigmang-icons/icons/volume						|| return 1
+    install -m 644 skinenigmang/icons/volume/*	$pkgdir/usr/share/vdr-enigmang-icons/icons/volume/	|| return 1
+
+}
+

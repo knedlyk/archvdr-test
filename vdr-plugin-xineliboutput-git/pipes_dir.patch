@@ -1,0 +1,11 @@
+--- a/frontend_svr.c	2010-05-13 09:06:51.000000000 +0200
++++ b/frontend_svr.c	2010-05-13 09:28:27.000000000 +0200
+@@ -146,7 +146,7 @@
+ 
+   cString Base(cPlugin::ConfigDirectory());
+   if(*Base) {
+-    m_PipesDir = cString::sprintf("%s/xineliboutput/pipes.%d", *Base, getpid());
++    m_PipesDir = cString::sprintf("%s/xineliboutput/fifo/pipes.%d", *Base, getpid());
+     m_AllowedHostsFile = cString::sprintf("%s/" ALLOWED_HOSTS_FILE, *Base);
+   } else {
+     LOGMSG("cXinelibServer: cPlugin::ConfigDirectory() failed !");

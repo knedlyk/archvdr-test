@@ -1,0 +1,51 @@
+# $Id$
+# Maintainer: Edgar Hucek <gimli at dark-green dot com>
+pkgname=vaapi-statging-intel-driver
+pkgver=20120628
+pkgrel=1
+pkgdesc="Intel backend for VA API"
+arch=('i686' 'x86_64')
+url="http://cgit.freedesktop.org/vaapi/intel-driver/"
+license=('GPL')
+depends=('libva-statging-git')
+makedepends=('mesa')
+options=('!libtool')
+conflicts=('vaapi-intel-driver')
+source=()
+md5sums=()
+
+
+build() {
+  _gitroot="git://anongit.freedesktop.org/vaapi/intel-driver"
+  _gitname="vaapi-intel-driver"
+  _gitid=ac254ae493b15fdf041bbc55030b68124b138292
+
+  cd "${srcdir}"
+
+  if [ -d "${_gitname}" ] ; then
+    cd "${_gitname}" 
+    git checkout master 
+    git pull --rebase
+    msg "The local files are updated."
+  else
+    git clone "${_gitroot}" "${_gitname}"
+    cd "${_gitname}"
+  fi
+
+  if [ -d "$srcdir/$_gitname-build" ]; then
+    rm -r "$srcdir/$_gitname-build"
+  fi
+
+  cp -r "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+  git checkout staging
+  git checkout "${_gitid}"
+
+  ./autogen.sh --prefix=/usr
+  make
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim:set ts=2 sw=2 et:
+
+

@@ -1,0 +1,19 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 20_makefile.dpatch by  <gda@localhost>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -uNr cxfe-0.9.2/Makefile.in cxfe-0.9.2-makefile/Makefile.in
+--- cxfe-0.9.2/Makefile.in	2007-07-25 18:40:59.000000000 +0000
++++ cxfe-0.9.2-makefile/Makefile.in	2009-11-24 08:17:42.000000000 +0000
+@@ -15,7 +15,7 @@
+ CPPFLAGS = @CPPFLAGS@
+ CFLAGS = $(CPPFLAGS) @CFLAGS@ `xine-config --cflags`
+ LIBS = @LIBS@
+-LDFLAGS = `xine-config --libs` -L/usr/X11R6/lib -lXext@LDFLAGS@ @LIBS@ -lX11 
++LDFLAGS = `xine-config --libs` -L/usr/X11R6/lib -lXext @LIBS@ -lX11 
+ INSTALL = @INSTALL@
+ 
+ #CC=gcc -Wall -g -O2

@@ -1,0 +1,21 @@
+diff -uNr cxfe-0.9.2/cxfe.c cxfe-0.9.2-vaapi/cxfe.c
+--- cxfe-0.9.2/cxfe.c	2011-03-18 12:40:09.856666669 +0100
++++ cxfe-0.9.2-vaapi/cxfe.c	2011-03-18 12:40:51.696666669 +0100
+@@ -1176,7 +1176,7 @@
+       }
+     else if(!strcmp(argv[i], "--help")) {
+       printf("Current command line parameters:\n");
+-      printf("-vo <driver> Set video out driver (dxr3/xv/xshm/fb/vdpau)\n");
++      printf("-vo <driver> Set video out driver (dxr3/xv/xshm/fb/vdpau/vaapi)\n");
+       printf("-ao <driver> Set audio out driver (alsa/oss)\n");
+       printf("-i <driver>  Set control driver (lirc) Keyboard is enabled at all times)\n");
+       printf("-fs          Start cxfe in fullscreen\n");
+@@ -1220,7 +1220,7 @@
+ 
+   //printf("Length of videodriver name:%d\n",strlen(vo_driver));
+ 
+-  if ((!strcmp(vo_driver,"xv")) || (!strcmp(vo_driver,"xshm")) || (!strcmp(vo_driver,"vdpau"))) {
++  if ((!strcmp(vo_driver,"xv")) || (!strcmp(vo_driver,"xshm")) || (!strcmp(vo_driver,"vdpau")) || (!strcmp(vo_driver,"vaapi"))) {
+       x11=1;
+   }
+   else if ((!strcmp(vo_driver,"fb")) || (!strcmp(vo_driver,"dxr3"))) {

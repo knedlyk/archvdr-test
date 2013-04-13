@@ -1,0 +1,32 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=radiolist
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.0.2
+pkgrel=1
+pkgdesc="VDR plugin to filter radio channels."
+arch=('i686' 'x86_64')
+url="http://www.unterbrecher.de/vdr/developer.php#radiolist"
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+source=(http://www.unterbrecher.de/vdr/download/vdr-$_pluginname-$pkgver.tgz
+	i18n.patch)
+md5sums=('24f947f403daa3fb9a06cc50fe57d70c'
+         '9fd286ede999c3169084718766dbf7b7')
+
+build() {
+  cd "$startdir/src/${_pluginname}-$pkgver"		|| return 1
+
+  patch -p1 -i ../i18n.patch				|| return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins			|| return 1
+  mkdir -p $pkgdir/usr/share/locale			|| return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=.	\
+       LOCALEDIR=$pkgdir/usr/share/locale all		|| return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+  
+}

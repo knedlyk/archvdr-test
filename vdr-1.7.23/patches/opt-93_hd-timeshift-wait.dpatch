@@ -1,0 +1,17 @@
+diff -uNr vdr-1.7.22/menu.c vdr-1.7.22-patched/menu.c
+--- vdr-1.7.22/menu.c	2011-12-05 06:42:42.455396621 +0100
++++ vdr-1.7.22-patched/menu.c	2011-12-05 06:43:27.418728463 +0100
+@@ -4887,11 +4887,11 @@
+   Skins.Message(mtStatus, tr("Pausing live video..."));
+   cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
+   if (Start(NULL, true)) {
+-     cCondWait::SleepMs(2000); // allow recorded file to fill up enough to start replaying
++     cCondWait::SleepMs(5000); // allow recorded file to fill up enough to start replaying
+      cReplayControl *rc = new cReplayControl;
+      cControl::Launch(rc);
+      cControl::Attach();
+-     cCondWait::SleepMs(1000); // allow device to replay some frames, so we have a picture
++     cCondWait::SleepMs(2000); // allow device to replay some frames, so we have a picture
+      Skins.Message(mtStatus, NULL);
+      rc->ProcessKey(kPause); // pause, allowing replay mode display
+      return true;

@@ -1,0 +1,27 @@
+# Contributor : Sebastian Pohle <sepo users dot berlios dot de>
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_basename=vdrsymbols
+pkgname=ttf-${_basename}
+#pkgver=20080905
+pkgver=20100612
+pkgrel=1
+pkgdesc="A TrueType font that includes symbols used by some VDR plugins and patches."
+arch=('i686' 'x86_64' 'arm')
+url="http://andreas.vdr-developer.org/fonts/"
+license=('Public domain')
+depends=('fontconfig' 'xorg-font-utils')
+install=ttf-vdrsymbols.install
+#source=(http://andreas.vdr-developer.org/fonts/download/${_basename}-ttf-$pkgver.tgz)
+source=(http://justlinux.de/vdr/testing/${_basename}-ttf-$pkgver.tgz)
+md5sums=('dad98a1cdb2b7deb3301ecf46181d258')
+
+build() {
+  cd "$srcdir/${_basename}"
+  
+  mkdir -p $pkgdir/usr/share/fonts/TTF								|| return 1
+  install -m644 *.ttf $pkgdir/usr/share/fonts/TTF/						|| return 1
+
+  mkdir -p $pkgdir/usr/share/licenses/$pkgname							|| return 1
+  install -m 664 $srcdir/vdrsymbols/COPYRIGHT.txt $pkgdir/usr/share/licenses/$pkgname/		|| return 1
+}

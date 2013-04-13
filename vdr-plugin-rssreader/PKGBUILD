@@ -1,0 +1,43 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=rssreader
+pkgname=vdr-plugin-$_pkgname
+pkgver=2.0.0
+revision=1
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin to display rss feeds."
+url="http://www.saunalahti.fi/~rahrenbe/vdr/rssreader"
+license="GPL"
+makedepends=('vdr' 'expat' 'curl')
+depends=('vdr' 'expat' 'curl')
+source=(http://www.saunalahti.fi/~rahrenbe/vdr/rssreader/files/vdr-$_pkgname-$pkgver.tgz
+        rssreader.conf)
+backup=('etc/vdr/plugins/rssreader/rssreader.conf')
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR="." \
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins  DESTDIR=$pkgdir install || return 1
+}
+package() {
+  cd ${srcdir}/$_pkgname-${pkgver}
+#  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+#  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins/rssreader					|| return 1
+  install -m 644 ../rssreader.conf	$pkgdir/etc/vdr/plugins/rssreader	|| return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins						|| return 1
+  cd $pkgdir/var/lib/vdr/plugins						|| return 1
+  ln -s ../../../../etc/vdr/plugins/rssreader	rssreader				|| return 1
+}
+
+md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc'
+         'd46340e43dd205e002e9197eb468b547')

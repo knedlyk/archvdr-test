@@ -1,0 +1,33 @@
+diff -uNr vdr-plugin-live/tasks.cpp vdr-plugin-live-patched/tasks.cpp
+--- vdr-plugin-live/tasks.cpp	2012-10-17 16:11:50.333630213 +0200
++++ vdr-plugin-live-patched/tasks.cpp	2012-10-17 16:14:24.990605810 +0200
+@@ -60,9 +60,17 @@
+ 
+ 	const char *current = NowReplaying();
+ 	if (!current || (0 != strcmp(current, recording->FileName()))) {
++#if VDRVERSNUM < 10731
+ 		cReplayControl::SetRecording( 0, 0 );
++#else
++		cReplayControl::SetRecording( 0 );
++#endif
+ 		cControl::Shutdown();
++#if VDRVERSNUM < 10731
+ 		cReplayControl::SetRecording( recording->FileName(), recording->Title() );
++#else
++		cReplayControl::SetRecording( recording->FileName() );
++#endif
+ 		cControl::Launch( new cReplayControl );
+ 		cControl::Attach();
+ 	}
+@@ -122,7 +130,11 @@
+ 		return;
+ 	}
+ 
++#if VDRVERSNUM < 10731
+ 	cReplayControl::SetRecording( 0, 0 );
++#else
++	cReplayControl::SetRecording( 0 );
++#endif
+ 	cControl::Shutdown();
+ }
+ 

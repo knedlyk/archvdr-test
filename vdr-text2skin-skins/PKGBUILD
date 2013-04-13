@@ -1,0 +1,73 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr-text2skin-skins
+pkgver=0.0.4
+pkgrel=1
+pkgdesc="VDR plugin text2skin skins"
+arch=('i686' 'x86_64')
+url="http://www.vdrportal.de"
+license=('GPL2')
+depends=('vdr-plugin-text2skin-git')
+makedepend=('git'i 'make')
+source=(http://justlinux.de/vdr/Full-HD-anthras-06102010.tgz
+        http://justlinux.de/vdr/HD-Ready-anthras-06102010.tgz
+        http://justlinux.de/vdr/anthra_SD-0.2.6.tgz
+        http://justlinux.de/vdr/liquid-logos4anthra_SD-0.1.tar.gz
+        http://justlinux.de/vdr/testing/anthra_1920_FSt-20110206.tgz
+        http://justlinux.de/vdr/testing/anthra_1920_OSt-20101122.tgz
+        http://justlinux.de/vdr/liquid-logos4anthra-complete-0.1.tar.gz
+        http://justlinux.de/vdr/ollilogos.tar.gz)
+
+md5sums=('db33206628002ddcbf8ca40465f75361'
+         '1a0f936e88720da4604577a55834481b'
+         '67248461b3c2c29a8911600bae283df4'
+         '323e504ef7d487f87888e85375ac3e08'
+         'f517d750e91edc89d75ca39ae761f2c7'
+         '4cd7e69c37272c295a2986fea170d4c9'
+         '4d6d734ed8649649674ad8a1b37cc35f'
+         'd303b42070c033c7c72acdaecf047557')
+
+build() {
+  make -C ${srcdir}/anthra_SD
+  make -C ${srcdir}/anthra_1280_FS
+  make -C ${srcdir}/anthra_1280_OS
+  make -C ${srcdir}/anthra_1920_FS
+  make -C ${srcdir}/anthra_1920_OS
+  make -C ${srcdir}/anthra_1920_OSt
+
+  mkdir -p ${pkgdir}/var/lib/vdr/plugins/text2skin/
+
+  cd ${srcdir}
+  if [ -e ${srcdir}/skin-pearlhd ]; then
+    cd ${srcdir}/skin-pearlhd
+    git pull
+  else
+    git clone git://projects.vdr-developer.org/skin-pearlhd.git
+  fi
+  cd ${srcdir}/skin-pearlhd
+
+  make PREFIX=${pkgdir} LOCALEDIR=${pkgdir}/usr/share/locale \
+    THEMESDIR=${pkgdir}/var/lib/vdr/themes \
+    SKINDIR=${pkgdir}/var/lib/vdr/plugins/text2skin/PearlHD install
+
+
+  cp -r ${startdir}/src/anthra_1280_FS ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/anthra_1280_OS ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/anthra_1920_FS ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/anthra_1920_OS ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/anthra_1920_FSt ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/anthra_1920_OSt ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/anthra_SD ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  
+  cp -r ${startdir}/src/anthra-menu-logos ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+
+  cp -r ${startdir}/src/liquid-logos4anthra_HD ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/liquid-logos4anthra_SD ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+  cp -r ${startdir}/src/ollilogos ${pkgdir}/var/lib/vdr/plugins/text2skin/ || return 1
+
+  find ${pkgdir}/ -name .svn -exec rm -rf {} \;
+
+  rm -rf ${pkgdir}/share || return 1
+
+  chown -R root:root ${pkgdir}/var/lib/vdr/plugins/text2skin/
+}

@@ -1,0 +1,112 @@
+# Contributor: Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=xineliboutput
+pkgname=('vdr-plugin-xineliboutput-git')
+pkgver=20120911
+pkgrel=1
+#_gitid='6d19034ee9b9d9141e4543048e3df5ac09f748dd'
+pkgdesc="VDR-Plugin to use VDR with budget cards. Alternative for vdr-xine."
+url="http://projects.vdr-developer.org/git/?p=xineliboutput.git;a=summary"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('vdr' 'xine-lib' 'libbluray' 'libgl' 'libjpeg' 'libcap')
+makedepends=('git' 'vdr>=1.7.0')
+source=(nosignal.mpg
+      	plugin.xineliboutput.conf
+        remove_log_message.patch
+        pipes_dir.patch
+        vaapi_fixup.patch
+        silence_output.patch
+        compile_fix.patch)
+install=vdr-plugin-$_pluginname-git.install
+md5sums=('eff2e86089b8dc182f16b2018d1fd080'
+         '0e1bdbbaff3e8e45776383c6584b171b'
+         '4210796805388d344ac7a9e7422eef64'
+         'a31b80ae9044d20a940516195753588c'
+         '84e57269b481c8cca508df122f645d42'
+         '1358e6d910591d65de8ff18c5b42656d'
+         '715c35fd0f00d7962a3affa71991c302')
+
+conflicts=('vdr-plugin-xineliboutput' 'xine-plugin-bluray')
+
+build() {
+  
+  unset LDFLAGS
+  unset CFLAGS
+
+  cd ${srcdir}
+
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="xineliboutput.git"
+
+  if [ -e $srcdir/${_pluginname} ]; then	  
+    cd $srcdir/${_pluginname}
+    git rebase origin
+    git checkout $_gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/${_pluginname}
+    git checkout $_gitid
+  fi
+
+  if [ -e $srcdir/${_pluginname}-build ]; then
+    rm -rf $srcdir/${_pluginname}-build
+  fi
+
+  cp -r $srcdir/${_pluginname} $srcdir/${_pluginname}-build
+  cd $srcdir/${_pluginname}-build
+
+  #patch -p1 -i ${srcdir}/remove_log_message.patch || return 1
+  patch -p1 -i ${srcdir}/pipes_dir.patch || return 1
+  #patch -p1 -i ${srcdir}/vaapi_fixup.patch || return 1
+  #patch -p1 -i ${srcdir}/silence_output.patch || return 1
+  patch -p1 -i ${srcdir}/compile_fix.patch || return 1
+
+  ./configure --disable-dbus-glib-1 --disable-libextractor \
+              --disable-fb --enable-x11 --enable-vdr --enable-libxine --disable-xinerama \
+              --enable-libjpeg --disable-xshm --disable-xrender --disable-xshape --enable-opengl \
+              --enable-libcap --enable-dlfcn --enable-pthread
+
+  #echo "DEFINES += -DNO_HACKS" >> Makefile
+
+  make VDRDIR=/usr/include/vdr \
+       VDRINCDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/vdr-plugin-xineliboutput-git/usr/share/locale/" \
+       NOSIGNAL_IMAGE_FILE=/usr/share/libxine-xvdr/nosignal.mpg all || return 1
+}
+
+package_vdr-plugin-xineliboutput-git() {
+
+  backup=('etc/vdr/plugins/plugin.xineliboutput.conf'
+        'etc/vdr/plugins/xineliboutput/allowed_hosts.conf')
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+  cp $srcdir/${_pluginname}-build/libvdr-*.so.* $pkgdir/usr/lib/vdr/plugins/ || return 1
+  cp $srcdir/${_pluginname}-build/libxineliboutput-*.so.* $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  mkdir -p $pkgdir/usr/bin/ || return 1
+  #cp $srcdir/${_pluginname}-build/vdr-fbfe $srcdir/${_pluginname}-build/vdr-sxfe $pkgdir/usr/bin/ || return 1
+  cp $srcdir/${_pluginname}-build/vdr-sxfe $pkgdir/usr/bin/ || return 1
+
+  mkdir -p $pkgdir/`xine-config --plugindir`/post/ || return 1
+  cp $srcdir/${_pluginname}-build/xineplug_post_audiochannel.so*  \
+    $srcdir/${_pluginname}-build/xineplug_post_autocrop.so*  \
+    $srcdir/${_pluginname}-build/xineplug_post_swscale.so* \
+  	$pkgdir/`xine-config --plugindir`/post/ || return 1
+  cp $srcdir/${_pluginname}-build/xineplug_inp_xvdr.so* $pkgdir/`xine-config --plugindir` || return 1
+
+  mkdir -p $pkgdir/usr/share/libxine-xvdr/					|| return 1
+  install -m 664 $srcdir/nosignal.mpg $pkgdir/usr/share/libxine-xvdr/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins/						|| return 1
+  install -m 644 $srcdir/plugin.xineliboutput.conf $pkgdir/etc/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins/xineliboutput/ || return 1
+  install -m 644 ${srcdir}/${_pluginname}-build/examples/allowed_hosts.conf $pkgdir/etc/vdr/plugins/xineliboutput/ || return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins/xineliboutput/fifo || return 1
+
+  cd $pkgdir/var/lib/vdr/plugins/xineliboutput/ || return 1
+  ln -s ../../../../../etc/vdr/plugins/xineliboutput/allowed_hosts.conf .
+}

@@ -1,0 +1,12 @@
+diff -uNr vdr-1.7.18/Make.config.template vdr-1.7.18-patched/Make.config.template
+--- vdr-1.7.18/Make.config.template	2011-03-13 14:41:12.000000000 +0100
++++ vdr-1.7.18-patched/Make.config.template	2011-04-17 20:12:13.953333336 +0200
+@@ -14,7 +14,7 @@
+ CFLAGS   = -g -O3 -Wall
+ 
+ CXX      = g++
+-CXXFLAGS = -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses
++CXXFLAGS = -g -O3 -Wall -Woverloaded-virtual -Wno-parentheses -fpermissive
+ 
+ ifdef PLUGIN
+ CFLAGS   += -fPIC

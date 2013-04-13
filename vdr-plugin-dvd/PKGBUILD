@@ -1,0 +1,61 @@
+# Contributor : Sebastian Pohle <sepo at users dot berlios dot de>
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=dvd
+pkgname=vdr-plugin-${_pluginname}
+pkgver=20090219
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc="A DVD player plugin for the Video Disk Recorder (VDR)."
+url="http://sourceforge.net/projects/dvdplugin"
+license=('GPL')
+depends=('vdr>=1.3.22' 'libdvdcss' 'libdvdnav' 'a52dec>=0.7.4'
+         'libdvdread')
+makedepends=('cvs')
+provides=('vdr-dvd')
+install=vdr-plugin-dvd.install
+source=(01-dvd-gettext-i18n.diff
+	vdr-plugin-dvd.groups
+	plugin.dvd.conf)
+backup=('etc/vdr/plugins/plugin.dvd.conf')
+conflicts=('vdr-plugin-dvd-cvs')
+replaces=('vdr-plugin-dvd-cvs')
+md5sums=('2744c1746a9bb65f5631335133febc75'
+         '99f655ec06b234c72946e8e39a501064'
+         '94dc0097ca3f41bfdc925b1c22f852f7')
+
+build() {
+  cd $srcdir
+  
+  msg "Connecting to $_cvsmod.sourceforge.net CVS server...."
+  _cvsroot=":pserver:anonymous@dvdplugin.cvs.sourceforge.net:/cvsroot/dvdplugin"
+  _cvsmod="${_pluginname}"
+  cvs -z3 -d $_cvsroot co -D $pkgver -f $_cvsmod
+  
+  msg "CVS checkout done or server timeout"
+  msg "Starting make..."
+
+  cd $srcdir/$_cvsmod									|| return 1
+  
+  patch -Np1 -i ../01-dvd-gettext-i18n.diff || return 1
+  
+  # Patch: Removes stderr output on correctly parsed -C parameter
+  # TODO: anderes sed script oder lieber diff file
+  sed -i -e 's|fprintf(stderr, "arg: %s\n", optarg);|// fprintf(stderr, "arg: %s\n", optarg);|' \
+    dvd.c || return 1
+  
+  make VDRDIR="/usr/include/vdr" INCLUDES="-I/usr/include/vdr" LIBDIR="." \
+    LOCALEDIR="$pkgdir/usr/share/locale" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+  install -m 755 libvdr-*.so.*			$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins							|| return 1
+  install -m 664 ../plugin.dvd.conf		$pkgdir/etc/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/var/cache/vdr/							|| return 1
+  cd $pkgdir/var/cache/vdr								|| return 1
+  ln -s ../../../dev/dvd dvd
+}
+
+# vim:syntax=sh

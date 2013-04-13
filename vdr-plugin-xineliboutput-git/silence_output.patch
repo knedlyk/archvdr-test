@@ -1,0 +1,21 @@
+diff -uNr xineliboutput/xine/ts2es.c xineliboutput-patched/xine/ts2es.c
+--- xineliboutput/xine/ts2es.c	2011-09-04 18:23:13.089972167 +0200
++++ xineliboutput-patched/xine/ts2es.c	2011-09-04 18:24:10.156635602 +0200
+@@ -37,7 +37,7 @@
+ static void ts2es_parse_pes(ts2es_t *this)
+ {
+   if (!DATA_IS_PES(this->buf->content)) {
+-    LOGDBG("ts2es: payload not PES ?");
++    //LOGDBG("ts2es: payload not PES ?");
+     this->pes_error = 1;
+     return;
+   }
+@@ -150,7 +150,7 @@
+   /* drop broken PES packets */
+   if (this->pes_error && !pusi) {
+     if (this->buf) {
+-      LOGDBG("ts2es: dropping broken PES packet");
++      //LOGDBG("ts2es: dropping broken PES packet");
+       this->buf->free_buffer(this->buf);
+       this->buf = NULL;
+     }

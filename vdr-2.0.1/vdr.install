@@ -1,0 +1,69 @@
+# TODO: Is a fixed gid and uid good?
+
+_USER=vdr
+_GROUP=vdr
+_UID=77
+_GID=77
+_DIRS="/var/lib/video.00 /var/lib/vdr /var/cache/vdr /etc/vdr" # No whitespace in pathes allowed
+_GROUPS="video,optical,audio,storage,tty,power"
+
+# arg 1:  the new package version
+post_install() {
+  local dir
+
+  echo ">>>"
+  echo ">>> VDR configuration files are installed at /etc/vdr."
+  echo ">>>"
+  
+  echo -n ">>> - Adding group \"$_GROUP\" ... "
+  if groupadd --gid $_UID $_GROUP; then
+    echo "done"
+  fi
+    
+  echo -n ">>> - Adding user \"$_USER\" ... "
+  if useradd --uid $_UID --gid $_GID --groups $_GROUPS \
+    --home-dir /var/lib/vdr --shell /bin/bash \
+    --comment "Video Disk Recorder" $_USER; then
+    echo "done"
+  fi
+  
+  # Lock the account
+  #passwd -l vdr &>/dev/null
+  
+  echo ">>> - Set filesystem permissions for user \"$_USER\": "
+  for dir in $_DIRS; do
+    echo -n ">>>   $dir "
+    if [ -e "$dir" ] && chown -R $_USER:$_GROUP "$dir"; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+  done
+
+  chown root:$_GROUP /usr/lib/vdr/ctvdrwrapper
+  chmod a=,u+srwx,g+srx /usr/lib/vdr/ctvdrwrapper
+  chown root:$_GROUP /usr/lib/vdr/vdr-shutdown.wrapper
+  chmod a=,u+srwx,g+srx /usr/lib/vdr/vdr-shutdown.wrapper
+
+  echo ">>>"
+  echo ">>> You may add the following to /etc/sudoers to allow VDR to shutdown"
+  echo ">>> the system, to restart the VDR daemon within VDR or to write the ACPI"
+  echo ">>> wakeup time."
+  echo ">>>"
+  echo ">>>   vdr    ALL=(root) NOPASSWD: ALL"
+  echo ">>>"
+}
+
+# arg 1:  the new package version
+# arg 2:  the old package version
+post_upgrade() {
+  post_install
+}
+
+# arg 1:  the old package version
+post_remove() {
+  # will remove group too if nobody else left in (see man userdel)
+  userdel $_USER
+}
+
+# vim:set ts=2 sw=2 et:

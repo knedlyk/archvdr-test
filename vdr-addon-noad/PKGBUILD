@@ -1,0 +1,57 @@
+# Contributor : Sebastian Pohle <sepo at users dot berlios dot de>
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=noad
+pkgname=vdr-addon-${_pluginname}
+pkgver=0.7.2
+pkgrel=1
+pkgdesc="A program for advertising-detection in vdr-recordings."
+arch=('i686' 'x86_64')
+url="http://noad.heliohost.org/"
+license=('GPL')
+groups=()
+depends=('libmpeg2>=0.4.0' 'vdr' 'ffmpeg' 'pkgconfig')
+makedepends=('vdr' 'ffmpeg' 'pkgconfig')
+source=(R10.noad
+	S50.noad
+	reccmds.noad.conf
+  http://gentoo.inode.at/distfiles/${_pluginname}-${pkgver}.tar.bz2)
+#	http://noad.heliohost.org/${_pluginname}-${pkgver}.tar.bz2)
+md5sums=('49c25ce07ad63fd0640f217c4b345a37'
+         'bf57bafee2c5e18daacbf2a618182d16'
+         '9062c411b0974659632501e7a2ee3fba'
+         '8f0c777ef49e4d8dff53243c55160a37')
+
+_githost="git://git.gekrumbel.de"
+_gitrepo="noad.git"
+
+build() {
+  cd $srcdir/${_pluginname}-${pkgver}
+
+  ./configure --prefix=/usr --with-ffmpeg \
+		--with-ffmpeginclude=/usr/include || return 1
+  make || return 1
+
+  mkdir -p $pkgdir/usr/bin								|| return 1
+  install -m 755 noad				$pkgdir/usr/bin				|| return 1
+  install -m 755 allnewnoad			$pkgdir/usr/bin				|| return 1
+  install -m 755 allnoad			$pkgdir/usr/bin				|| return 1
+  install -m 755 allnoadnice			$pkgdir/usr/bin				|| return 1
+  install -m 755 allnoaduncut			$pkgdir/usr/bin				|| return 1
+  install -m 755 clearlogos			$pkgdir/usr/bin				|| return 1
+  install -m 755 noadifnew			$pkgdir/usr/bin				|| return 1
+  install -m 755 stat2html			$pkgdir/usr/bin				|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/command-hooks
+  install -m 644 ../reccmds.noad.conf		$pkgdir/etc/vdr/command-hooks/		|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr/shutdown-hooks						|| return 1
+  install -m 755 ../S50.noad			$pkgdir/usr/share/vdr/shutdown-hooks/	|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/recording-hooks						|| return 1
+  install -m 755 ../R10.noad			$pkgdir/etc/vdr/recording-hooks/	|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr/command-hooks						|| return 1
+  cd $pkgdir/usr/share/vdr/command-hooks						|| return 1
+  ln -s ../../../../etc/vdr/command-hooks/reccmds.noad.conf	reccmds.noad.conf		|| return 1
+}

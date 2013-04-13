@@ -1,0 +1,65 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=markad
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=20121211
+pkgrel=1
+gitid=603c137849d0047c01a48867a2e5756e8242583d
+pkgdesc="VDR plugin for automaticaly setting add marks"
+arch=('i686' 'x86_64')
+url="http://projects.vdr-developer.org/projects/show/plg-markad"
+license=('GPL2')
+depends=('gcc' 'vdr' 'git')
+source=(plugin.markad.conf
+        fix_compile.patch)
+backup=('etc/vdr/plugins/plugin.markad.conf')
+install=vdr-plugin-$_pluginname-git.install
+conflicts=(vdr-plugin-$_pluginname)
+md5sums=('be81fd3da22f0c9794d45758dbbf7951'
+         '65952bac9161dcc3813ae6ba9f098561')
+
+build() {
+  cd "$srcdir/"	|| return 1
+  
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="vdr-plugin-markad.git"
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname} ]; then	  
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git rebase origin
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout $gitid
+  fi
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/vdr-plugin-${_pluginname} $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  #patch -p1 -i ${srcdir}/fix_compile.patch || return 1
+
+  make VDRDIR="/usr/include/vdr"  LIBDIR="." \
+    LOCALEDIR="$pkgdir/usr/share/locale" all || return 1
+
+  make -C command
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 plugin/libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+  
+  mkdir -p $pkgdir/usr/bin/							|| return 1
+  install -m 0755  command/markad $pkgdir/usr/bin/					|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-plugin-markad
+  cp -ar command/logos $pkgdir/usr/share/vdr-plugin-markad || return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins						|| return 1
+  install -m 644 ../plugin.markad.conf		$pkgdir/etc/vdr/plugins		|| return 1
+
+
+}

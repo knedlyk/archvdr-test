@@ -1,0 +1,12 @@
+#!/bin/sh
+
+VOLUMES="sdf1 sdf2"
+
+for i in $VOLUMES
+do
+	if [ ! -e /media/$i ]; then
+		mkdir /media/$i
+	fi
+	mount -o ro /dev/$i /media/$i
+done
+exit 0

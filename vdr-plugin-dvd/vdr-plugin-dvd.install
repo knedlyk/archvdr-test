@@ -1,0 +1,25 @@
+# TODO: Is a fixed gid and uid good?
+
+_USER=vdr
+_GROUP=optical
+
+# arg 1:  the new package version
+post_install() {
+  local dir
+
+  echo ">>> - Set user permissions for user \"$_USER\" to group \"$_GROUP\" "
+  gpasswd -a $_USER $_GROUP
+}
+
+# arg 1:  the new package version
+# arg 2:  the old package version
+post_upgrade() {
+  post_install
+}
+
+# arg 1:  the old package version
+post_remove() {
+  id $_USER &>/dev/null
+}
+
+# vim:set ts=2 sw=2 et:

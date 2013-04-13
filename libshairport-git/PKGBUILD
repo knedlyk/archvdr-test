@@ -1,0 +1,63 @@
+# Contributor: Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=libshairport-git
+pkgver=20120621
+pkgrel=1
+pkgdesc="Airtunes emulator!"
+url="https://github.com/amejia1/libshairport"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=()
+makedepends=('git' 'gcc' 'autoconf' 'libao')
+source=(libshairport-1.2.0.20310_lib-001_add_ao.patch
+        libshairport-1.2.0.20310_lib-002_fix_install_header.patch
+        libshairport-1.2.0.20310_lib-003_fix_deadlock.patch
+        libshairport-1.2.0.20310_lib-004_fix_bad_access.patch
+        libshairport-1.2.0.20310_lib-005_fix_shutdown.patch
+        libshairport-1.2.0.20310_lib-006_no_printf.patch
+        libshairport-1.2.0.20310_lib-007_fix_syslog_defines.patch
+        libshairport-1.2.0.20310_lib-008-add-missing-libs.patch
+        libshairport-1.2.0.20310_lib-009_fix_ipv6.patch
+        libshairport-1.2.0.20310_lib-010_handle_metadata.patch
+        libshairport-1.2.0.20310_lib.tar.gz)
+
+md5sums=('7db658ab3f892627ff9bcc9e192948ca'
+         'c9cb4e9cb2e7768ee48002f1e7502991'
+         '8cf24423450cb0356d81b2cb93ea2d87'
+         '53136e909642c886b50c2eb4d3c4dd4c'
+         'eb579ee98b8900b65fb6df4e00eda3e3'
+         '9d207cf248e0782b9f320f6d487d34f2'
+         '5577d216fb16b6892f8af037852d9434'
+         '54f26dbc1e0b66184c68e8ac72b11bc1'
+         '38e4f182ea12e9ec8c7a45e9e056e25f'
+         'e59bcf99d64bf4e886aad40bb24ffa37'
+         'b009e0550c3cf54d740e92a5f47821e1')
+
+conflicts=(libshairport)
+provides=(libshairport)
+
+gitid=40da30532847d91ae2a643b123d637462a066dff
+
+
+build() {
+  
+  cd $srcdir/libshairport-1.2.0.20310_lib/
+
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-001_add_ao.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-002_fix_install_header.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-003_fix_deadlock.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-004_fix_bad_access.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-005_fix_shutdown.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-006_no_printf.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-007_fix_syslog_defines.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-008-add-missing-libs.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-009_fix_ipv6.patch || return 1
+  patch -p1 -i ${srcdir}/libshairport-1.2.0.20310_lib-010_handle_metadata.patch || return 1
+
+  autoreconf -vif
+  ./configure --prefix=/usr
+
+  make
+
+  make DESTDIR=$pkgdir install
+}

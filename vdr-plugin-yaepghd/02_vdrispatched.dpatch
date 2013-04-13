@@ -1,0 +1,23 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 01_vdrispatched.dpatch by  <root@holger-desktop-karmic>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad vdr-plugin-yaepghd-0.0.1~/yaepghd.c vdr-plugin-yaepghd-0.0.1/yaepghd.c
+--- vdr-plugin-yaepghd-0.0.1~/yaepghd.c	2009-01-30 21:38:32.000000000 +0100
++++ vdr-plugin-yaepghd-0.0.1/yaepghd.c	2009-09-28 19:01:11.368416792 +0200
+@@ -25,9 +25,9 @@
+ #include <vdr/device.h>
+ #include <vdr/thread.h>
+ 
+-#ifndef YAEPGHDVERSNUM
+-#error "You must apply the yaepghd patch for VDR!"
+-#endif
++
++
++
+ 
+ #if defined(APIVERSNUM) && APIVERSNUM < 10600
+ #error "VDR-1.6.0 API version or greater is required!"

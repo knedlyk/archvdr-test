@@ -1,0 +1,66 @@
+Binärdateien libnfs/.git/index and libnfs-patched/.git/index sind verschieden.
+diff -uNr libnfs/mount/Makefile.am libnfs-patched/mount/Makefile.am
+--- libnfs/mount/Makefile.am	2012-07-28 16:09:35.860245317 +0200
++++ libnfs-patched/mount/Makefile.am	2012-07-28 16:09:31.676911924 +0200
+@@ -14,7 +14,7 @@
+ $(mount_GENERATED) : mount-stamp
+ mount-stamp : mount.x
+ 	rm -f $(mount_GENERATED)
+-	rpcgen -h @RPCGENFLAGS@ $< > libnfs-raw-mount.h
+-	rpcgen -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*mount.h\"/#include \"libnfs-raw-mount.h\"/" > libnfs-raw-mount.c
++	rpcgen -Y /usr/bin -h @RPCGENFLAGS@ $< > libnfs-raw-mount.h
++	rpcgen -Y /usr/bin -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*mount.h\"/#include \"libnfs-raw-mount.h\"/" > libnfs-raw-mount.c
+ 	touch mount-stamp
+ 	
+diff -uNr libnfs/nfs/Makefile.am libnfs-patched/nfs/Makefile.am
+--- libnfs/nfs/Makefile.am	2012-07-28 16:09:35.860245317 +0200
++++ libnfs-patched/nfs/Makefile.am	2012-07-28 16:09:31.680245257 +0200
+@@ -14,7 +14,7 @@
+ $(nfs_GENERATED) : nfs-stamp
+ nfs-stamp : nfs.x
+ 	rm -f $(nfs_GENERATED)
+-	rpcgen -h @RPCGENFLAGS@ $< > libnfs-raw-nfs.h
+-	rpcgen -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*nfs.h\"/#include \"libnfs-raw-nfs.h\"/" > libnfs-raw-nfs.c
++	rpcgen -Y /usr/bin -h @RPCGENFLAGS@ $< > libnfs-raw-nfs.h
++	rpcgen -Y /usr/bin -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*nfs.h\"/#include \"libnfs-raw-nfs.h\"/" > libnfs-raw-nfs.c
+ 	touch nfs-stamp
+ 	
+diff -uNr libnfs/nlm/Makefile.am libnfs-patched/nlm/Makefile.am
+--- libnfs/nlm/Makefile.am	2012-07-28 16:09:35.860245317 +0200
++++ libnfs-patched/nlm/Makefile.am	2012-07-28 16:09:31.680245257 +0200
+@@ -14,7 +14,7 @@
+ $(nlm_GENERATED) : nlm-stamp
+ nlm-stamp : nlm.x
+ 	rm -f $(nlm_GENERATED)
+-	rpcgen -h @RPCGENFLAGS@ $< > libnfs-raw-nlm.h
+-	rpcgen -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*nlm.h\"/#include \"libnfs-raw-nlm.h\"/" > libnfs-raw-nlm.c
++	rpcgen -Y /usr/bin -h @RPCGENFLAGS@ $< > libnfs-raw-nlm.h
++	rpcgen -Y /usr/bin -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*nlm.h\"/#include \"libnfs-raw-nlm.h\"/" > libnfs-raw-nlm.c
+ 	touch nlm-stamp
+ 	
+diff -uNr libnfs/portmap/Makefile.am libnfs-patched/portmap/Makefile.am
+--- libnfs/portmap/Makefile.am	2012-07-28 16:09:35.860245317 +0200
++++ libnfs-patched/portmap/Makefile.am	2012-07-28 16:09:31.680245257 +0200
+@@ -14,7 +14,7 @@
+ $(portmap_GENERATED) : portmap-stamp
+ portmap-stamp : portmap.x
+ 	rm -f $(portmap_GENERATED)
+-	rpcgen -h @RPCGENFLAGS@ $< > libnfs-raw-portmap.h
+-	rpcgen -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*portmap.h\"/#include \"libnfs-raw-portmap.h\"/" > libnfs-raw-portmap.c
++	rpcgen -Y /usr/bin -h @RPCGENFLAGS@ $< > libnfs-raw-portmap.h
++	rpcgen -Y /usr/bin -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*portmap.h\"/#include \"libnfs-raw-portmap.h\"/" > libnfs-raw-portmap.c
+ 	touch portmap-stamp
+ 	
+diff -uNr libnfs/rquota/Makefile.am libnfs-patched/rquota/Makefile.am
+--- libnfs/rquota/Makefile.am	2012-07-28 16:09:35.860245317 +0200
++++ libnfs-patched/rquota/Makefile.am	2012-07-28 16:09:31.680245257 +0200
+@@ -14,7 +14,7 @@
+ $(rquota_GENERATED) : rquota-stamp
+ rquota-stamp : rquota.x
+ 	rm -f $(rquota_GENERATED)
+-	rpcgen -h @RPCGENFLAGS@ $< > libnfs-raw-rquota.h
+-	rpcgen -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*rquota.h\"/#include \"libnfs-raw-rquota.h\"/" > libnfs-raw-rquota.c
++	rpcgen -Y /usr/bin -h @RPCGENFLAGS@ $< > libnfs-raw-rquota.h
++	rpcgen -Y /usr/bin -c @RPCGENFLAGS@ $< | sed -e "s/#include \".*rquota.h\"/#include \"libnfs-raw-rquota.h\"/" > libnfs-raw-rquota.c
+ 	touch rquota-stamp
+ 	

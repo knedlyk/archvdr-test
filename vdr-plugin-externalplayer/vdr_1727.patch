@@ -1,0 +1,87 @@
+diff -uNr externalplayer-0.1.0/externalplayer.c externalplayer-0.1.0-patched/externalplayer.c
+--- externalplayer-0.1.0/externalplayer.c	2012-04-10 20:19:15.458657434 +0200
++++ externalplayer-0.1.0-patched/externalplayer.c	2012-04-10 20:21:22.998663255 +0200
+@@ -12,7 +12,6 @@
+ #include <getopt.h>
+ 
+ #include "externalplayer.h"
+-#include "externalplayer-i18n.h"
+ #include "externalplayer-player.h"
+ #include "externalplayer-control.h"
+ #include "externalplayer-remotes.h"
+@@ -63,8 +62,6 @@
+ }
+ 
+ bool cPluginExternalplayer::Start() {
+-  RegisterI18n(ExternalplayerPhrases);
+-
+   if (configFilename == "") {
+     configFilename += ConfigDirectory();
+     configFilename += "/externalplayer.conf";
+diff -uNr externalplayer-0.1.0/externalplayer-i18n.c externalplayer-0.1.0-patched/externalplayer-i18n.c
+--- externalplayer-0.1.0/externalplayer-i18n.c	2012-04-10 20:19:15.458657434 +0200
++++ externalplayer-0.1.0-patched/externalplayer-i18n.c	1970-01-01 01:00:00.000000000 +0100
+@@ -1,31 +0,0 @@
+-/*
+- * externalplayer-i18n.c: A plugin for the Video Disk Recorder
+- *
+- * See the README file for copyright information and how to reach the author.
+- *
+- * $Id$
+- */
+-
+-#include "externalplayer-i18n.h"
+-
+-const tI18nPhrase ExternalplayerPhrases[] = {
+-  { "External Players",
+-    "Externe Abspielprogramme",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { NULL }
+-  };
+diff -uNr externalplayer-0.1.0/externalplayer-i18n.h externalplayer-0.1.0-patched/externalplayer-i18n.h
+--- externalplayer-0.1.0/externalplayer-i18n.h	2012-04-10 20:19:15.458657434 +0200
++++ externalplayer-0.1.0-patched/externalplayer-i18n.h	1970-01-01 01:00:00.000000000 +0100
+@@ -1,16 +0,0 @@
+-/*
+- * externalplayer-i18n.h: A plugin for the Video Disk Recorder
+- *
+- * See the README file for copyright information and how to reach the author.
+- *
+- * $Id$
+- */
+-
+-#ifndef _EXTERNALPLAYER_I18N__H
+-#define _EXTERNALPLAYER_I18N__H
+-
+-#include <vdr/i18n.h>
+-
+-extern const tI18nPhrase ExternalplayerPhrases[];
+-
+-#endif //_EXTERNALPLAYER_I18N__H
+diff -uNr externalplayer-0.1.0/Makefile externalplayer-0.1.0-patched/Makefile
+--- externalplayer-0.1.0/Makefile	2012-04-10 20:19:15.458657434 +0200
++++ externalplayer-0.1.0-patched/Makefile	2012-04-10 20:20:48.421995010 +0200
+@@ -46,7 +46,7 @@
+ 
+ ### The object files (add further files here):
+ 
+-OBJS = externalplayer.o externalplayer-config.o externalplayer-control.o  externalplayer-i18n.o externalplayer-player.o externalplayer-remotes.o
++OBJS = externalplayer.o externalplayer-config.o externalplayer-control.o  externalplayer-player.o externalplayer-remotes.o
+ 
+ ### Implicit rules:
+ 

@@ -1,0 +1,63 @@
+# Contributor: Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=libnfs
+pkgver=20120728
+pkgrel=1
+_commit=c0ebf57b212ffefe83e2a50358499f68e7289e93
+pkgdesc="Nfs userspace library"
+url="https://github.com/sahlberg/libnfs"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=()
+makedepends=('git' 'gcc' 'autoconf')
+source=(arch_build_fix.patch)
+md5sums=(58443f60a7cefe2f106908ef6d6ca98e)
+conflicts=()
+
+_gitroot="git://github.com/sahlberg/libnfs.git"
+_gitname="libnfs"
+_prefix=/usr
+
+build() {
+  
+  cd ${srcdir}
+
+  if [ -d "${_gitname}" ] ; then
+    cd "${_gitname}" && git checkout master && git pull origin 
+    [[ "${_commit}" ]] && git checkout "${_commit}"
+    msg "The local files are updated."
+  else
+    git clone "${_gitroot}" "${_gitname}"
+    cd "${_gitname}"
+    [[ "${_commit}" ]] && git checkout "${_commit}"
+  fi
+
+  if [ -d "$srcdir/$_gitname-build" ]; then
+    rm -r "$srcdir/$_gitname-build"
+  fi
+
+  cp -r "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  if [ -e $srcdir/${pkgname}-build ]; then
+    rm -rf $srcdir/${pkgname}-build
+  fi
+
+  cp -r $srcdir/${pkgname} $srcdir/${pkgname}-build
+  cd $srcdir/${pkgname}-build
+
+  patch -p1 -i ${srcdir}/arch_build_fix.patch || return 0
+
+  sed -i -e 's:/usr/bin/install:/bin/install:' configure.ac
+  sed -i -e 's:lib64:lib:' configure.ac
+  ./bootstrap
+  ./configure --prefix=/usr
+
+  make
+
+  make DESTDIR=$pkgdir install
+
+  cd $pkgdir/usr/lib
+  #ln -s libnfs.so.* libnfs.so
+
+}

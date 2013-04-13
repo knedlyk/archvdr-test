@@ -1,0 +1,310 @@
+diff -Nru vdr-1.7.17-vanilla/menu.c vdr-1.7.17-vtype/menu.c
+--- vdr-1.7.17-vanilla/menu.c	2011-03-13 15:06:48.000000000 +0200
++++ vdr-1.7.17-vtype/menu.c	2011-03-13 16:22:48.000000000 +0200
+@@ -235,6 +235,7 @@
+   Add(new cMenuEditSrcItem( tr("Source"),       &data.source));
+   Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
+   Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
++  Add(new cMenuEditIntItem( tr("Vtype"),        &data.vtype, 0, 0xFF));
+   Add(new cMenuEditIntItem( tr("Ppid"),         &data.ppid,  0, 0x1FFF));
+   Add(new cMenuEditIntItem( tr("Apid1"),        &data.apids[0], 0, 0x1FFF));
+   Add(new cMenuEditIntItem( tr("Apid2"),        &data.apids[1], 0, 0x1FFF));
+diff -Nru vdr-1.7.17-vanilla/po/ca_ES.po vdr-1.7.17-vtype/po/ca_ES.po
+--- vdr-1.7.17-vanilla/po/ca_ES.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/ca_ES.po	2011-03-13 16:22:48.000000000 +0200
+@@ -536,6 +536,9 @@
+ msgid "Vpid"
+ msgstr "PID VÌdeo"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/cs_CZ.po vdr-1.7.17-vtype/po/cs_CZ.po
+--- vdr-1.7.17-vanilla/po/cs_CZ.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/cs_CZ.po	2011-03-13 16:22:48.000000000 +0200
+@@ -535,6 +535,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/da_DK.po vdr-1.7.17-vtype/po/da_DK.po
+--- vdr-1.7.17-vanilla/po/da_DK.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/da_DK.po	2011-03-13 16:22:48.000000000 +0200
+@@ -533,6 +533,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/de_DE.po vdr-1.7.17-vtype/po/de_DE.po
+--- vdr-1.7.17-vanilla/po/de_DE.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/de_DE.po	2011-03-13 16:22:48.000000000 +0200
+@@ -533,6 +533,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/el_GR.po vdr-1.7.17-vtype/po/el_GR.po
+--- vdr-1.7.17-vanilla/po/el_GR.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/el_GR.po	2011-03-13 16:22:48.000000000 +0200
+@@ -533,6 +533,9 @@
+ msgid "Vpid"
+ msgstr "BﬂÌÙÂÔ PID"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/es_ES.po vdr-1.7.17-vtype/po/es_ES.po
+--- vdr-1.7.17-vanilla/po/es_ES.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/es_ES.po	2011-03-13 16:22:48.000000000 +0200
+@@ -534,6 +534,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/et_EE.po vdr-1.7.17-vtype/po/et_EE.po
+--- vdr-1.7.17-vanilla/po/et_EE.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/et_EE.po	2011-03-13 16:22:48.000000000 +0200
+@@ -533,6 +533,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/fi_FI.po vdr-1.7.17-vtype/po/fi_FI.po
+--- vdr-1.7.17-vanilla/po/fi_FI.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/fi_FI.po	2011-03-13 16:22:48.000000000 +0200
+@@ -536,6 +536,9 @@
+ msgid "Vpid"
+ msgstr "Kuva-PID"
+ 
++msgid "Vtype"
++msgstr "Kuvatyyppi"
++
+ msgid "Ppid"
+ msgstr "PCR-PID"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/fr_FR.po vdr-1.7.17-vtype/po/fr_FR.po
+--- vdr-1.7.17-vanilla/po/fr_FR.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/fr_FR.po	2011-03-13 16:22:48.000000000 +0200
+@@ -539,6 +539,9 @@
+ msgid "Vpid"
+ msgstr "PID VidÈo"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/hr_HR.po vdr-1.7.17-vtype/po/hr_HR.po
+--- vdr-1.7.17-vanilla/po/hr_HR.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/hr_HR.po	2011-03-13 16:22:48.000000000 +0200
+@@ -535,6 +535,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/hu_HU.po vdr-1.7.17-vtype/po/hu_HU.po
+--- vdr-1.7.17-vanilla/po/hu_HU.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/hu_HU.po	2011-03-13 16:22:48.000000000 +0200
+@@ -536,6 +536,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/it_IT.po vdr-1.7.17-vtype/po/it_IT.po
+--- vdr-1.7.17-vanilla/po/it_IT.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/it_IT.po	2011-03-13 16:22:48.000000000 +0200
+@@ -540,6 +540,9 @@
+ msgid "Vpid"
+ msgstr "PID Video"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "PID Pcr"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/nl_NL.po vdr-1.7.17-vtype/po/nl_NL.po
+--- vdr-1.7.17-vanilla/po/nl_NL.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/nl_NL.po	2011-03-13 16:22:48.000000000 +0200
+@@ -537,6 +537,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/nn_NO.po vdr-1.7.17-vtype/po/nn_NO.po
+--- vdr-1.7.17-vanilla/po/nn_NO.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/nn_NO.po	2011-03-13 16:22:48.000000000 +0200
+@@ -534,6 +534,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/pl_PL.po vdr-1.7.17-vtype/po/pl_PL.po
+--- vdr-1.7.17-vanilla/po/pl_PL.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/pl_PL.po	2011-03-13 16:22:48.000000000 +0200
+@@ -534,6 +534,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/pt_PT.po vdr-1.7.17-vtype/po/pt_PT.po
+--- vdr-1.7.17-vanilla/po/pt_PT.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/pt_PT.po	2011-03-13 16:22:48.000000000 +0200
+@@ -534,6 +534,9 @@
+ msgid "Vpid"
+ msgstr "PID VÌdeo"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "PID Pcr"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/ro_RO.po vdr-1.7.17-vtype/po/ro_RO.po
+--- vdr-1.7.17-vanilla/po/ro_RO.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/ro_RO.po	2011-03-13 16:22:48.000000000 +0200
+@@ -536,6 +536,9 @@
+ msgid "Vpid"
+ msgstr "PID Video"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/ru_RU.po vdr-1.7.17-vtype/po/ru_RU.po
+--- vdr-1.7.17-vanilla/po/ru_RU.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/ru_RU.po	2011-03-13 16:22:48.000000000 +0200
+@@ -534,6 +534,9 @@
+ msgid "Vpid"
+ msgstr "Vpid (“ÿ‘’ﬁ)"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/sl_SI.po vdr-1.7.17-vtype/po/sl_SI.po
+--- vdr-1.7.17-vanilla/po/sl_SI.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/sl_SI.po	2011-03-13 16:22:48.000000000 +0200
+@@ -534,6 +534,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/sv_SE.po vdr-1.7.17-vtype/po/sv_SE.po
+--- vdr-1.7.17-vanilla/po/sv_SE.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/sv_SE.po	2011-03-13 16:22:48.000000000 +0200
+@@ -536,6 +536,9 @@
+ msgid "Vpid"
+ msgstr "VPID"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/tr_TR.po vdr-1.7.17-vtype/po/tr_TR.po
+--- vdr-1.7.17-vanilla/po/tr_TR.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/tr_TR.po	2011-03-13 16:22:48.000000000 +0200
+@@ -533,6 +533,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/uk_UA.po vdr-1.7.17-vtype/po/uk_UA.po
+--- vdr-1.7.17-vanilla/po/uk_UA.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/uk_UA.po	2011-03-13 16:22:48.000000000 +0200
+@@ -533,6 +533,9 @@
+ msgid "Vpid"
+ msgstr "Vpid (–≤—ñ–¥–µ–æ)"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 
+diff -Nru vdr-1.7.17-vanilla/po/zh_CN.po vdr-1.7.17-vtype/po/zh_CN.po
+--- vdr-1.7.17-vanilla/po/zh_CN.po	2011-03-13 15:06:49.000000000 +0200
++++ vdr-1.7.17-vtype/po/zh_CN.po	2011-03-13 16:22:48.000000000 +0200
+@@ -536,6 +536,9 @@
+ msgid "Vpid"
+ msgstr "Vpid"
+ 
++msgid "Vtype"
++msgstr ""
++
+ msgid "Ppid"
+ msgstr "Ppid"
+ 

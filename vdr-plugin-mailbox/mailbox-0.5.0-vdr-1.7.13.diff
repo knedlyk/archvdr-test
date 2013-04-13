@@ -1,0 +1,34 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 90_mailbox-0.5.0-vdr-1.7.13.dpatch by Thomas Günther <tom@toms-cafe.de>
+## http://toms-cafe.de/vdr/download/mailbox-0.5.0-vdr-1.7.13.diff
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Changes for VDR >= 1.7.13.
+
+@DPATCH@
+--- mailbox-0.5.0/AxLib/src/VDR/Tools.cpp
++++ mailbox-0.5.0/AxLib/src/VDR/Tools.cpp
+@@ -202,7 +202,11 @@ void Tools::dumpChannel(const cChannel *
+     wsinfo(("  Provider  : '%s'", theChannel->Provider()));
+     wsinfo(("  PortalName: '%s'", theChannel->PortalName()));
+     wsinfo(("  Frequency : %5d   Transponder: %5d", theChannel->Frequency(), theChannel->Transponder()));
++#if VDRVERSNUM >= 10713
++    wsinfo(("  Source    : %5d  Srate: %5d  Vpid: %5d  Ppid: %5d  Tpid: %5d  Nid: %d  Tid: %d  Sid: %d  Rid: %d  Par: %s"
++#else
+     wsinfo(("  Source    : %5d  Srate: %5d  Vpid: %5d  Ppid: %5d  Tpid: %5d  Nid: %d  Tid: %d  Sid: %d  Rid: %d  Pol: %c"
++#endif
+           , theChannel->Source()
+           , theChannel->Srate()
+           , theChannel->Vpid()
+@@ -212,7 +216,11 @@ void Tools::dumpChannel(const cChannel *
+           , theChannel->Tid()
+           , theChannel->Sid()
+           , theChannel->Rid()
++#if VDRVERSNUM >= 10713
++          , theChannel->Parameters()
++#else
+           , theChannel->Polarization()
++#endif
+           ));
+ 
+ #if 0

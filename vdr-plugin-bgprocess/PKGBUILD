@@ -1,0 +1,26 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=bgprocess
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.1.0
+pkgrel=1
+pkgdesc="Show process information in VDR"
+arch=('i686' 'x86_64')
+url="http://www.htpc-forum.de/download/"
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+source=(http://www.htpc-forum.de/download/vdr-$_pluginname-$pkgver.tgz)
+md5sums=('0468dfeef5eeaa46bc1da856269feeed')
+
+build() {
+  cd "$startdir/src/${_pluginname}-$pkgver"
+
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       VDRLOCALE="de_DE" \
+       LOCALEDIR=$pkgdir/usr/share/locale all					|| return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+}

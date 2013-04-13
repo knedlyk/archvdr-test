@@ -1,0 +1,55 @@
+# Maintainer: Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=xine-ui-hg
+pkgver=3128
+pkgrel=1
+pkgdesc="xine-ui with VDR keys enabled."
+arch=('i686' 'x86_64')
+license=('GPL')
+url="http://xinehq.de/"
+depends=('xine-lib' 'libxtst' 'libxinerama' 'libxv' 'libpng' 'libxft' 'libsm' 'libxxf86vm' 'ncurses>=5.6-7')
+makedepends=('lirc-utils' 'libxt' 'mercurial')
+optdepends=('lirc-utils')
+provides=('xine-ui')
+conflicts=('xine-ui' 'xine-ui-vdr' 'xine-ui-vdr-cvs')
+options=('!emptydirs')
+source=()
+md5sums=('59abb61261077320d2188293402610ca')
+
+build() {
+
+  cd ${srcdir}/
+
+  _hgroot=http://hg.debian.org/hg/xine-lib/xine-ui
+  _hgmod=xine-ui
+
+  if [ -e ${srcdir}/$_hgmod ]; then
+	cd ${srcdir}/$_hgmod
+  	hg pull -r ${pkgver}
+	  hg up 
+  else
+	  hg clone -r ${pkgver} ${_hgroot} ${_hgmod}
+  fi
+
+  cd ${srcdir}
+
+  if [ -e ${srcdir}/$_hgmod-build ]; then
+	  rm -rf ${srcdir}/$_hgmod-build
+  fi
+
+  cp -r ${srcdir}/${_hgmod} ${srcdir}/$_hgmod-build
+
+  cd ${srcdir}/$_hgmod-build
+
+  #patch -p1 -i ${srcdir}/crash_fix_prutal.patch || return 1
+  
+  #add missing constant (defined in xine.h from xine-lib cvs)
+  ./autogen.sh --prefix=/usr --mandir=/usr/share/man --enable-vdr-keys  \
+    --with-x --disable-lirc --without-aalib --without-curl
+  make || return 1
+  make DESTDIR=${pkgdir} install
+
+  install -d ${pkgdir}/usr/share/applications 
+  #echo "Categories=Application;AudioVideo;" >> ${pkgdir}/usr/share/xine/desktop/xine.desktop
+  #mv ${pkgdir}/usr/share/xine/desktop/xine.desktop ${pkgdir}/usr/share/applications 
+}

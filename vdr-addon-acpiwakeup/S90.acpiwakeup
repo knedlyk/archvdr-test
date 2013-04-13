@@ -1,0 +1,186 @@
+#!/bin/sh
+#
+# VDR shutdown hook for ACPI - Tobias Grimm <vdr@e-tobi.net>
+# --------------------------
+#
+# This shutdown hook sets the wakeup time for the next timer using
+# ACPI.
+#
+
+if [ "`basename $0`" != "testwakeup" ] ; then
+    # read arguments for acpi-wakeup from conf-file
+    . /etc/vdr/vdr-addon-acpiwakeup.conf
+    WAKEUP_FILE="/var/cache/vdr/acpiwakeup.time"
+
+    # take care of UTC setting
+    if [ -f /etc/rc.conf ]; then
+	YES=$(egrep "^[^#]*UTC" /etc/rc.conf)
+
+	if [ "$YES" != "" ]; then
+           UTC="yes"
+	fi
+    fi
+
+    LOG="logger -t vdr-addon-acpiwakeup "
+else
+    UTC=$UTC
+    WAKEUP_FILE=$WAKEUP_FILE
+    LOG="nop"
+fi
+
+nop()
+{
+    # No Operation
+    echo -n ""
+}
+
+if [ "$UTC" = "yes" ]; then
+    TIME_FUNCTION="gmtime"
+else
+    TIME_FUNCTION="localtime"
+fi
+
+# Defaults:
+[ -z "$ACPI_ENABLED" ]       && export ACPI_ENABLED="yes"
+[ -z "$ACPI_REGULAR_DAYS" ]  && export ACPI_REGULAR_DAYS="0"
+[ -z "$ACPI_REGULAR_TIME" ]  && export ACPI_REGULAR_TIME="00:00"
+[ -z "$ACPI_START_AHEAD" ]   && export ACPI_START_AHEAD="5"
+
+[ -z "$ACPI_ALARM" ]         && export ACPI_ALARM="/proc/acpi/alarm"
+[ -z "$WAKEALARM" ]          && export WAKEALARM="/sys/class/rtc/rtc0/wakealarm"
+
+TIMER=$1
+
+TimeToString()
+{
+    echo $(perl -e "(\$s,\$mi,\$h,\$d,\$mo,\$y,\$t,\$t,\$t)=\
+    $TIME_FUNCTION($1); printf(\"%04d-%02d-%02d %02d:%02d:%02d\",\
+    \$y+1900,\$mo+1,\$d,\$h,\$mi,\$s);")
+}
+
+AcpiError()
+{
+    $LOG "No writeable $ACPI_ALARM or $WAKEALARM found. ACPI needed!!!"
+    echo "ABORT_MESSAGE=\"ACPI not installed, shutdown aborted!\""
+    exit 1
+}
+
+ResetWakeupTimeKernelLte2_6_22()
+{
+    # I don't really now right now, how to disable
+    # the wakeup, so just set it to 00:00:01 !!!!
+    SetWakeupTimeKernelLte2_6_22 \
+      "`date -d '00:00:01' +'%s' | sed 's/_/ /'`"
+    return $?
+}
+
+SetWakeupTimeKernelLte2_6_22()
+{
+    # convert time_t to YYYY-MM-DD HH:MM:SS
+    TIME_TO_SET=`TimeToString $1`
+
+    if [ -w $ACPI_ALARM ]; then
+        $LOG "Writing to  $ACPI_ALARM"
+        echo "$TIME_TO_SET" >$ACPI_ALARM
+        # Set it once more - some boards require this!
+        echo "$TIME_TO_SET" >$ACPI_ALARM
+        return $?
+    else
+        return 1
+    fi
+}
+
+ResetWakeupTimeKernelGte2_6_23()
+{
+    if [ -w $WAKEALARM ]; then
+        $LOG "Writing to $WAKEALARM"
+        echo 0 >$WAKEALARM
+        return $?
+    else
+        return 1
+    fi
+}
+
+SetWakeupTimeKernelGte2_6_23()
+{
+    if [ -w $WAKEALARM ]; then
+        if ResetWakeupTimeKernelGte2_6_23 ; then
+            $LOG "Writing to $WAKEALARM"
+            if [ "$UTC" = "yes" ]; then
+              echo "$1" >$WAKEALARM
+            else
+              echo "$( date --date "`TimeToString $1` UTC" +%s)" >$WAKEALARM
+            fi
+            return $?
+        fi
+    fi
+    return 1
+}
+
+
+ResetWakeupTime()
+{
+    $LOG "Resetting ACPI alarm time"
+    ResetWakeupTimeKernelLte2_6_22 || \
+    ResetWakeupTimeKernelGte2_6_23 || \
+    AcpiError
+}
+
+SetWakeupTime()
+{
+    $LOG "Setting ACPI alarm time to: `TimeToString $1`"
+    SetWakeupTimeKernelLte2_6_22 "$1" || \
+    SetWakeupTimeKernelGte2_6_23 "$1" || \
+    AcpiError
+
+    # remember wakeup time for stop script
+    echo `TimeToString $1` >$WAKEUP_FILE
+}
+
+IsRegularDayOfWeek()
+{
+    local day
+    for day in $ACPI_REGULAR_DAYS ; do
+        if [ "$day" = "`date -d \"@$1\" +%u`" ] ; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+if [ $ACPI_ENABLED = "yes" ]; then
+    # check if we should wake up before the next timer:
+    if [ "$ACPI_REGULAR_DAYS" != "0" ]; then
+        REGULAR_TIMER=$(date -d "$ACPI_REGULAR_TIME" +%s)
+        if [ $REGULAR_TIMER -lt $(date +%s) ] ; then
+            REGULAR_TIMER=$(($REGULAR_TIMER + 24 * 60 * 60))
+        fi
+        while ! IsRegularDayOfWeek $REGULAR_TIMER ; do
+            REGULAR_TIMER=$(($REGULAR_TIMER + 24 * 60 * 60))
+        done
+
+        if [ $TIMER -eq 0 ] || [ $TIMER -gt 0 -a $REGULAR_TIMER -lt $TIMER ] ; then
+            TIMER=$REGULAR_TIMER
+        fi
+    fi
+    if [ $TIMER -gt 0 ]; then
+        MIN_START_AHEAD=$((`date +%s` + 60 * $ACPI_START_AHEAD))
+        if [ $MIN_START_AHEAD -gt $TIMER ]; then
+            $LOG "Can not set wakeup time less than $ACPI_START_AHEAD minutes ahead."
+            echo "ABORT_MESSAGE=\"Wakeup in less than $ACPI_START_AHEAD minutes, aborting!\""
+            exit 1
+        fi
+
+        # adjust wakeup time by ACPI_START_AHEAD
+        TIMER=$(($TIMER - 60 * $ACPI_START_AHEAD))
+    fi
+
+    if [ $TIMER -eq 0 ]; then
+        ResetWakeupTime
+    else
+        SetWakeupTime "$TIMER"
+    fi
+
+else
+    $LOG "ACPIWakeup functionality is disabled"
+fi

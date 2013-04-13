@@ -1,0 +1,54 @@
+# Maintainer: TryA <tryagainprod {at} gmail.com>
+
+pkgname=libva-statging-git
+pkgver=20120723
+pkgrel=1
+pkgdesc="VA API library, providing an interface for hardware video decoding and encoding"
+arch=('i686' 'x86_64')
+license=('MIT')
+url="http://www.freedesktop.org/wiki/Software/vaapi"
+depends=('libdrm' 'libgl' 'mesa' 'git')
+provides=('libva=1.0.11')
+conflicts=('libva' 'libva-sds'' libva-git')
+options=('!libtool' '!strip')
+source=()
+md5sums=()
+
+_gitroot="git://anongit.freedesktop.org/libva"
+_gitname="libva"
+_gitid=8494f84e20be47aa9d0f33d821067a55aa3eefc7
+
+build() {
+
+
+  msg "Connecting to git.freedesktop.org GIT server...."
+
+  if [ -d ${srcdir}/${_gitname} ] ; then
+    cd ${srcdir}/${_gitname}
+    git checkout master
+    git pull --rebase
+    msg "The local files are updated."
+  else
+    cd ${srcdir}
+    git clone ${_gitroot}
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf ${srcdir}/${_gitname}-build
+  cp -r ${srcdir}/${_gitname} ${srcdir}/${_gitname}-build
+  cd ${srcdir}/${_gitname}-build
+  git checkout staging
+  git checkout "${_gitid}"
+
+  ./autogen.sh
+  ./configure --prefix=/usr --disable-i965-driver --enable-glx --enable-debug
+  make
+}
+
+package() {
+  cd ${srcdir}/${_gitname}-build
+  make DESTDIR="${pkgdir}" install
+  install -m644 -D COPYING ${pkgdir}/usr/share/licenses/${pkgname}/COPYING
+}

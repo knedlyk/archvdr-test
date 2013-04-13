@@ -1,0 +1,2244 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 90_extrecmenu-1.2-test1-am2b.dpatch by Andreas Mair <andreas _AT_ vdr-developer.org>
+## http://vdrportal.de/board/thread.php?postid=825866#post825866
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Changes for VDR >= 1.7.3.
+
+@DPATCH@
+diff -Nur extrecmenu-1.2-test1/CHANGES.AM extrecmenu-1.2-test1-am2b/CHANGES.AM
+--- extrecmenu-1.2-test1/CHANGES.AM	1970-01-01 01:00:00.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/CHANGES.AM	2009-06-28 14:09:52.000000000 +0200
+@@ -0,0 +1,20 @@
++Changes by Andreas Mair <andreas _AT_ vdr-developer.org>
++
++* 1.2-test1-AM2b
++- fixed PES cutting using cutting queue (Reported by tomas @vdr-portal.de).
++- fixed some gcc warnings and errors (Based on suggestions by Zzam @vdr-portal.de).
++
++* 1.2-test1-AM2a
++- Fixed access to 001.vdr/00001.ts and index.vdr/index (Length in recordings list works again).
++
++* 1.2-test1-AM2
++- Adapt cutter thread to VDR v1.7.3.
++
++* 1.2-test1-AM1
++- fixed wrong help keys if selected recording finishes cutting.
++- plugins/extrecmenu/dircmds.conf for recording directory commands (same as reccmds.conf)
++- "nice" the action thread.
++- Use LimitBandwidth setting also for cutting.
++
++TODO:
++- ioprio_set
+diff -Nur extrecmenu-1.2-test1/extrecmenu.c extrecmenu-1.2-test1-am2b/extrecmenu.c
+--- extrecmenu-1.2-test1/extrecmenu.c	2008-03-21 12:38:24.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/extrecmenu.c	2009-06-28 08:33:24.000000000 +0200
+@@ -11,7 +11,7 @@
+ 
+ using namespace std;
+ 
+-static const char *VERSION        = "1.2";
++static const char *VERSION        = "1.2-test1-am2b";
+ static const char *DESCRIPTION    = tr("Extended recordings menu");
+ static const char *MAINMENUENTRY  = "ExtRecMenu";
+ 
+@@ -34,7 +34,7 @@
+     virtual const char *MainMenuEntry(void){return mysetup.HideMainMenuEntry?NULL:MAINMENUENTRY;}
+     virtual cOsdObject *MainMenuAction(void);
+     virtual cMenuSetupPage *SetupMenu(void);
+-    virtual bool SetupParse(const char *Name,const char *Value);
++    virtual bool SetupParse(const char *_Name,const char *Value);
+     virtual bool Service(const char *Id,void *Data = NULL);
+     virtual const char **SVDRPHelpPages(void);
+     virtual cString SVDRPCommand(const char *Command,const char *Option,int &ReplyCode);
+@@ -53,7 +53,7 @@
+   return NULL;
+ }
+ 
+-bool cPluginExtrecmenu::ProcessArgs(int argc,char *argv[])
++bool cPluginExtrecmenu::ProcessArgs(int /* argc */,char ** /* argv */)
+ {
+   return true;
+ }
+@@ -74,6 +74,8 @@
+ 
+   MoveCutterThread=new WorkerThread();
+ 
++  RecordingDirCommands.Load(AddDirectory(cPlugin::ConfigDirectory(PLUGIN_NAME_I18N), "dircmds.conf"), true);
++
+   return true;
+ }
+ 
+@@ -102,40 +104,40 @@
+   return new myMenuSetup();
+ }
+ 
+-bool cPluginExtrecmenu::SetupParse(const char *Name,const char *Value)
++bool cPluginExtrecmenu::SetupParse(const char *_Name,const char *Value)
+ {
+-  if(!strcasecmp(Name,"IsOrgRecMenu"))
++  if(!strcasecmp(_Name,"IsOrgRecMenu"))
+     return (mysetup.ReplaceOrgRecMenu==false); // vdr-replace patch
+ 
+-  if(!strcasecmp(Name,"ShowRecDate"))
++  if(!strcasecmp(_Name,"ShowRecDate"))
+     mysetup.ShowRecDate=atoi(Value);
+-  else if(!strcasecmp(Name,"ShowRecTime"))
++  else if(!strcasecmp(_Name,"ShowRecTime"))
+     mysetup.ShowRecTime=atoi(Value);
+-  else if(!strcasecmp(Name,"ShowRecLength"))
++  else if(!strcasecmp(_Name,"ShowRecLength"))
+     mysetup.ShowRecLength=atoi(Value);
+-  else if(!strcasecmp(Name,"HideMainMenuEntry"))
++  else if(!strcasecmp(_Name,"HideMainMenuEntry"))
+     mysetup.HideMainMenuEntry=atoi(Value);
+-  else if(!strcasecmp(Name,"ReplaceOrgRecMenu"))
++  else if(!strcasecmp(_Name,"ReplaceOrgRecMenu"))
+     mysetup.ReplaceOrgRecMenu=atoi(Value);
+-  else if(!strcasecmp(Name,"PatchNew"))
++  else if(!strcasecmp(_Name,"PatchNew"))
+     mysetup.PatchNew=atoi(Value);
+-  else if(!strcasecmp(Name,"ShowNewRecs"))
++  else if(!strcasecmp(_Name,"ShowNewRecs"))
+     mysetup.ShowNewRecs=atoi(Value);
+-  else if(!strcasecmp(Name,"DescendSorting"))
++  else if(!strcasecmp(_Name,"DescendSorting"))
+     mysetup.DescendSorting=atoi(Value);
+-  else if(!strcasecmp(Name,"GoLastReplayed"))
++  else if(!strcasecmp(_Name,"GoLastReplayed"))
+     mysetup.GoLastReplayed=atoi(Value);
+-  else if(!strcasecmp(Name,"ReturnToPlugin"))
++  else if(!strcasecmp(_Name,"ReturnToPlugin"))
+     mysetup.ReturnToPlugin=atoi(Value);
+-  else if(!strcasecmp(Name,"LimitBandwidth"))
++  else if(!strcasecmp(_Name,"LimitBandwidth"))
+     mysetup.LimitBandwidth=atoi(Value);
+-  else if(!strcasecmp(Name,"UseVDRsRecInfoMenu"))
++  else if(!strcasecmp(_Name,"UseVDRsRecInfoMenu"))
+     mysetup.UseVDRsRecInfoMenu=atoi(Value);
+-  else if(!strcasecmp(Name,"PatchFont"))
++  else if(!strcasecmp(_Name,"PatchFont"))
+     mysetup.PatchFont=atoi(Value);
+-  else if(!strcasecmp(Name,"FileSystemFreeMB"))
++  else if(!strcasecmp(_Name,"FileSystemFreeMB"))
+     mysetup.FileSystemFreeMB=atoi(Value);
+-  else if(!strcasecmp(Name,"UseCutterQueue"))
++  else if(!strcasecmp(_Name,"UseCutterQueue"))
+     mysetup.UseCutterQueue=atoi(Value);
+   else
+     return false;
+@@ -163,7 +165,7 @@
+  return NULL;
+ }
+ 
+-cString cPluginExtrecmenu::SVDRPCommand(const char *Command,const char *Option,int &ReplyCode)
++cString cPluginExtrecmenu::SVDRPCommand(const char * /* Command */,const char * /* Option */,int & /* ReplyCode */)
+ {
+  return NULL;
+ }
+diff -Nur extrecmenu-1.2-test1/mymenucommands.c extrecmenu-1.2-test1-am2b/mymenucommands.c
+--- extrecmenu-1.2-test1/mymenucommands.c	2008-03-15 16:11:08.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/mymenucommands.c	2009-06-26 17:00:03.000000000 +0200
+@@ -9,10 +9,10 @@
+ #include <vdr/interface.h>
+ #include "mymenucommands.h"
+ 
+-myMenuCommands::myMenuCommands(const char *Title,cCommands *Commands,const char *Parameters):cOsdMenu(Title)
++myMenuCommands::myMenuCommands(const char *Title,cCommands *_Commands,const char *Parameters):cOsdMenu(Title)
+ {
+  SetHasHotkeys();
+- commands=Commands;
++ commands=_Commands;
+  parameters=Parameters?strdup(Parameters):NULL;
+  for(cCommand *command=commands->First();command;command=commands->Next(command))
+   Add(new cOsdItem(hk(command->Title())));
+diff -Nur extrecmenu-1.2-test1/mymenueditrecording.c extrecmenu-1.2-test1-am2b/mymenueditrecording.c
+--- extrecmenu-1.2-test1/mymenueditrecording.c	2008-03-22 16:23:47.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/mymenueditrecording.c	2009-06-26 17:17:45.000000000 +0200
+@@ -25,7 +25,7 @@
+ 
+  if(recording)
+  {
+-  char *p=strrchr(recording->Name(),'~');
++  char *p=(char*)strrchr(recording->Name(),'~'); //TODO
+   if(p)
+   {
+    strn0cpy(name,++p,sizeof(name));
+@@ -106,7 +106,7 @@
+ 
+ // --- myMenuNewName ----------------------------------------------------------
+ bool myMenuMoveRecording::clearall=false;
+-char newname[128];
++char newname[128]; //TODO
+ 
+ class myMenuNewName:public cOsdMenu
+ {
+@@ -161,17 +161,17 @@
+   myMenuMoveRecordingItem(const char *Title,int Level);
+   myMenuMoveRecordingItem(cRecording *Recording,int Level);
+   int Level(){return level;}
+-  void SetLevel(int Level){level=Level;}
++  void SetLevel(int _Level){level=_Level;}
+ };
+ 
+-myMenuMoveRecordingItem::myMenuMoveRecordingItem(const char *Title,int Level)
++myMenuMoveRecordingItem::myMenuMoveRecordingItem(const char *Title,int _Level)
+ {
+- level=Level;
++ level=_Level;
+  title=strdup(Title);
+  SetText(title);
+ }
+ 
+-myMenuMoveRecordingItem::myMenuMoveRecordingItem(cRecording *Recording,int Level)
++myMenuMoveRecordingItem::myMenuMoveRecordingItem(cRecording *Recording,int _Level)
+ {
+  level=0;
+ 
+@@ -181,7 +181,7 @@
+   if(*s=='~')
+    level++;
+  }
+- if(Level<level)
++ if(_Level<level)
+  {
+   s=Recording->Name();
+   const char *p=s;
+@@ -189,7 +189,7 @@
+   {
+    if(*s=='~')
+    {
+-    if(Level--)
++    if(_Level--)
+      p=s+1;
+     else
+      break;
+@@ -234,11 +234,11 @@
+ 
+   char *lastitemtext=NULL;
+   myMenuMoveRecordingItem *lastitem=NULL;
+-  for(cRecording *recording=Recordings.First();recording;recording=Recordings.Next(recording))
++  for(cRecording *_recording=Recordings.First();_recording;_recording=Recordings.Next(_recording))
+   {
+-    if(!base||(strstr(recording->Name(),base)==recording->Name()&&recording->Name()[strlen(base)]=='~'))
++    if(!base||(strstr(_recording->Name(),base)==_recording->Name()&&_recording->Name()[strlen(base)]=='~'))
+     {
+-      myMenuMoveRecordingItem *item=new myMenuMoveRecordingItem(recording,level);
++      myMenuMoveRecordingItem *item=new myMenuMoveRecordingItem(_recording,level);
+       if(*item->Text())
+       {
+         if(lastitemtext&&!strcmp(lastitemtext,item->Text())) // same text
+@@ -286,7 +286,7 @@
+ eOSState myMenuMoveRecording::MoveRec()
+ {
+   char *oldname=NULL;
+-  char *newname=NULL;
++  char *_newname=NULL;
+   char *dir=NULL;
+   char *tmpdirbase=dirbase?ExchangeChars(strdup(dirbase),true):NULL;
+   char *tmpdirname=dirname?ExchangeChars(strdup(dirname),true):NULL;
+@@ -307,7 +307,7 @@
+         asprintf(&dir,"%s%s%s",base?base:"",base?"~":"",item->Text());
+       else  // needed for move recording menu
+       {
+-        char *p=strrchr(recording->Name(),'~');
++        const char *p=strrchr(recording->Name(),'~');
+         asprintf(&dir,"%s%s%s~%s",base?base:"",base?"~":"",item->Text(),p?p+1:recording->Name());
+       }
+     }
+@@ -315,7 +315,7 @@
+     {
+       if(!dirname)
+       {
+-        char *p=strrchr(recording->Name(),'~');
++        const char *p=strrchr(recording->Name(),'~');
+         asprintf(&dir,"%s",p?++p:recording->Name());
+       }
+     }
+@@ -326,17 +326,17 @@
+       asprintf(&dir,"%s",base);
+     else
+     {
+-      char *p=strrchr(recording->Name(),'~');
++      const char *p=strrchr(recording->Name(),'~');
+       asprintf(&dir,"%s~%s",base,p?p:recording->Name());
+     }
+   }
+   if(dir)
+     dir=ExchangeChars(dir,true);
+  
+-  asprintf(&newname,"%s%s%s%s",VideoDirectory,dir?"/":"",dir?dir:"",strrchr(dirname?oldname:recording->FileName(),'/'));
++  asprintf(&_newname,"%s%s%s%s",VideoDirectory,dir?"/":"",dir?dir:"",strrchr(dirname?oldname:recording->FileName(),'/'));
+ 
+   // getting existing part of target path
+-  string path=newname;
++  string path=_newname;
+   string::size_type pos=string::npos;
+   do
+     pos=path.rfind('/',pos)-1;
+@@ -350,7 +350,7 @@
+   // are source and target at the same filesystem?
+   if(stat1.st_dev==stat2.st_dev)
+   {
+-    if(MoveRename(oldname,newname,dirname?NULL:recording,true))
++    if(MoveRename(oldname,_newname,dirname?NULL:recording,true))
+     {
+       clearall=true;
+       state=osBack;
+@@ -361,7 +361,7 @@
+     struct statvfs fsstat;
+     if(!statvfs(path.c_str(),&fsstat))
+     {
+-      int freemb=int(fsstat.f_bavail/(1024.0*1024.0/fsstat.f_bsize));
++      int freemb=int((double)fsstat.f_bavail/(1024.0*1024.0/fsstat.f_bsize));
+       int recmb=0;
+ 
+       // moving a single recording
+@@ -370,7 +370,7 @@
+         recmb=DirSizeMB(recording->FileName());
+         if(freemb-recmb > 0  || Interface->Confirm(tr("Target filesystem filled - try anyway?")))
+         {
+-          MoveCutterThread->AddToMoveList(oldname,newname);
++          MoveCutterThread->AddToMoveList(oldname,_newname);
+           clearall=true;
+           state=osBack;
+         }
+@@ -380,7 +380,7 @@
+       {
+         string buf=oldname;
+         buf+="/";
+-        if(!buf.compare(0,buf.length(),newname))
++        if(!buf.compare(0,buf.length(),_newname))
+           Skins.Message(mtError,tr("Moving into own sub-directory not allowed!"));
+         else
+         {
+@@ -397,16 +397,16 @@
+             {
+               if(!strncmp(oldname,rec->FileName(),strlen(oldname)))
+               {
+-                char *buf=ExchangeChars(strdup(oldname+strlen(VideoDirectory)+1),false);
++                char *_buf=ExchangeChars(strdup(oldname+strlen(VideoDirectory)+1),false);
+               
+-                if(strcmp(rec->Name(),buf))
++                if(strcmp(rec->Name(),_buf))
+                 {
+-                  free(buf);
+-                  asprintf(&buf,"%s%s",newname,rec->FileName()+strlen(oldname));
++                  free(_buf);
++                  asprintf(&_buf,"%s%s",_newname,rec->FileName()+strlen(oldname));
+                 
+-                  MoveCutterThread->AddToMoveList(rec->FileName(),buf);
++                  MoveCutterThread->AddToMoveList(rec->FileName(),_buf);
+                 }
+-                free(buf);
++                free(_buf);
+               }
+             }
+             clearall=true;
+@@ -422,7 +422,7 @@
+     }
+   }
+   free(oldname);
+-  free(newname);
++  free(_newname);
+   free(dir);
+   free(tmpdirbase);
+   free(tmpdirname);
+@@ -483,17 +483,17 @@
+     if(Key==kOk)
+     {
+       char *oldname=strdup(recording->FileName());
+-      char *newname=strdup(recording->FileName());
++      char *_newname=strdup(recording->FileName());
+ 
+-      sprintf(newname+strlen(newname)-9,"%02d.%02d.rec",priority,lifetime);
++      sprintf(_newname+strlen(_newname)-9,"%02d.%02d.rec",priority,lifetime);
+ 
+-      if(MoveRename(oldname,newname,recording,false))
++      if(MoveRename(oldname,_newname,recording,false))
+         state=osBack;
+       else
+         state=osContinue;
+ 
+       free(oldname);
+-      free(newname);
++      free(_newname);
+     }
+   }
+   return state;
+diff -Nur extrecmenu-1.2-test1/mymenurecordings.c extrecmenu-1.2-test1-am2b/mymenurecordings.c
+--- extrecmenu-1.2-test1/mymenurecordings.c	2008-03-22 16:21:48.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/mymenurecordings.c	2009-06-26 17:12:35.000000000 +0200
+@@ -146,6 +146,9 @@
+   dirismoving=true;
+   name=NULL;
+   filename=Recording->FileName();
++#if VDRVERSNUM >= 10703
++  isPesRecording=Recording->IsPesRecording();
++#endif
+ 
+   // get the level of this recording
+   level=0;
+@@ -187,7 +190,14 @@
+       stringstream idbuffer;
+     
+       buffer=filename;
++#if VDRVERSNUM > 10703
++      if (isPesRecording)
++        buffer+="/001.vdr";
++      else
++        buffer+="/00001.ts";
++#else
+       buffer+="/001.vdr";
++#endif
+       if(access(buffer.c_str(),R_OK))
+       {
+         buffer=filename;
+@@ -230,12 +240,19 @@
+       if(mysetup.ShowRecLength)
+       {
+         buffer=filename;
++#if VDRVERSNUM > 10703
++        if (isPesRecording)
++          buffer+="/index.vdr";
++        else
++          buffer+="/index";
++#else
+         buffer+="/index.vdr";
++#endif
+         struct stat statbuf;
+         if(!stat(buffer.c_str(),&statbuf))
+         {
+           ostringstream strbuf;
+-          strbuf << setw(3) << (int)(statbuf.st_size/12000) << "'";
++          strbuf << setw(3) << (int)(statbuf.st_size/12000) << "'"; //TODO: 12000 still OK for TS recordings?
+           // replace leading spaces with fixed blank (right align)
+           titlebuffer << myStrReplace(strbuf.str(),' ',Icons::FixedBlank()) << '\t';
+         }
+@@ -268,17 +285,17 @@
+         titlebuffer << '\t';
+     
+       // recording title
+-      string s=Recording->Name();
+-      string::size_type i=s.rfind('~');
++      string _s=Recording->Name();
++      string::size_type i=_s.rfind('~');
+       if(i!=string::npos)
+       {
+-        titlebuffer << s.substr(i+1,s.length()-i);
+-        idbuffer << s.substr(i+1,s.length()-i);
++        titlebuffer << _s.substr(i+1,_s.length()-i);
++        idbuffer << _s.substr(i+1,_s.length()-i);
+       }
+       else
+       {
+-        titlebuffer << s;
+-        idbuffer << s;
++        titlebuffer << _s;
++        idbuffer << _s;
+       }
+     
+       title=strdup(titlebuffer.str().c_str());
+@@ -287,7 +304,7 @@
+     else
+     {
+       if(Level>level) // any other
+-        title="";
++        title=strdup("");
+     }
+   }
+   SetText(title);
+@@ -319,7 +336,7 @@
+                      newentries,
+                      (!mysetup.ShowRecDate&&!mysetup.ShowRecTime&&!mysetup.ShowRecLength)?"\t":"",
+                      (mysetup.ShowRecDate||mysetup.ShowRecTime||mysetup.ShowRecLength)?"\t":"",
+-                     (mysetup.ShowRecDate&&mysetup.ShowRecTime||mysetup.ShowRecTime&&mysetup.ShowRecLength||mysetup.ShowRecLength&&mysetup.ShowRecDate)?"\t":"",
++                     ((mysetup.ShowRecDate&&mysetup.ShowRecTime)||(mysetup.ShowRecTime&&mysetup.ShowRecLength)||(mysetup.ShowRecLength&&mysetup.ShowRecDate))?"\t":"",
+                      (mysetup.ShowRecDate&&mysetup.ShowRecTime&&mysetup.ShowRecLength)?"\t":"",
+                      name);
+   }
+@@ -331,7 +348,7 @@
+                      myStrReplace(entries.str(),' ',Icons::FixedBlank()).c_str(),
+                      (!mysetup.ShowRecDate&&!mysetup.ShowRecTime&&!mysetup.ShowRecLength)?"\t":"",
+                      (mysetup.ShowRecDate||mysetup.ShowRecTime||mysetup.ShowRecLength)?"\t":"",
+-                     (mysetup.ShowRecDate&&mysetup.ShowRecTime||mysetup.ShowRecTime&&mysetup.ShowRecLength||mysetup.ShowRecLength&&mysetup.ShowRecDate)?"\t":"",
++                     ((mysetup.ShowRecDate&&mysetup.ShowRecTime)||(mysetup.ShowRecTime&&mysetup.ShowRecLength)||(mysetup.ShowRecLength&&mysetup.ShowRecDate))?"\t":"",
+                      (mysetup.ShowRecDate&&mysetup.ShowRecTime&&mysetup.ShowRecLength)?"\t":"",
+                      name);
+   }
+@@ -426,7 +443,7 @@
+         struct statvfs fsstat;
+         if(!statvfs(path.c_str(),&fsstat))
+         {
+-          freediskspace=int(fsstat.f_bavail/(1024.0*1024.0/fsstat.f_bsize));
++          freediskspace=int((double)fsstat.f_bavail/(1024.0*1024.0/fsstat.f_bsize));
+ 
+           for(cRecording *rec=DeletedRecordings.First();rec;rec=DeletedRecordings.Next(rec))
+           {
+@@ -529,7 +546,7 @@
+         switch(newhelpkeys)
+         {
+           case 0: SetHelp(NULL);break;
+-          case 1: SetHelp(tr("Button$Open"),NULL,tr("Button$Edit"));break;
++          case 1: SetHelp(RecordingDirCommands.Count()?tr("Button$Commands"):tr("Button$Open"),NULL,tr("Button$Edit"));break;
+           case 2: SetHelp(RecordingCommands.Count()?tr("Button$Commands"):tr("Button$Play"),tr("Button$Rewind"),tr("Button$Edit"),tr("Button$Info"));break;
+           case 3: SetHelp(RecordingCommands.Count()?tr("Button$Commands"):tr("Button$Play"),tr("Button$Rewind"),tr("Button$Cancel"),tr("Button$Info"));break;
+           case 4: SetHelp(RecordingCommands.Count()?tr("Button$Commands"):tr("Button$Play"),tr("Button$Rewind"),tr("Button$Edit"),NULL);break;
+@@ -543,13 +560,13 @@
+ }
+ 
+ // create the menu list
+-void myMenuRecordings::Set(bool Refresh,char *current)
++void myMenuRecordings::Set(bool Refresh,char *_current)
+ {
+-  const char *lastreplayed=current?current:myReplayControl::LastReplayed();
++  const char *lastreplayed=_current?_current:myReplayControl::LastReplayed();
+ 
+   cThreadLock RecordingsLock(&Recordings);
+ 
+-  if(Refresh && !current)
++  if(Refresh && !_current)
+   {
+     fsid=0;
+     myMenuRecordingsItem *item=(myMenuRecordingsItem*)Get(Current());
+@@ -665,7 +682,7 @@
+ eOSState myMenuRecordings::Play()
+ {
+   char *msg=NULL;
+-  char *name=NULL;
++  const char *name=NULL;
+ 
+   char path[MaxFileName];
+ 
+@@ -789,7 +806,11 @@
+   if(item&&!item->IsDirectory())
+   {
+     cDevice::PrimaryDevice()->StopReplay();
++#if VDRVERSNUM >= 10703
++    cResumeFile ResumeFile(item->FileName(), item->IsPesRecording());
++#else
+     cResumeFile ResumeFile(item->FileName());
++#endif
+     ResumeFile.Delete();
+     return Play();
+   }
+@@ -919,7 +940,7 @@
+   if(item && !item->IsDirectory())
+   {
+     cRecording *recording=GetRecording(item);
+-    if(mysetup.UseVDRsRecInfoMenu && (!recording || recording && !recording->Info()->Title()))
++    if(mysetup.UseVDRsRecInfoMenu && (!recording || (recording && !recording->Info()->Title())))
+       return osContinue;
+     else
+       return AddSubMenu(new myMenuRecordingInfo(recording,true));
+@@ -934,15 +955,24 @@
+     return osContinue;
+  
+   myMenuRecordingsItem *item=(myMenuRecordingsItem*)Get(Current());
+-  if(item && !item->IsDirectory())
++  if(item)
+   {
+     cRecording *recording=GetRecording(item);
+     if(recording)
+     {
+       char *parameter=NULL;
+-      asprintf(&parameter,"\"%s\"",recording->FileName());
++      if (item->IsDirectory())
++      {
++        char *strBase=base?ExchangeChars(strdup(base), true):NULL;
++        char *strName=ExchangeChars(strdup(item->Name()), true);
++        asprintf(&parameter,"\"%s/%s/%s\"",VideoDirectory,strBase?strBase:"", strName);
++        free(strBase);
++        free(strName);
++      }
++      else
++        asprintf(&parameter,"\"%s\"",recording->FileName());
+       myMenuCommands *menu;
+-      eOSState state=AddSubMenu(menu=new myMenuCommands(trVDR("Recording commands"),&RecordingCommands,parameter));
++      eOSState state=AddSubMenu(menu=new myMenuCommands(trVDR("Recording commands"),item->IsDirectory() ? &RecordingDirCommands : &RecordingCommands,parameter));
+       free(parameter);
+       if(Key!=kNone)
+         state=menu->ProcessKey(Key);
+@@ -1013,15 +1043,16 @@
+     state=cOsdMenu::ProcessKey(Key);
+     if(state==osUnknown)
+     {
++      myMenuRecordingsItem *item=(myMenuRecordingsItem*)Get(Current());
++
+       switch(Key)
+       {
+         case kOk: return Play();
+-        case kRed: return (helpkeys>1 && RecordingCommands.Count())?Commands():Play();
++        case kRed: return (helpkeys>0 && item && ((item->IsDirectory() && RecordingDirCommands.Count()) || (!item->IsDirectory() && RecordingCommands.Count())))?Commands():Play();
+         case kGreen: return Rewind();
+         case kYellow: {
+                         if(!HasSubMenu())
+                         {
+-                          myMenuRecordingsItem *item=(myMenuRecordingsItem*)Get(Current());
+                           if(item)
+                           {
+                             if(item->IsDirectory())
+@@ -1096,13 +1127,14 @@
+         default: break;
+       }
+     }
+-    if(Recordings.StateChanged(recordingsstate) || MoveCutterThread->IsCutterQueueEmpty())
++    bool stateChanged = Recordings.StateChanged(recordingsstate);
++    if(stateChanged || MoveCutterThread->IsCutterQueueEmpty())
+       Set(true);    
+     
+     if(!Count() && level>0)
+       state=osBack;
+  
+-    if(!HasSubMenu() && Key!=kNone)
++    if((!HasSubMenu() && Key!=kNone) || stateChanged)
+       SetHelpKeys();
+   }
+   return state;
+diff -Nur extrecmenu-1.2-test1/mymenurecordings.h extrecmenu-1.2-test1-am2b/mymenurecordings.h
+--- extrecmenu-1.2-test1/mymenurecordings.h	2008-03-22 12:01:40.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/mymenurecordings.h	2009-06-08 07:22:46.000000000 +0200
+@@ -4,6 +4,7 @@
+   private:
+     bool dirismoving;
+     bool isdvd;
++    bool isPesRecording;
+     int level,isdirectory;
+     int totalentries,newentries;
+     char *title;
+@@ -16,6 +17,7 @@
+     const char *FileName(){return filename;}
+     const char *Name(){return name;}
+     bool IsDirectory(){return name!=NULL;}
++    bool IsPesRecording(void) const { return isPesRecording; }
+     void IncrementCounter(bool IsNew);
+     bool IsDVD(){return isdvd;}
+     void SetDirIsMoving(bool moving){dirismoving=moving;}
+diff -Nur extrecmenu-1.2-test1/mymenusetup.c extrecmenu-1.2-test1-am2b/mymenusetup.c
+--- extrecmenu-1.2-test1/mymenusetup.c	2008-03-15 16:11:08.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/mymenusetup.c	2008-08-19 15:06:30.000000000 +0200
+@@ -5,6 +5,8 @@
+ #include <vdr/menu.h>
+ #include "mymenusetup.h"
+ 
++cCommands RecordingDirCommands;
++
+ mySetup::mySetup()
+ {
+   mysetup.HideMainMenuEntry=0;
+diff -Nur extrecmenu-1.2-test1/mymenusetup.h extrecmenu-1.2-test1-am2b/mymenusetup.h
+--- extrecmenu-1.2-test1/mymenusetup.h	2008-03-15 16:11:08.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/mymenusetup.h	2008-08-19 15:06:30.000000000 +0200
+@@ -1,5 +1,7 @@
+ #include <vdr/menu.h>
+ 
++extern cCommands RecordingDirCommands;
++
+ class mySetup
+ {
+  public:
+diff -Nur extrecmenu-1.2-test1/myreplaycontrol.c extrecmenu-1.2-test1-am2b/myreplaycontrol.c
+--- extrecmenu-1.2-test1/myreplaycontrol.c	2008-03-15 16:11:08.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/myreplaycontrol.c	2009-06-28 14:15:03.000000000 +0200
+@@ -47,10 +47,15 @@
+               Skins.Message(mtError,tr("Recording already in cutter queue!"));
+             else
+             {
+-              cMarks marks;
+-              marks.Load(filename);
++              cMarks _marks;
++#if VDRVERSNUM >= 10703
++              cRecording Recording(filename);
++              _marks.Load(filename, Recording.FramesPerSecond(), Recording.IsPesRecording());
++#else
++              _marks.Load(filename);
++#endif
+   
+-              if(!marks.Count())
++              if(!_marks.Count())
+                 Skins.Message(mtError,tr("No editing marks defined!"));
+               else
+               {
+diff -Nur extrecmenu-1.2-test1/po/ca_ES.po extrecmenu-1.2-test1-am2b/po/ca_ES.po
+--- extrecmenu-1.2-test1/po/ca_ES.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/ca_ES.po	2009-06-28 14:15:29.000000000 +0200
+@@ -9,7 +9,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Jordi Vilà <jvila@tinet.org>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -23,9 +23,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -68,6 +65,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -80,21 +80,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -129,9 +126,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/cs_CZ.po extrecmenu-1.2-test1-am2b/po/cs_CZ.po
+--- extrecmenu-1.2-test1/po/cs_CZ.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/cs_CZ.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr "Pøejmenovat"
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr "Chybné jméno souboru!"
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr "Zpìt"
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr "Cesta"
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr "Chyba bìhem pøipojování DVD!"
+ 
++msgid "Button$Commands"
++msgstr "Pøíkazy"
++
+ msgid "Button$Open"
+ msgstr "Otevøít"
+ 
+ msgid "Button$Edit"
+ msgstr "Editovat"
+ 
+-msgid "Button$Commands"
+-msgstr "Pøíkazy"
+-
+ msgid "Button$Info"
+ msgstr "Info"
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr "Vlo¾te prosím DVD %s"
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr "Pøejmenovat"
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr "Smazat"
+ 
+diff -Nur extrecmenu-1.2-test1/po/da_DK.po extrecmenu-1.2-test1-am2b/po/da_DK.po
+--- extrecmenu-1.2-test1/po/da_DK.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/da_DK.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/de_DE.po extrecmenu-1.2-test1-am2b/po/de_DE.po
+--- extrecmenu-1.2-test1/po/de_DE.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/de_DE.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Klaus Schmidinger <kls@cadsoft.de>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr "Umbenennen"
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr "Ungültiger Dateiname!"
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr "Zurück"
+ 
++msgid "Name"
++msgstr "Name"
++
+ msgid "Path"
+ msgstr "Pfad"
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr "Fehler beim Einhängen der DVD!"
+ 
++msgid "Button$Commands"
++msgstr "Befehle"
++
+ msgid "Button$Open"
+ msgstr "Öffnen"
+ 
+ msgid "Button$Edit"
+ msgstr "Editieren"
+ 
+-msgid "Button$Commands"
+-msgstr "Befehle"
+-
+ msgid "Button$Info"
+ msgstr "Info"
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr "Bitte DVD %s einlegen"
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr "Umbenennen"
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr "Löschen"
+ 
+diff -Nur extrecmenu-1.2-test1/po/el_GR.po extrecmenu-1.2-test1-am2b/po/el_GR.po
+--- extrecmenu-1.2-test1/po/el_GR.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/el_GR.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/es_ES.po extrecmenu-1.2-test1-am2b/po/es_ES.po
+--- extrecmenu-1.2-test1/po/es_ES.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/es_ES.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Ruben Nunez Francisco <ruben.nunez@tang-it.com>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/et_EE.po extrecmenu-1.2-test1-am2b/po/et_EE.po
+--- extrecmenu-1.2-test1/po/et_EE.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/et_EE.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/fi_FI.po extrecmenu-1.2-test1-am2b/po/fi_FI.po
+--- extrecmenu-1.2-test1/po/fi_FI.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/fi_FI.po	2009-06-28 14:15:29.000000000 +0200
+@@ -10,7 +10,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -24,9 +24,6 @@
+ msgid "Rename"
+ msgstr "Nimeä"
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr "Virheellinen tiedoston nimi!"
+ 
+@@ -69,6 +66,9 @@
+ msgid "Button$Back"
+ msgstr "Takaisin"
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr "Polku"
+ 
+@@ -81,21 +81,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr "DVD:n avaaminen epäonnistui!"
+ 
++msgid "Button$Commands"
++msgstr "Komennot"
++
+ msgid "Button$Open"
+ msgstr "Avaa"
+ 
+ msgid "Button$Edit"
+ msgstr "Muokkaa"
+ 
+-msgid "Button$Commands"
+-msgstr "Komennot"
+-
+ msgid "Button$Info"
+ msgstr "Tiedot"
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr "Laita DVD %s asemaan"
+@@ -130,9 +127,6 @@
+ msgid "Button$Rename"
+ msgstr "Nimeä"
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr "Poista"
+ 
+diff -Nur extrecmenu-1.2-test1/po/fr_FR.po extrecmenu-1.2-test1-am2b/po/fr_FR.po
+--- extrecmenu-1.2-test1/po/fr_FR.po	2008-03-22 15:32:52.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/fr_FR.po	2009-06-28 14:15:29.000000000 +0200
+@@ -10,7 +10,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Nicolas Huillard <nhuillard@e-dition.fr>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -24,9 +24,6 @@
+ msgid "Rename"
+ msgstr "Renommer"
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr "Nom de fichiers n'est pas valide'"
+ 
+@@ -69,6 +66,9 @@
+ msgid "Button$Back"
+ msgstr "Retour"
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr "Chemin"
+ 
+@@ -81,21 +81,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr "Erreur lors du montage du DVD!"
+ 
++msgid "Button$Commands"
++msgstr "Commande"
++
+ msgid "Button$Open"
+ msgstr "Ouvrir"
+ 
+ msgid "Button$Edit"
+ msgstr "Éditer"
+ 
+-msgid "Button$Commands"
+-msgstr "Commande"
+-
+ msgid "Button$Info"
+ msgstr "Info"
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr "Mettez le DVD %s dans le lecteur"
+@@ -130,9 +127,6 @@
+ msgid "Button$Rename"
+ msgstr "Renommer"
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr "Effacer"
+ 
+diff -Nur extrecmenu-1.2-test1/po/hr_HR.po extrecmenu-1.2-test1-am2b/po/hr_HR.po
+--- extrecmenu-1.2-test1/po/hr_HR.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/hr_HR.po	2009-06-28 14:15:29.000000000 +0200
+@@ -8,7 +8,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Drazen Dupor <drazen.dupor@dupor.com>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -22,9 +22,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -67,6 +64,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -79,21 +79,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -128,9 +125,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/hu_HU.po extrecmenu-1.2-test1-am2b/po/hu_HU.po
+--- extrecmenu-1.2-test1/po/hu_HU.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/hu_HU.po	2009-06-28 14:15:29.000000000 +0200
+@@ -8,7 +8,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -22,9 +22,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -67,6 +64,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -79,21 +79,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -128,9 +125,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/it_IT.po extrecmenu-1.2-test1-am2b/po/it_IT.po
+--- extrecmenu-1.2-test1/po/it_IT.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/it_IT.po	2009-06-28 14:15:29.000000000 +0200
+@@ -9,7 +9,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Sean Carlos <seanc@libero.it>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -23,9 +23,6 @@
+ msgid "Rename"
+ msgstr "Rinomina"
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr "Nome file non valido!"
+ 
+@@ -68,6 +65,9 @@
+ msgid "Button$Back"
+ msgstr "Indietro"
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr "Percorso"
+ 
+@@ -80,21 +80,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr "Errore durante montaggio DVD!"
+ 
++msgid "Button$Commands"
++msgstr "Comandi"
++
+ msgid "Button$Open"
+ msgstr "Apri"
+ 
+ msgid "Button$Edit"
+ msgstr "Modifica"
+ 
+-msgid "Button$Commands"
+-msgstr "Comandi"
+-
+ msgid "Button$Info"
+ msgstr "Info"
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr "Per favore inserisci DVD %s"
+@@ -129,9 +126,6 @@
+ msgid "Button$Rename"
+ msgstr "Rinomina"
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr "Cancella"
+ 
+diff -Nur extrecmenu-1.2-test1/po/nl_NL.po extrecmenu-1.2-test1-am2b/po/nl_NL.po
+--- extrecmenu-1.2-test1/po/nl_NL.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/nl_NL.po	2009-06-28 14:15:29.000000000 +0200
+@@ -9,7 +9,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -23,9 +23,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -68,6 +65,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -80,21 +80,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -129,9 +126,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/nn_NO.po extrecmenu-1.2-test1-am2b/po/nn_NO.po
+--- extrecmenu-1.2-test1/po/nn_NO.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/nn_NO.po	2009-06-28 14:15:29.000000000 +0200
+@@ -8,7 +8,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -22,9 +22,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -67,6 +64,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -79,21 +79,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -128,9 +125,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/pl_PL.po extrecmenu-1.2-test1-am2b/po/pl_PL.po
+--- extrecmenu-1.2-test1/po/pl_PL.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/pl_PL.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/pt_PT.po extrecmenu-1.2-test1-am2b/po/pt_PT.po
+--- extrecmenu-1.2-test1/po/pt_PT.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/pt_PT.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Paulo Lopes <pmml@netvita.pt>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/ro_RO.po extrecmenu-1.2-test1-am2b/po/ro_RO.po
+--- extrecmenu-1.2-test1/po/ro_RO.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/ro_RO.po	2009-06-28 14:15:29.000000000 +0200
+@@ -8,7 +8,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -22,9 +22,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -67,6 +64,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -79,21 +79,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -128,9 +125,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/ru_RU.po extrecmenu-1.2-test1-am2b/po/ru_RU.po
+--- extrecmenu-1.2-test1/po/ru_RU.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/ru_RU.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Vyacheslav Dikonov <sdiconov@mail.ru>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/sl_SI.po extrecmenu-1.2-test1-am2b/po/sl_SI.po
+--- extrecmenu-1.2-test1/po/sl_SI.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/sl_SI.po	2009-06-28 14:15:29.000000000 +0200
+@@ -8,7 +8,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -22,9 +22,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -67,6 +64,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -79,21 +79,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -128,9 +125,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/sv_SE.po extrecmenu-1.2-test1-am2b/po/sv_SE.po
+--- extrecmenu-1.2-test1/po/sv_SE.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/sv_SE.po	2009-06-28 14:15:29.000000000 +0200
+@@ -8,7 +8,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Tomas Prybil <tomas@prybil.se>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -22,9 +22,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -67,6 +64,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -79,21 +79,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -128,9 +125,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/po/tr_TR.po extrecmenu-1.2-test1-am2b/po/tr_TR.po
+--- extrecmenu-1.2-test1/po/tr_TR.po	2008-03-22 15:32:53.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/po/tr_TR.po	2009-06-28 14:15:29.000000000 +0200
+@@ -7,7 +7,7 @@
+ msgstr ""
+ "Project-Id-Version: ExtRecMenu 1.2\n"
+ "Report-Msgid-Bugs-To: <see README>\n"
+-"POT-Creation-Date: 2008-03-22 14:57+0100\n"
++"POT-Creation-Date: 2008-08-13 08:38+0200\n"
+ "PO-Revision-Date: 2008-03-15 16:21+0100\n"
+ "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
+ "Language-Team: <vdr@linuxtv.org>\n"
+@@ -21,9 +21,6 @@
+ msgid "Rename"
+ msgstr ""
+ 
+-msgid "Name"
+-msgstr ""
+-
+ msgid "Invalid filename!"
+ msgstr ""
+ 
+@@ -66,6 +63,9 @@
+ msgid "Button$Back"
+ msgstr ""
+ 
++msgid "Name"
++msgstr ""
++
+ msgid "Path"
+ msgstr ""
+ 
+@@ -78,21 +78,18 @@
+ msgid "Error while mounting DVD!"
+ msgstr ""
+ 
+-msgid "Button$Open"
++msgid "Button$Commands"
+ msgstr ""
+ 
+-msgid "Button$Edit"
++msgid "Button$Open"
+ msgstr ""
+ 
+-msgid "Button$Commands"
++msgid "Button$Edit"
+ msgstr ""
+ 
+ msgid "Button$Info"
+ msgstr ""
+ 
+-msgid "Error while accessing recording!"
+-msgstr ""
+-
+ #, c-format
+ msgid "Please insert DVD %s"
+ msgstr ""
+@@ -127,9 +124,6 @@
+ msgid "Button$Rename"
+ msgstr ""
+ 
+-msgid "Cancel editing?"
+-msgstr ""
+-
+ msgid "Button$Delete"
+ msgstr ""
+ 
+diff -Nur extrecmenu-1.2-test1/tools.c extrecmenu-1.2-test1-am2b/tools.c
+--- extrecmenu-1.2-test1/tools.c	2008-03-22 15:00:12.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/tools.c	2009-06-28 07:38:59.000000000 +0200
+@@ -2,6 +2,7 @@
+  * See the README file for copyright information and how to reach the author.
+  */
+ 
++#include <langinfo.h>
+ #include <string>
+ #include <fstream>
+ #include <iostream>
+@@ -212,10 +213,10 @@
+     if(SortByName)
+       *s1=1;
+     else
+-      *(s2+1)=255;
++      *(s2+1)=(char)255;
+   }
+   else
+-    *s1=255;
++    *s1=(char)255;
+  
+   if(s1 && s2 && !SortByName)
+     memmove(s1+1,s2,t-s2+1);
+@@ -282,6 +283,8 @@
+ {
+   CutterListItem *cutteritem=NULL;
+   MoveListItem *moveitem=NULL;
++
++  SetPriority(19);
+   
+   while(Running())
+   {
+@@ -296,7 +299,7 @@
+       if(editedfilename && RemoveVideoFile(editedfilename) && MakeDirs(editedfilename,true))
+       {
+         char *s=strdup(editedfilename);
+-        char *e=strrchr(s,'.');
++        char *e=(char*)strrchr(s,'.'); //TODO
+         if(e)
+         {
+           if(!strcmp(e,".rec"))
+@@ -374,9 +377,39 @@
+   cMarks frommarks,tomarks;
+   cMark *mark;
+   const char *error=NULL;
+-  uchar filenumber,picturetype,buffer[MAXFRAMESIZE];
+-  int fileoffset,length,index,currentfilenumber=0,filesize=0,lastiframe=0;
++  uchar buffer[MAXFRAMESIZE];
++  int index,currentfilenumber=0,filesize=0,lastiframe=0;
+   bool lastmark=false,cutin=true;
++  off_t maxVideoFileSize=MEGABYTE(Setup.MaxVideoFileSize);
++
++#if VDRVERSNUM >= 10703
++  bool isPesRecording;
++  uint16_t filenumber;
++  off_t fileoffset;
++  int length;
++  bool picturetype;
++
++  cRecording Recording(From.c_str());
++  isPesRecording=Recording.IsPesRecording();
++  if(frommarks.Load(From.c_str(),Recording.FramesPerSecond(),isPesRecording) && frommarks.Count())
++  {
++    fromfilename=new cFileName(From.c_str(),false,true,isPesRecording);
++    tofilename=new cFileName(To.c_str(),true,false,isPesRecording);
++    fromindex=new cIndexFile(From.c_str(),false,isPesRecording);
++    toindex=new cIndexFile(To.c_str(),true,isPesRecording);
++    tomarks.Load(To.c_str(),Recording.FramesPerSecond(),isPesRecording);
++    if(isPesRecording && maxVideoFileSize > MEGABYTE(MAXVIDEOFILESIZEPES))
++      maxVideoFileSize=MEGABYTE(MAXVIDEOFILESIZEPES);
++  }
++  else
++  {
++    esyslog("[extrecmenu] no editing marks found for %s",From.c_str());
++    return;
++  }
++#else
++  uchar filenumber;
++  int fileoffset,length;
++  uchar picturetype;
+ 
+   if(frommarks.Load(From.c_str()) && frommarks.Count())
+   {
+@@ -391,6 +424,8 @@
+     esyslog("[extrecmenu] no editing marks found for %s",From.c_str());
+     return;
+   }
++#endif
++
+ 
+   if((mark=frommarks.First())!=NULL)
+   {
+@@ -438,11 +473,15 @@
+       error="fromfile";
+       break;
+     }
++#if VDRVERSNUM >= 10703
++    if(picturetype)
++#else
+     if(picturetype==I_FRAME)
++#endif
+     {
+       if(lastmark)
+         break;
+-      if(filesize > MEGABYTE(Setup.MaxVideoFileSize))
++      if(filesize > maxVideoFileSize)
+       {
+         tofile=tofilename->NextFile();
+         if(!tofile)
+@@ -455,7 +494,14 @@
+       lastiframe=0;
+       if(cutin)
+       {
++#if VDRVERSNUM >= 10706
++        if(isPesRecording)
++          cRemux::SetBrokenLink(buffer,length);
++        else
++          TsSetTeiOnBrokenPackets(buffer,length);
++#else
+         cRemux::SetBrokenLink(buffer,length);
++#endif
+         cutin=false;
+       }
+     }
+@@ -464,7 +510,7 @@
+       error="safe_write";
+       break;
+     }
+-    if(!toindex->Write(picturetype,tofilename->Number(),filesize))
++    if(!toindex->Write(picturetype,(uint16_t)(tofilename->Number()),filesize))
+     {
+       error="toindex";
+       break;
+@@ -500,6 +546,9 @@
+       else
+         lastmark=true;
+     }
++
++    if(mysetup.LimitBandwidth)
++      usleep(10);
+   }
+   if(!Running() || cancelcut || error)
+   {
+diff -Nur extrecmenu-1.2-test1/tools.h extrecmenu-1.2-test1-am2b/tools.h
+--- extrecmenu-1.2-test1/tools.h	2008-03-22 14:33:11.000000000 +0100
++++ extrecmenu-1.2-test1-am2b/tools.h	2009-06-26 06:54:27.000000000 +0200
+@@ -5,7 +5,7 @@
+   private:
+     std::string path;
+   public:
+-    SortListItem(std::string Path){path=Path;};
++    SortListItem(std::string _Path){path=_Path;};
+     std::string Path(){return path;}
+ };
+ 
+@@ -50,7 +50,7 @@
+     std::string from;
+     std::string to;
+   public:
+-    MoveListItem(std::string From,std::string To){from=From;to=To;moveinprogress=false;movecanceled=false;}
++    MoveListItem(std::string _From,std::string _To){from=_From;to=_To;moveinprogress=false;movecanceled=false;}
+     std::string From(){return from;}
+     std::string To(){return to;}
+     void SetMoveInProgress(){moveinprogress=true;}
+@@ -72,8 +72,8 @@
+     std::string filename;
+     std::string newfilename;
+   public:
+-    CutterListItem(std::string FileName){filename=FileName;cutinprogress=false;};
+-    void SetNewFileName(std::string NewFileName){newfilename=NewFileName;}
++    CutterListItem(std::string _FileName){filename=_FileName;cutinprogress=false;};
++    void SetNewFileName(std::string _NewFileName){newfilename=_NewFileName;}
+     std::string FileName(){return filename;}
+     std::string NewFileName(){return newfilename;}
+     void SetCutInProgress(){cutinprogress=true;}

@@ -1,0 +1,42 @@
+diff -uNr rockantenne-0.3.1.orig/Makefile rockantenne-0.3.1/Makefile
+--- rockantenne-0.3.1.orig/Makefile	2009-02-23 21:26:42.000000000 +0100
++++ rockantenne-0.3.1/Makefile	2009-02-23 21:30:37.000000000 +0100
+@@ -96,7 +96,7 @@
+ 	@echo '####'
+ 	@echo '####   Compiling showrockantennetitel command line tool'
+ 	$(CC) $(CFLAGS) -o showrockantennetitel showrockantennetitel.c
+-	test -x /usr/bin/diet && $(DIETCC) $(CFLAGS) -o showrockantennetitel showrockantennetitel.c
++	#test -x /usr/bin/diet && $(DIETCC) $(CFLAGS) -o showrockantennetitel showrockantennetitel.c
+ 	#$(CC) $(CFLAGS) -o $@ $<; $(STRIP) $(STRIP_ARGS) $@
+ 	$(STRIP) $(STRIP_ARGS) showrockantennetitel
+ 	@echo '####'
+@@ -106,7 +106,7 @@
+ 	@echo '####'
+ 	@echo '####   Compiling logrockantennetitel'
+ 	$(CC) $(CFLAGS) -o logrockantennetitel logrockantennetitel.c
+-	test -x /usr/bin/diet && $(DIETCC) $(CFLAGS) -o logrockantennetitel logrockantennetitel.c
++	#test -x /usr/bin/diet && $(DIETCC) $(CFLAGS) -o logrockantennetitel logrockantennetitel.c
+ 	$(STRIP) $(STRIP_ARGS) logrockantennetitel
+ 	@echo '####'
+ 	@echo '####   logrockantennetitel successfully compiled'
+@@ -115,7 +115,7 @@
+ 	@echo '####'
+ 	@echo '####   Compiling utail'
+ 	$(CC) $(CFLAGS) -o utail utail.c
+-	test -x /usr/bin/diet && $(DIETCC) $(CFLAGS) -o utail utail.c
++	#test -x /usr/bin/diet && $(DIETCC) $(CFLAGS) -o utail utail.c
+ 	#$(CC) $(CFLAGS) -o $@ $<; $(STRIP) $(STRIP_ARGS) $@
+ 	$(STRIP) $(STRIP_ARGS) utail
+ 	@echo '####'
+diff -uNr rockantenne-0.3.1.orig/rockantenne.c rockantenne-0.3.1/rockantenne.c
+--- rockantenne-0.3.1.orig/rockantenne.c	2009-02-23 21:26:42.000000000 +0100
++++ rockantenne-0.3.1/rockantenne.c	2009-02-23 21:26:55.000000000 +0100
+@@ -66,7 +66,7 @@
+ 
+   if (!pFont) {
+     pFont = cFont::GetFont(fontSml);
+-    pFont->SetCode(code_iso8859_1);
++//    pFont->SetCode(code_iso8859_1);
+     lineHeight = pFont->Height();
+   }
+   i = lineHeight;

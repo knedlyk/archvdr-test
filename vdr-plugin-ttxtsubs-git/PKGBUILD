@@ -1,0 +1,43 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=ttxtsubs
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=20120404
+pkgrel=1
+#gitid=77808ab28a1dcd7f097c28906696e71cf12e8ac5
+pkgdesc="VDR Teletext Subtitles plugin"
+arch=('i686' 'x86_64')
+url="http://ttxtsubs.vdr-developer.org"
+license=('GPL2')
+depends=('gcc' 'vdr' 'git')
+md5sums=()
+
+build() {
+  cd "$srcdir/"	|| return 1
+  
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="vdr-plugin-ttxtsubs.git"
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname} ]; then	  
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git rebase origin
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout $gitid
+  fi
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/vdr-plugin-${_pluginname} $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+         LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
+}

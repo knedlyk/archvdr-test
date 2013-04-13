@@ -1,0 +1,22 @@
+#!/bin/sh
+
+. /etc/default/vdrscripts
+. $SCRIPTDIR/vdr-functions
+
+export HOME=/var/lib/vdr
+
+#nvidia-settings -a OpenGLImageSettings=2
+#nvidia-settings -a FSAA=3
+#nvidia-settings -a FSAAAppControlled=0
+#nvidia-settings -a FSAAAppEnhanced=0
+#nvidia-settings -a GPUOverclockingState=1
+#nvidia-settings -a GPU3DClockFreqs=300,0
+#nvidia-settings -a GPU2DClockFreqs=150,0
+XBMC=/usr/lib/xbmc/xbmc.bin
+if [ -e /usr/share/xbmc/xbmc.bin ]; then
+  XBMC=/usr/share/xbmc/xbmc.bin
+fi  
+export DISPLAY=":0.0"
+$XBMC --fullscreen --standalone
+set_xbmc_returncode $?
+#DISPLAY=127.0.0.1:0.0 unclutter &

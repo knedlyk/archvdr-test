@@ -1,0 +1,89 @@
+#!/bin/sh
+
+PATH="/usr/bin:/usr/sbin:/bin:/sbin"
+export PATH
+
+. /etc/default/vdrscripts
+
+if [ -e /etc/default/vdrfrontend ]; then
+	. /etc/default/vdrfrontend
+else
+	echo "FRONTEND=sxfexv" > /etc/default/vdrfrontend
+fi
+
+stop_prog() {
+  PID=`pidof $1`
+
+  if [ "$PID" != "" ]; then
+    killall -9 $1
+  fi
+}
+
+stop_client() {
+	stop_prog irexec
+	stop_prog xine
+	stop_prog cxfe
+  stop_prog vdr-sxfe
+  stop_prog xbmc.bin
+  stop_prog X
+}
+
+start_x() {
+	PID=`pidof X`
+
+  if [ "$PID" == "" ]; then
+		X -nocursor -br -quiet -dpms -allowMouseOpenFail -ac -audit 0&
+	fi
+}
+
+wait_vdr() {
+	while ! [ `pidof vdr` ]; do
+		sleep 1
+	done
+
+  WAITXINE=""
+
+  case $FRONTEND in
+    xinevdpau)
+      WAITXINE="true"
+      ;;
+    xinevaapi)
+      WAITXINE="true"
+      ;;
+    xinexv)
+      WAITXINE="true"
+      ;;
+  esac
+
+  if [ "$WAITXINE" == "true" ]; then
+  	while [ true ]; do
+  		if [ -e /var/lib/vdr/plugins/xine-fifo/fifo/stream ]; then
+        sleep 1
+  	    break;
+  	  fi
+  	done
+  fi
+}
+
+set_vdr_input() {
+	if [ "$1" == "xbmc" ]; then
+		svdrpsend -p 2001 -d 127.0.0.1 "REMO OFF"
+	else
+		svdrpsend -p 2001 -d 127.0.0.1 "REMO ON"
+	fi
+}
+
+set_frontend() {
+	echo "FRONTEND=$1" > /etc/default/vdrfrontend
+}
+
+set_xbmc_returncode() {
+	case $1 in
+		64)
+			echo "SHUTDOWNACTION=shutdown" > $VDRHOME/doXbmcExitAction
+			;;
+		66)
+			echo "SHUTDOWNACTION=reboot" > $VDRHOME/doXbmcExitAction
+			;;
+	esac
+}

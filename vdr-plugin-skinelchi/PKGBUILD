@@ -1,0 +1,42 @@
+# Maintainer  : Edgar Hucek <gimli at dark green dot com>
+
+_pkgname=skinelchi
+pkgname=vdr-plugin-$_pkgname
+pkgver=0.2.7
+revision=1
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin skinelchi."
+url="http://firefly.vdr-developer.org/skinelchi/index.html"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=('etc/vdr/plugins/plugin.skinelchi.conf')
+source=(http://firefly.vdr-developer.org/skinelchi/vdr-skinelchi-${pkgver}.tar.bz2
+	plugin.skinelchi.conf)
+md5sums=('dc4686b95bc9fac2fb8255d3114f8689'
+         'd41d8cd98f00b204e9800998ecf8427e')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  echo "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" >> Makefile
+  echo "DEFINES += -D__KERNEL_STRICT_NAMES" >> Make.config
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins							|| return 1
+  install -m 644 ../plugin.skinelchi.conf	$pkgdir/etc/vdr/plugins/	|| return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/themes							|| return 1
+  install -m 644 themes/*.theme				$pkgdir/var/lib/vdr/themes/	|| return 1
+}

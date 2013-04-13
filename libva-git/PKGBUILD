@@ -1,0 +1,56 @@
+# Maintainer: TryA <tryagainprod {at} gmail.com>
+
+pkgname=libva-git
+pkgver=20120804
+pkgrel=1
+pkgdesc="VA API library, providing an interface for hardware video decoding and encoding"
+arch=('i686' 'x86_64')
+license=('MIT')
+url="http://www.freedesktop.org/wiki/Software/vaapi"
+depends=('libdrm' 'libgl' 'mesa' 'git')
+provides=('libva=1.0.11')
+conflicts=('libva' 'libva-sds'' libva-ext-git' 'libva-statging-git')
+options=('!libtool' '!strip')
+source=(disable_bins.patch)
+md5sums=('b5a2e1a3bd3f4b371ce54d5d738a4c1b')
+
+build() {
+
+  _gitroot="git://anongit.freedesktop.org/libva"
+  _gitname="libva"
+  _gitid=44b03ffcdb814392a9acf025615f99a06fed63d4
+
+  msg "Connecting to git.freedesktop.org GIT server...."
+
+  if [ -d ${srcdir}/${_gitname} ] ; then
+    cd ${srcdir}/${_gitname} && git pull --rebase
+    msg "The local files are updated."
+  else
+    cd ${srcdir} && git clone ${_gitroot}
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf ${srcdir}/${_gitname}-build
+  cp -r ${srcdir}/${_gitname} ${srcdir}/${_gitname}-build
+  cd ${srcdir}/${_gitname}-build
+  git checkout "${_gitid}"
+
+  # 4500 branch
+  #git checkout g45-h264
+  #git cherry-pick 1628a5c6a2b0ec14ebc5f99bf771f8291316a28d
+  #git cherry-pick 942eedcb0887f8d5cab3b8c6a00ad0173adc5d13
+
+  patch -p1 -i ${srcdir}/disable_bins.patch || return 1
+
+  ./autogen.sh
+  ./configure --prefix=/usr --disable-i965-driver --enable-glx --enable-debug
+  make
+}
+
+package() {
+  cd ${srcdir}/${_gitname}-build
+  make DESTDIR="${pkgdir}" install
+  install -m644 -D COPYING ${pkgdir}/usr/share/licenses/${pkgname}/COPYING
+}

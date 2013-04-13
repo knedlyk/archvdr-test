@@ -1,0 +1,194 @@
+# The vdr Package is heavily based on the 
+# Debian VDR Package from www.e-tobi.net
+# many thanks to him for the excelent work
+#
+# Contributor: Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr
+pkgver=1.7.27
+pkgrel=1
+arch=('i686' 'x86_64' 'arm')
+url="http://www.cadsoft.de/vdr/"
+license=(GPL)
+pkgdesc=""
+depends=('libjpeg' 'libcap' 'fontconfig' 'freetype2' 'gettext' 'gcc-libs' 'bash'
+  'sudo' 'ttf-vdrsymbols' 'start-stop-daemon' 'util-linux-ng' 'psmisc'
+  'linuxtv-dvb-apps' 'at')
+makedepends=('gcc' 'patch' 'make')
+optdepends=('vdr-addon-acpiwakeup')
+install=$pkgname.install
+source=(ftp://ftp.tvdr.de/vdr/Developer/vdr-${pkgver}.tar.bz2)
+md5sums=('bfeaa79a9e55144bca2b69139c45f1bb')
+backup=('etc/vdr/diseqc.conf'
+  'etc/vdr/keymacros.conf'
+  'etc/vdr/sources.conf'
+  'etc/vdr/svdrphosts.conf'
+  'etc/default/vdr'
+  'etc/vdr/command-hooks/commands.custom.conf'
+  'etc/vdr/command-hooks/reccmds.custom.conf'
+  'etc/vdr/recording-hooks/R90.custom'
+  'etc/vdr/shutdown-hooks/S90.custom'
+  'etc/vdr/plugins/order.conf'
+  'var/lib/vdr/remote.conf'
+  'var/lib/vdr/setup.conf'
+  'var/lib/vdr/channels.conf')
+
+build() {
+  MAKEOPTS="-j1"
+
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  #mkdir -p ${srcdir}/${pkgname}-${pkgver}/debian/patches || return 1
+  #cp ${startdir}/patches/extension-patch-helper.sh ${srcdir}/${pkgname}-${pkgver}/debian/patches || return 1
+
+  # Patches 
+  for i in `grep -v ^$ ${startdir}/patches/00list  | grep -v ^#` ; do
+    #TOGGLE=`grep 'extension\-patch\-helper' ${startdir}/patches/$i.dpatch`
+    #if [ "$TOGGLE" == "" ]; then
+    echo "Apply patch $i"
+    patch -p1 -i ${startdir}/patches/$i || return 1
+    #else
+    #	echo "Toggle patch $i"
+    #	sh ${startdir}/patches/$i.dpatch -patch
+    #fi
+  done
+
+  sh ${startdir}/patches/opt-91_ext-graphtft.dpatch -patch
+
+  #exit 0
+
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  rm -rf PLUGINS/src/dvbhddevice
+
+  cp Make.config.template Make.config
+
+  echo "DEFINES += -D__KERNEL_STRICT_NAMES -DUSE_GRAPHTFT" >> Make.config
+
+  make all REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
+    VIDEODIR=/var/lib/video.00 PLUGINLIBDIR=/usr/lib/vdr/plugins || return 1
+
+  make plugins REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
+    VIDEODIR=/var/lib/video.00 PLUGINLIBDIR=/usr/lib/vdr/plugins || return 1
+
+  gcc -o ${startdir}/src/vdr-shutdown.wrapper ${startdir}/files/vdr-shutdown-wrapper.c
+  gcc -o ${startdir}/src/ctvdrwrapper ${startdir}/files/ctvdrwrapper.c
+
+  # make directories
+
+  mkdir -p $pkgdir/etc/rc.d/			|| return 1
+  mkdir -p $pkgdir/etc/vdr/command-hooks		|| return 1
+  mkdir -p $pkgdir/etc/vdr/recording-hooks	|| return 1
+  mkdir -p $pkgdir/etc/vdr/shutdown-hooks		|| return 1
+  mkdir -p $pkgdir/etc/vdr/groups.d		|| return 1
+  mkdir -p $pkgdir/usr/share/vdr/groups.d		|| return 1
+  mkdir -p $pkgdir/etc/vdr/plugins		|| return 1
+  mkdir -p $pkgdir/etc/default			|| return 1
+  mkdir -p $pkgdir/usr/lib/vdr/plugins		|| return 1
+  mkdir -p $pkgdir/usr/bin/			|| return 1
+  mkdir -p $pkgdir/usr/sbin/			|| return 1
+  mkdir -p $pkgdir/var/cache/vdr			|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/plugins		|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/themes		|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/.szap		|| return 1
+  mkdir -p $pkgdir/var/lib/video.00		|| return 1
+  mkdir -p $pkgdir/var/cache/vdr			|| return 1
+  mkdir -p $pkgdir/usr/share/locale		|| return 1
+  mkdir -p $pkgdir/usr/share/vdr/command-hooks	|| return 1
+  mkdir -p $pkgdir/usr/share/vdr/recording-hooks	|| return 1
+  mkdir -p $pkgdir/usr/share/vdr/shutdown-hooks	|| return 1
+  mkdir -p $pkgdir/usr/include/vdr		|| return 1
+  mkdir -p $pkgdir/usr/include/vdr/libsi		|| return 1
+  mkdir -p $pkgdir/usr/lib/vdr/plugins		|| return 1
+
+
+  # install pkg files
+
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/lib/libvdr-dvbsddevice.so.${pkgver} $pkgdir/usr/lib/vdr/plugins || return 1
+
+  install -m 755 ${startdir}/files/vdr.init	                        $pkgdir/etc/rc.d/vdr			|| return 1
+  install -m 755 ${startdir}/files/vdr-pre.init	                    $pkgdir/etc/rc.d/vdr-pre	|| return 1
+  install -m 755 vdr                                                $pkgdir/usr/bin/			|| return 1
+  install -m 755 ${startdir}/files/runvdr                           $pkgdir/usr/sbin/			|| return 1
+  install -m 755 ${startdir}/files/config-loader.sh                 $pkgdir/usr/lib/vdr			|| return 1
+  install -m 755 ${startdir}/files/commands-loader.sh               $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/files/plugin-loader.sh                 $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 644 diseqc.conf                                        $pkgdir/etc/vdr/			|| return 1
+  install -m 644 keymacros.conf                                		  $pkgdir/etc/vdr/			|| return 1
+  install -m 644 sources.conf                     	                $pkgdir/etc/vdr/			|| return 1
+  install -m 644 svdrphosts.conf                                    $pkgdir/etc/vdr/			|| return 1
+  install -m 644 ${startdir}/files/order.conf                       $pkgdir/etc/vdr/plugins/		|| return 1
+  install -m 644 ${startdir}/files/order.commands.conf              $pkgdir/etc/vdr/command-hooks/	|| return 1
+  install -m 644 ${startdir}/files/order.reccmds.conf               $pkgdir/etc/vdr/command-hooks/	|| return 1
+  install -m 644 ${startdir}/files/commands.custom.conf             $pkgdir/etc/vdr/command-hooks/	|| return 1
+  install -m 644 ${startdir}/files/reccmds.custom.conf              $pkgdir/etc/vdr/command-hooks/	|| return 1
+  install -m 644 ${startdir}/files/commands.update-recordings.conf  $pkgdir/usr/share/vdr/command-hooks/	|| return 1
+  install -m 644 ${startdir}/files/commands.ctvdr.conf              $pkgdir/usr/share/vdr/command-hooks/	|| return 1
+  install -m 644 ${startdir}/files/commands.shutdownvdr.conf        $pkgdir/usr/share/vdr/command-hooks/	|| return 1
+  install -m 755 ${startdir}/files/vdr-recordingaction              $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/files/R90.custom                       $pkgdir/etc/vdr/recording-hooks/	|| return 1
+  install -m 755 ${startdir}/src/ctvdrwrapper                       $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/files/ctvdrinfo                        $pkgdir/usr/bin/			|| return 1
+  install -m 755 ${startdir}/files/ctvdrsysinfo                     $pkgdir/usr/bin/			|| return 1
+  install -m 755 ${startdir}/files/poweroffvdr                      $pkgdir/usr/bin/			|| return 1
+  install -m 755 epg2html                                           $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 svdrpsend                                          $pkgdir/usr/lib/vdr/svdrpsend.pl			|| return 1
+  install -m 644 ${startdir}/files/themes/*.theme                   $pkgdir/var/lib/vdr/themes/		|| return 1
+  install -m 755 ${startdir}/files/vdr-shutdown                     $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/files/vdr-shutdown-message             $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/src/vdr-shutdown.wrapper               $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/files/S90.custom                       $pkgdir/etc/vdr/shutdown-hooks/	|| return 1
+  install -m 755 ${startdir}/files/vdr-groups.sh                    $pkgdir/usr/lib/vdr/			|| return 1
+  install -m 755 ${startdir}/files/vdr.groups                       $pkgdir/etc/vdr/groups.d/		|| return 1
+  install -m 644 ${startdir}/files/remote.conf                      $pkgdir/var/lib/vdr/			|| return 1
+  install -m 644 ${startdir}/files/setup.conf                       $pkgdir/var/lib/vdr/			|| return 1
+  install -m 644 ${startdir}/files/vdr.default                      $pkgdir/etc/default/vdr		|| return 1
+  install -m 644 Make.config                                        $pkgdir/usr/include/vdr/		|| return 1
+  install -m 644 Make.global                                        $pkgdir/usr/include/vdr/		|| return 1
+  install -m 644 *.h                                                $pkgdir/usr/include/vdr/		|| return 1
+  install -m 644 libsi/*.h                                          $pkgdir/usr/include/vdr/libsi/	|| return 1
+  install -m 755 newplugin                                          $pkgdir/usr/bin/vdr-newplugin		|| return 1
+  install -m 664 channels.conf*                                     $pkgdir/var/lib/vdr/			|| return 1
+  install -m 664 ${startdir}/files/channels.conf.szap               $pkgdir/var/lib/vdr/.szap/channels.conf			|| return 1
+
+  cp -r locale $pkgdir/usr/share/
+
+  # install links
+
+  cd $pkgdir/usr/share/vdr/command-hooks/								|| return 1
+  ln -s ../../../../etc/vdr/command-hooks/commands.custom.conf	commands.custom.conf			|| return 1
+  ln -s ../../../../etc/vdr/command-hooks/reccmds.custom.conf	reccmds.custom.conf			|| return 1
+
+  cd $pkgdir/var/lib/vdr/										|| return 1
+  ln -s ../../../var/cache/vdr/commands.conf			commands.conf				|| return 1
+  ln -s ../../../var/cache/vdr/reccmds.conf			reccmds.conf				|| return 1
+
+  cd $pkgdir/usr/share/vdr/recording-hooks							|| return 1
+  ln -s ../../../../etc/vdr/recording-hooks/R90.custom		R90.custom				|| return 1
+
+  cd $pkgdir/usr/share/vdr/shutdown-hooks/							|| return 1
+  ln -s ../../../../etc/vdr/shutdown-hooks/S90.custom		S90.custom				|| return 1
+
+  cd $pkgdir/var/lib/vdr										|| return 1
+  ln -s ../../../etc/vdr/diseqc.conf				diseqc.conf				|| return 1
+  ln -s ../../../etc/vdr/keymacros.conf				keymacros.conf				|| return 1
+  ln -s ../../../etc/vdr/sources.conf				sources.conf				|| return 1
+  ln -s ../../../etc/vdr/svdrphosts.conf				svdrphosts.conf				|| return 1
+
+  cd $pkgdir/var/lib										|| return 1
+  ln -s video.00					video					|| return 1
+
+  cd $pkgdir/etc/vdr										|| return 1
+  ln -s ../../var/lib/vdr/setup.conf				setup.conf				|| return 1
+  ln -s ../../var/lib/vdr/remote.conf				remote.conf				|| return 1
+  ln -s ../../var/lib/vdr/channels.conf			channels.conf				|| return 1
+  ln -s ../../etc/default/vdr					vdr.default				|| return 1
+
+  cd $pkgdir/usr/share/vdr/groups.d								|| return 1
+  ln -s ../../../../etc/vdr/groups.d/vdr.groups			vdr.groups				|| return 1
+
+  cd $pkgdir/usr/bin										|| return 1
+  ln -s ../../usr/lib/vdr/svdrpsend.pl				svdrpsend				|| return 1
+  ln -s ../../usr/lib/vdr/svdrpsend.pl				svdrpsend.pl				|| return 1
+
+}

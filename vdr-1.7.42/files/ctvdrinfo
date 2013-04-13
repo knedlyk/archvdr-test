@@ -1,0 +1,95 @@
+#!/bin/bash
+
+export COLUMNS=512
+LOG=/tmp/vdrinfo.log
+
+. /usr/lib/vdr/config-loader.sh
+
+#vdr_package_version=`dpkg -s vdr | grep "Version:" | sed "s/.*Version: \(.*\)/\1/"`
+vdr_package_version=`pacman -Q | grep "^vdr " | sed -e 's/vdr /Version: /g'`
+api_version=`eval "vdr -V -L/usr/bin/vdr 2>/dev/null | sed 's/.*[(/]\(.*\)).*/\1/'"`
+kernelversion=`uname -r`
+
+# find installed plugins
+plugins=(`find ${PLUGIN_DIR}/* -maxdepth 1 -name 'libvdr-*' | xargs pacman -Qoq | awk -F ' ' '{ print $1; }'`)
+
+packages=(`echo ${plugins[@]}`)
+plugins=(`find ${PLUGIN_DIR}/* -maxdepth 1 -name 'libvdr-*' | xargs pacman -Qoq | awk -F ' ' '{ print $1; }' | sed -e 's/vdr-plugin-//g'`)
+plugins=( `echo ${plugins[@]}`)
+
+# extract version numbers and patchlevel infos
+eval "versions=($(pacman -Q ${packages[@]} | awk -F ' ' '{print $2}'))"
+#eval "patchlevels=($(LANG=en;dpkg -s vdr ${packages[@]} 2>&1 | awk -F ':' '\
+#    /^Package: /                         {p=$2} \
+#    /^Package.*is not installed/         {print "\"\""} \
+#    (/[pP]atchlevel:/ || /^$/) && p!=""  {print "\""$2"\"";p=""}'))"
+
+# load plugin order
+if [ -r "$PLUGIN_CFG_DIR/order.conf" ]; then
+    plugin_order=(`cat $PLUGIN_CFG_DIR/order.conf | sed "s/#.*$//"`)
+fi
+
+echo "**************************************" | tee $LOG
+echo "*        arch VDR Übersicht          *" | tee -a $LOG
+echo "**************************************" | tee -a $LOG
+echo | tee -a $LOG
+echo "arch VDR: $vdr_package_version" | tee -a $LOG
+echo "Kernel : $kernelversion" | tee -a $LOG
+echo | tee -a $LOG
+echo "Patches:" | tee -a $LOG
+echo "--------------------------------------" | tee -a $LOG
+
+for patch in ${patchlevels[0]} ; do
+    echo "${patch}" | tee -a $LOG
+done
+
+echo | tee -a $LOG
+echo "Plugins (APIVERSION ${api_version}):" | tee -a $LOG
+echo "( N = Native Plugin       )" | tee -a $LOG
+echo "( ! = Falscher Patchlevel )" | tee -a $LOG
+echo "( - = Deaktiviert         )" | tee -a $LOG
+echo "--------------------------------------" | tee -a $LOG
+
+for (( i=0 ; i<${#plugins[@]} ; i++ )); do
+    mark=" "
+    package="${packages[$i]}"
+    version="${versions[$i]}"
+    plugin="${plugins[$i]}"
+    if [ ! "$version" ]; then
+        mark="N"
+        version="n/a"
+    elif [ "${patchlevels[0]}" != "${patchlevels[$((i+1))]}" ]; then
+        mark="!"
+    else
+        for p in ${plugin_order[@]} ; do
+            if [ "${p}" = "-${plugin}" ]; then
+                mark="-"
+                break
+            fi
+            if [ "${p}" = "${plugin}" ]; then
+                break
+            fi
+        done
+    fi
+    if [ ! "$package" -o "$package" = "''" ]; then
+        package="no package"
+    fi
+    if [ "${packages[$i]}" = "vdr-plugin-${plugin}" ]; then
+        plugin=""
+    fi
+    echo "${mark} ${package} ($version) ${plugin}" | tee -a $LOG
+done
+
+echo | tee -a $LOG
+echo "Addon­Packages:" | tee -a $LOG
+echo "--------------------------------------" | tee -a $LOG
+
+pacman -Q | grep ^"vdr-" | \
+    grep -v "vdr-\(plugin-\|dev\|dbg\|kbd\|lirc\|daemon\|rcu\)" | \
+    awk '// {printf ("%s (%s)\n", $1, $2)}' | tee -a $LOG
+
+echo
+echo "......................................"
+echo "Eine Kopie dieser Ausgaben wurde"
+echo "erzeugt in: $LOG"
+echo "......................................"

@@ -1,0 +1,12 @@
+diff -uNr menuorg-0.4.4/src/OsdItemDefinition.cpp menuorg-0.4.4-patched/src/OsdItemDefinition.cpp
+--- menuorg-0.4.4/src/OsdItemDefinition.cpp	2008-03-25 21:24:45.000000000 +0100
++++ menuorg-0.4.4-patched/src/OsdItemDefinition.cpp	2011-03-27 15:27:10.897367455 +0200
+@@ -23,6 +23,8 @@
+ 
+ #include "OsdItemDefinition.h"
+ 
++#include <cstddef>
++
+ OsdItemDefinition::OsdItemDefinition(MenuNode* menuNode, cOsdItem* osdItem, bool isSelected)
+     :MenuItemDefinition(menuNode)
+ {

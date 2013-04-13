@@ -1,0 +1,1627 @@
+diff -Nru dvd/player-dvd.c dvd-gettext-i18n/player-dvd.c
+--- dvd/player-dvd.c	2008-12-23 18:29:46.000000000 +0100
++++ dvd-gettext-i18n/player-dvd.c	2008-12-25 19:52:29.000000000 +0100
+@@ -2680,7 +2680,7 @@
+ void cDvdPlayer::GetAudioLanguageStr(const char **AudioLanguageStr) const
+ {
+ 	static char buffer[100];
+-	char *audioTypeDescr = NULL;
++	const char *audioTypeDescr = NULL;
+ 
+     if (!DVDActiveAndRunning()) {
+         *AudioLanguageStr = "n.a.";
+diff -Nru dvd/po/ca_ES.po dvd-gettext-i18n/po/ca_ES.po
+--- dvd/po/ca_ES.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/ca_ES.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,74 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Marc Rovira Vall <tm05462@salleURL.edu>, 2003
++# Ramon Roca <ramon.roca@xcombo.com>, 2003
++# Jordi Vilà <jvila@tinet.org>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Jordi Vilà <jvila@tinet.org>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/cs_CZ.po dvd-gettext-i18n/po/cs_CZ.po
+--- dvd/po/cs_CZ.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/cs_CZ.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/da_DK.po dvd-gettext-i18n/po/da_DK.po
+--- dvd/po/da_DK.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/da_DK.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Mogens Elneff <mogens@elneff.dk>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/dvd.pot dvd-gettext-i18n/po/dvd.pot
+--- dvd/po/dvd.pot	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/dvd.pot	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# SOME DESCRIPTIVE TITLE.
++# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
++# This file is distributed under the same license as the PACKAGE package.
++# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
++#
++#, fuzzy
++msgid ""
++msgstr ""
++"Project-Id-Version: PACKAGE VERSION\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
++"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
++"Language-Team: LANGUAGE <LL@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=CHARSET\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/el_GR.po dvd-gettext-i18n/po/el_GR.po
+--- dvd/po/el_GR.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/el_GR.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Dimitrios Dimitrakos <mail@dimitrios.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-7\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/es_ES.po dvd-gettext-i18n/po/es_ES.po
+--- dvd/po/es_ES.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/es_ES.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Ruben Nunez Francisco <ruben.nunez@tang-it.com>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Ruben Nunez Francisco <ruben.nunez@tang-it.com>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/et_EE.po dvd-gettext-i18n/po/et_EE.po
+--- dvd/po/et_EE.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/et_EE.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Arthur Konovalov <kasjas@hot.ee>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-13\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/fi_FI.po dvd-gettext-i18n/po/fi_FI.po
+--- dvd/po/fi_FI.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/fi_FI.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,75 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Hannu Savolainen <hannu@opensound.com>, 2002
++# Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002
++# Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
++# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/fr_FR.po dvd-gettext-i18n/po/fr_FR.po
+--- dvd/po/fr_FR.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/fr_FR.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,75 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Jean-Claude Repetto <jc@repetto.org>, 2001
++# Olivier Jacques <jacquesolivier@hotmail.com>, 2003
++# Gregoire Favre <greg@magma.unil.ch>, 2003
++# Nicolas Huillard <nhuillard@e-dition.fr>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Nicolas Huillard <nhuillard@e-dition.fr>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr "Saut : "
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr "Le sous-titre sélectionné n'existe pas !"
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr "Transformer VDR en lecteur (presque) complet de DVD"
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr "DVD"
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr "Erreur à l'ouverture du DVD !"
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr "Erreur dans la lecture du DVD !"
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr "Langue préférée pour les menus"
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr "Langue audio préférée"
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr "Langue préférée pour les sous-titres"
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr "Code région du lecteur"
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr "Afficher les sous-titres"
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr "Masquer dans le menu"
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr "Lecture anticipée"
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr "Gain (analogique)"
+diff -Nru dvd/po/hr_HR.po dvd-gettext-i18n/po/hr_HR.po
+--- dvd/po/hr_HR.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/hr_HR.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Drazen Dupor <drazen.dupor@dupor.com>, 2004
++# Dino Ravnic <dino.ravnic@fer.hr>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Drazen Dupor <drazen.dupor@dupor.com>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/hu_HU.po dvd-gettext-i18n/po/hu_HU.po
+--- dvd/po/hu_HU.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/hu_HU.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Istvan Koenigsberger <istvnko@hotmail.com>, 2002
++# Guido Josten <guido.josten@t-online.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/it_IT.po dvd-gettext-i18n/po/it_IT.po
+--- dvd/po/it_IT.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/it_IT.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,74 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Alberto Carraro <bertocar@tin.it>, 2001
++# Antonio Ospite <ospite@studenti.unina.it>, 2003
++# Sean Carlos <seanc@libero.it>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Sean Carlos <seanc@libero.it>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/nl_NL.po dvd-gettext-i18n/po/nl_NL.po
+--- dvd/po/nl_NL.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/nl_NL.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,74 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
++# Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003
++# Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/nn_NO.po dvd-gettext-i18n/po/nn_NO.po
+--- dvd/po/nn_NO.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/nn_NO.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Jørgen Tvedt <pjtvedt@online.no>, 2001
++# Truls Slevigen <truls@slevigen.no>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/pl_PL.po dvd-gettext-i18n/po/pl_PL.po
+--- dvd/po/pl_PL.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/pl_PL.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Michael Rakowski <mrak@gmx.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/pt_PT.po dvd-gettext-i18n/po/pt_PT.po
+--- dvd/po/pt_PT.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/pt_PT.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Paulo Lopes <pmml@netvita.pt>, 2001
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Paulo Lopes <pmml@netvita.pt>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/ro_RO.po dvd-gettext-i18n/po/ro_RO.po
+--- dvd/po/ro_RO.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/ro_RO.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Paul Lacatus <paul@campina.iiruc.ro>, 2002
++# Lucian Muresan <lucianm@users.sourceforge.net>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/ru_RU.po dvd-gettext-i18n/po/ru_RU.po
+--- dvd/po/ru_RU.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/ru_RU.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Vyacheslav Dikonov <sdiconov@mail.ru>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Vyacheslav Dikonov <sdiconov@mail.ru>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-5\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/sl_SI.po dvd-gettext-i18n/po/sl_SI.po
+--- dvd/po/sl_SI.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/sl_SI.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Miha Setina <mihasetina@softhome.net>, 2000
++# Matjaz Thaler <matjaz.thaler@guest.arnes.si>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/sv_SE.po dvd-gettext-i18n/po/sv_SE.po
+--- dvd/po/sv_SE.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/sv_SE.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,73 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Tomas Prybil <tomas@prybil.se>, 2002
++# Jan Ekholm <chakie@infa.abo.fi>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Tomas Prybil <tomas@prybil.se>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""
+diff -Nru dvd/po/tr_TR.po dvd-gettext-i18n/po/tr_TR.po
+--- dvd/po/tr_TR.po	1970-01-01 01:00:00.000000000 +0100
++++ dvd-gettext-i18n/po/tr_TR.po	2008-12-25 19:53:40.000000000 +0100
+@@ -0,0 +1,72 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@cadsoft.de>
++# This file is distributed under the same license as the VDR package.
++# Oktay Yolgeçen <oktay_73@yahoo.de>, 2007
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: micky979@free.fr\n"
++"POT-Creation-Date: 2008-03-30 16:04+0200\n"
++"PO-Revision-Date: 2008-03-30 16:04+0200\n"
++"Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-9\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++#: control-dvd.c:397
++msgid "Jump: "
++msgstr ""
++
++#: control-dvd.c:716
++msgid "Error.DVD$Current subp stream not seen!"
++msgstr ""
++
++#: dvd.c:19
++msgid "Plugin.DVD$turn VDR into an (almost) full featured DVD player"
++msgstr ""
++
++#: dvd.c:20 setup-dvd.c:61
++msgid "Plugin.DVD$DVD"
++msgstr ""
++
++#: player-dvd.c:595
++msgid "Error.DVD$Error opening DVD!"
++msgstr ""
++
++#: player-dvd.c:981
++msgid "Error.DVD$Error fetching data from DVD!"
++msgstr ""
++
++#: setup-dvd.c:63 setup-dvd.c:67
++msgid "Setup.DVD$Preferred menu language"
++msgstr ""
++
++#: setup-dvd.c:64 setup-dvd.c:68
++msgid "Setup.DVD$Preferred audio language"
++msgstr ""
++
++#: setup-dvd.c:65 setup-dvd.c:69
++msgid "Setup.DVD$Preferred subtitle language"
++msgstr ""
++
++#: setup-dvd.c:71
++msgid "Setup.DVD$Player region code"
++msgstr ""
++
++#: setup-dvd.c:72
++msgid "Setup.DVD$Display subtitles"
++msgstr ""
++
++#: setup-dvd.c:73
++msgid "Setup.DVD$Hide Mainmenu Entry"
++msgstr ""
++
++#: setup-dvd.c:74
++msgid "Setup.DVD$ReadAHead"
++msgstr ""
++
++#: setup-dvd.c:75
++msgid "Setup.DVD$Gain (analog)"
++msgstr ""

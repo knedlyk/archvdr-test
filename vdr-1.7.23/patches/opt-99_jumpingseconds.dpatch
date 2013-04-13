@@ -1,0 +1,66 @@
+diff -uNr vdr-1.7.22/config.c vdr-1.7.22-patched/config.c
+--- vdr-1.7.22/config.c	2011-12-05 06:54:12.785373704 +0100
++++ vdr-1.7.22-patched/config.c	2011-12-05 06:54:20.842040104 +0100
+@@ -480,6 +480,8 @@
+   LiveBufferSize = 15;
+   LiveBufferMaxFileSize = 100;
+ #endif /*USE_LIVEBUFFER*/
++  JumpSeconds = 60;
++  JumpSecondsSlow = 10;
+ }
+ 
+ cSetup::~cSetup()
+@@ -701,6 +703,8 @@
+   else if (!strcasecmp(Name, "DeviceBondings"))      DeviceBondings     = Value;
+   else if (!strcasecmp(Name, "ChannelsWrap"))        ChannelsWrap       = atoi(Value);
+   else if (!strcasecmp(Name, "EmergencyExit"))       EmergencyExit      = atoi(Value);
++  else if (!strcasecmp(Name, "JumpSeconds"))         JumpSeconds        = atoi(Value);
++  else if (!strcasecmp(Name, "JumpSecondsSlow"))     JumpSecondsSlow    = atoi(Value);
+   else
+      return false;
+   return true;
+@@ -811,6 +815,8 @@
+   Store("DeviceBondings",     DeviceBondings);
+   Store("ChannelsWrap",       ChannelsWrap);
+   Store("EmergencyExit",      EmergencyExit);
++  Store("JumpSeconds",        JumpSeconds);
++  Store("JumpSecondsSlow",    JumpSecondsSlow);
+ #ifdef USE_LIVEBUFFER
+   Store("LiveBufferSize",     LiveBufferSize);
+ #endif  /* LIVEBUFFER */
+diff -uNr vdr-1.7.22/config.h vdr-1.7.22-patched/config.h
+--- vdr-1.7.22/config.h	2011-12-05 06:54:12.782040371 +0100
++++ vdr-1.7.22-patched/config.h	2011-12-05 06:54:42.722039377 +0100
+@@ -335,6 +335,8 @@
+   int LiveBufferSize;
+   int LiveBufferMaxFileSize;
+ #endif /*USE_LIVEBUFFER*/
++  int JumpSeconds;
++  int JumpSecondsSlow;
+   int __EndData__;
+   cString InitialChannel;
+   char *noEPGList; // pointer not to be flat-copied
+diff -uNr vdr-1.7.22/menu.c vdr-1.7.22-patched/menu.c
+--- vdr-1.7.22/menu.c	2011-12-05 06:54:12.785373704 +0100
++++ vdr-1.7.22-patched/menu.c	2011-12-05 06:54:20.845373438 +0100
+@@ -3516,6 +3516,8 @@
+   Add(new cMenuEditBoolItem(tr("Setup.Replay$Play&Jump"), &data.PlayJump));
+   Add(new cMenuEditBoolItem(tr("Setup.Replay$Pause at last mark"), &data.PauseLastMark));
+   Add(new cMenuEditBoolItem(tr("Setup.Replay$Reload marks"), &data.ReloadMarks));
++  Add(new cMenuEditIntItem(tr("Setup.Replay$Jump Seconds"), &data.JumpSeconds));
++  Add(new cMenuEditIntItem(tr("Setup.Replay$Jump Seconds Slow"), &data.JumpSecondsSlow));
+ }
+ 
+ void cMenuSetupReplay::Store(void)
+@@ -5589,9 +5591,9 @@
+     case kFastFwd:
+     case kRight:   Forward(); break;
+     case kGreen|k_Repeat:
+-    case kGreen:   SkipSeconds(-60); break;
++    case kGreen:   SkipSeconds(-Setup.JumpSeconds); break;
+     case kYellow|k_Repeat:
+-    case kYellow:  SkipSeconds( 60); break;
++    case kYellow:  SkipSeconds(Setup.JumpSeconds); break;
+ #ifdef USE_LIVEBUFFER
+     case kRed:     if(cRecordControls::GetLiveIndex(fileName)) {
+ 

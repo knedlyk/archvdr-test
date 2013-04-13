@@ -1,0 +1,33 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=timeline
+pkgname=vdr-plugin-$_pkgname
+pkgver=1.0.141
+revision=1
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin chack VDR timer conflicts."
+url="http://www.js-home.org/vdr/timeline/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=()
+source=(http://www.u32.de/download/vdr-$_pkgname-$pkgver-kw160.tar.gz)
+#"http://www.js-home.org/download.php?URI=%2Fvdr%2Ftimeline%2Fvdr-$_pkgname-$pkgver-kw160.tar.gz")
+md5sums=('b33ee508a03a07431acc7d070d04fbd3')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}-kw160
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+}

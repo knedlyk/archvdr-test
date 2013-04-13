@@ -1,0 +1,15 @@
+diff -uNr vdr-1.7.20/remux.c vdr-1.7.20-patched/remux.c
+--- vdr-1.7.20/remux.c	2011-08-15 11:50:14.000000000 +0200
++++ vdr-1.7.20-patched/remux.c	2011-08-22 09:00:09.000000000 +0200
+@@ -974,8 +974,10 @@
+                                      payloadUnitOfFrame = (payloadUnitOfFrame + 1) % -framesPerPayloadUnit;
+                                      if (payloadUnitOfFrame != 0 && independentFrame)
+                                         payloadUnitOfFrame = 0;
+-                                     if (payloadUnitOfFrame)
++                                     if (payloadUnitOfFrame) {
++                                        newPayload = false;
+                                         newFrame = false;
++                                       }
+                                      }
+                                   if (framesPerPayloadUnit <= 1)
+                                      scanning = false;

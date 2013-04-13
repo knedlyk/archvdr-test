@@ -1,0 +1,71 @@
+# Contributor : Sebastian Pohle <sepo at users dot berlios dot de>
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=epgsearch
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=20120311
+pkgrel=1
+gitid=c8338ee6b4edfe87591492635b317a208de491b1
+pkgdesc="Searchtimer and program menu replacement for VDR"
+arch=('i686' 'x86_64')
+url="http://winni.vdr-developer.org/epgsearch/"
+license=('GPL')
+depends=('vdr' 'pcre' 'sendemail' 'tre')
+makedepends=('vdr' 'pcre' 'tre')
+backup=('etc/vdr/plugins/epgsearch/epgsearchcmds.conf'
+        'etc/vdr/plugins/epgsearch/epgsearchmenu.conf'
+        'etc/vdr/plugins/epgsearch/epgsearchcats.conf')
+source=(01_debian-defaults.dpatch
+        compile_fix.patch
+        vdr-plugin-epgsearch-git.install)
+conflicts=(vdr-plugin-$_pluginname)
+md5sums=('25f21df320e3d508b03a33d30eea0b29'
+         '777a7141278a54a22412c203a1039e64'
+         '637c68e6a2717b61c42fa25ea7868f74')
+
+build() {
+  _githost="git://projects.vdr-developer.org"
+  _gitrepo="vdr-plugin-epgsearch.git"
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname} ]; then	  
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git rebase origin
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/vdr-plugin-${_pluginname}
+    git checkout $gitid
+  fi
+
+  if [ -e $srcdir/vdr-plugin-${_pluginname}-build ]; then
+    rm -rf $srcdir/vdr-plugin-${_pluginname}-build
+  fi
+
+  cp -r $srcdir/vdr-plugin-${_pluginname} $srcdir/vdr-plugin-${_pluginname}-build
+
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  patch -p1 -i ../01_debian-defaults.dpatch							|| return 1
+  patch -p1 -i ../compile_fix.patch                     || return 1
+  
+  make HAVE_PCREPOSIX=1 MANDIR="$pkgdir/usr/man" \
+    VDRDIR="/usr/include/vdr" INCLUDES="-I/usr/include/vdr" LIBDIR="." \
+    LOCALEDIR="$pkgdir/usr/share/locale" all            || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins								|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/				|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins/${_pluginname}						|| return 1
+  install $startdir/files/epgsearchcmds.conf	$pkgdir/etc/vdr/plugins/${_pluginname}		|| return 1
+  install $startdir/files/epgsearchmenu.conf	$pkgdir/etc/vdr/plugins/${_pluginname}		|| return 1
+  install $startdir/files/epgsearchcats.conf	$pkgdir/etc/vdr/plugins/${_pluginname}		|| return 1
+  install -m 644 conf/epgsearchupdmail.templ	$pkgdir/etc/vdr/plugins/${_pluginname}		|| return 1
+  install -m 644 conf/epgsearchconflmail.templ	$pkgdir/etc/vdr/plugins/${_pluginname}		|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-plugin-epgsearch						|| return 1
+  install -m 755 $startdir/files/epg2taste.sh	$pkgdir/usr/share/vdr-plugin-epgsearch/		|| return 1
+  install -m 755 $startdir/files/rememberevent.sh $pkgdir/usr/share/vdr-plugin-epgsearch/	|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/plugins/epgsearch            || return 1
+  cd $pkgdir/var/lib/vdr/plugins/epgsearch                  || return 1
+  ln -s ${pkgdir}/usr/share/vdr-plugin-epgsearch/* .        || return 1
+}

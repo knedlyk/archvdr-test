@@ -1,0 +1,84 @@
+# Contributor : Mathias Fussenegger <dasjordi at gmail dot com>
+# Maintainer  : Edgar Hucek <gimli at dark green dot com>
+
+pkgname=vdr-plugin-mplayer
+pkgver=0.10.2
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc="A mplayer/mp3 plugin for VDR"
+url="http://www.muempf.de/"
+license="GPL"
+depends=('vdr>=1.5.0' 'libmad' 'libid3tag' 'libsndfile' 'libvorbis')
+optdepends=('mplayer: mpalyer support')
+source=(http://www.muempf.de/down/vdr-mp3-$pkgver.tar.gz)
+
+md5sums=('66fd37827326776c223a0fdd0ad3811e')
+
+backup=('etc/vdr/plugins/mplayersources.conf'
+	'etc/vdr/plugins/mp3sources.conf'
+	'etc/vdr/plugins/plugin.mplayer.conf'
+	'etc/vdr/plugins/vdrmplayer.sh.conf')
+
+build() {
+
+	cd $startdir/src/mp3-$pkgver
+
+	mkdir -p $pkgdir/usr/lib/vdr/plugins \
+		$pkgdir/usr/bin \
+		$pkgdir/etc/vdr/plugins \
+		$pkgdir/usr/share/vdr-plugin-mp3 \
+		$pkgdir/usr/share/vdr-plugin-mplayer \
+		$pkgdir/var/lib/vdr-plugin-mplayer/DVD-VCD \
+		$pkgdir/var/lib/vdr/plugins \
+		$startdir/src/mp3-$pkgver/debian || return 1
+
+	cp $startdir/files/* $startdir/src/mp3-$pkgver/debian || return 1
+
+	for i in `grep -v ^$ ${startdir}/patches/00list  | grep -v ^#` ; do
+		echo "Apply patch $i"
+		patch -p1 -i ${startdir}/patches/$i.dpatch || return 1
+	done
+
+	make VDRDIR=/usr/include/vdr \
+		LIBDIR=$startdir/pkg/usr/lib/vdr/plugins \
+		LOCALEDIR=$startdir/pkg/usr/share/locale \
+		PLUGINLIBDIR=$startdir/pkg/usr/lib/vdr/plugins all || return 1
+
+	install -m 755 debian/mount.sh \
+		$pkgdir/usr/share/vdr-plugin-mp3/mount || return 1
+
+	install -m 755 examples/image_convert.sh.example \
+		$pkgdir/usr/share/vdr-plugin-mp3/image_convert || return 1
+
+	install -m 644 examples/mp3sources.conf.example \
+		$pkgdir/etc/vdr/plugins/mp3sources.conf || return 1
+
+	install -m 755 debian/mount.sh \
+		$pkgdir/usr/share/vdr-plugin-mplayer/mount || return 1
+
+	#install -m 755 debian/mplayer.sh \
+	#	$pkgdir/usr/share/vdr-plugin-mplayer/mplayer || return 1
+
+  install -m 755 ${startdir}/files/mplayer \
+		$pkgdir/usr/share/vdr-plugin-mplayer/mplayer || return 1
+
+	install -m 755 debian/plugin.mplayer.conf \
+		$pkgdir/etc/vdr/plugins/ || return 1
+
+	install -m 755 debian/vdrmplayer.sh.conf \
+		$pkgdir/etc/vdr/plugins/ || return 1
+
+	install -m 644 debian/mplayersources.conf \
+		$pkgdir/etc/vdr/plugins/ || return 1
+
+	install -m 644 debian/VCD \
+		$pkgdir/var/lib/vdr-plugin-mplayer/DVD-VCD || return 1
+
+	install -m 644 debian/DVD \
+		$pkgdir/var/lib/vdr-plugin-mplayer/DVD-VCD || return 1
+
+	cd $pkgdir/var/lib/vdr/plugins || return 1
+	ln -s ../../../../etc/vdr/plugins/mp3sources.conf mp3sources.conf || return 1
+	ln -s ../../../../etc/vdr/plugins/mplayersources.conf mplayersources.conf || return 1
+
+}

@@ -1,0 +1,22 @@
+--- xine-vdpau-1.2/src/xine-engine/metronom.c	2010-05-29 10:17:57.000000000 +0200
++++ xine-vdpau-1.2-build/src/xine-engine/metronom.c	2010-05-29 10:19:04.000000000 +0200
+@@ -721,7 +721,8 @@
+     xprintf(this->xine, XINE_VERBOSITY_LOG, "prebuffer=%" PRId64 " pts\n", this->prebuffer);
+     break;
+   default:
+-    xprintf(this->xine, XINE_VERBOSITY_NONE, "unknown option in set_option: %d\n", option);
++    break;
++    //xprintf(this->xine, XINE_VERBOSITY_NONE, "unknown option in set_option: %d\n", option);
+   }
+ 
+   pthread_mutex_unlock (&this->lock);
+@@ -737,7 +738,8 @@
+     this->scr_adjustable = value;
+     break;
+   default:
+-    xprintf(this->xine, XINE_VERBOSITY_NONE, "unknown option in set_option: %d\n", option);
++    break;
++    //xprintf(this->xine, XINE_VERBOSITY_NONE, "unknown option in set_option: %d\n", option);
+   }
+ 
+   pthread_mutex_unlock (&this->lock);

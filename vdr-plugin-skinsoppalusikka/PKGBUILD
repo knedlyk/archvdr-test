@@ -1,0 +1,39 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=skinsoppalusikka
+pkgname=vdr-plugin-$_pkgname
+pkgver=1.7.5
+revision=1
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin skinsoppalusikka."
+url="http://www.saunalahti.fi/~rahrenbe/vdr/soppalusikka/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=('etc/vdr/plugins/plugin.skinsoppalusikka.conf')
+source=(http://www.saunalahti.fi/~rahrenbe/vdr/soppalusikka/files/vdr-$_pkgname-$pkgver.tgz
+        plugin.skinsoppalusikka.conf)
+md5sums=('86481b2c8a9e9a02ba0f3a1a05ef753c'
+         '51f77cc66faf8c007e2a57f9a720bd42')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins							|| return 1
+  install -m 644 ../plugin.skinsoppalusikka.conf	$pkgdir/etc/vdr/plugins/	|| return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/themes							|| return 1
+  install -m 644 themes/*.theme				$pkgdir/var/lib/vdr/themes/	|| return 1
+}

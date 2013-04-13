@@ -1,0 +1,17 @@
+--- vdpau-video/src/vdpau_video_x11.c	2011-08-26 18:42:28.123030751 +0200
++++ vdpau-video_save/src/vdpau_video_x11.c	2011-08-26 19:56:24.706216800 +0200
+@@ -330,6 +330,14 @@
+             output_surface_destroy(driver_data, obj_output);
+             return NULL;
+         }
++        /* choose almost black as backcolor for color keying */
++        VdpColor  vdp_bg = { 0.02f, 0.01f, 0.03f, 1.0f };
++        vdp_status = vdpau_presentation_queue_set_background_color(driver_data, obj_output->vdp_flip_queue, &vdp_bg);
++        if (!VDPAU_CHECK_STATUS(vdp_status, "VdpPresentationQueueSetBackgroundColor()")) {
++          output_surface_destroy(driver_data, obj_output);
++          return NULL;
++        }
++
+     }
+     return obj_output;
+ }

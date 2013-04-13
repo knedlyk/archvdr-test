@@ -1,0 +1,56 @@
+# Maintainer : Edgar Hucek <gimli@dark-green.com>
+
+_packagename=xine
+pkgname=vdr-plugin-xine
+pkgver=0.9.4
+pkgrel=2
+pkgdesc="VDR-Plugin to use VDR with budget cards or over the network."
+arch=('i686' 'x86_64')
+url="http://home.vrweb.de/~rnissl/"
+license=('GPL2')
+depends=('gcc' 'vdr' 'xine-lib')
+optdepends=('oxine-vdr' 'xine-ui-vdr')
+source=(http://home.vrweb.de/~rnissl/vdr-$_packagename-$pkgver.tgz
+	plugin.xine.conf
+  01_debian.dpatch
+  remove_old_i18n.patch)
+backup=('etc/vdr/plugins/plugin.xine.conf')
+install=vdr-plugin-xine.install
+md5sums=('0374123d6991f55d91122b020361d8f6'
+         'ac26395efab835b305f02dec4962ccce'
+         '25b40fbb727f248e9ca9384d13f2acad'
+         'a77c81d2315ea39fdc29f02386c139be')
+
+build() {
+  
+  cd "$srcdir/${_packagename}-$pkgver" || return 1
+
+  unset CXXFLAGS
+
+  patch -p1 -i ${srcdir}/01_debian.dpatch || return 1
+  patch -p1 -i ${srcdir}/remove_old_i18n.patch || return 1
+
+  make VDRDIR=/usr/include/vdr \
+  	LIBDIR=. \
+    VDR_XINE_FIFO_DIR="/var/lib/vdr/plugins/xine-fifo/fifo" \
+  	LOCALEDIR="$startdir/pkg/usr/share/locale/"|| return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+  install -m 755 libvdr-*.so.*			$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins							|| return 1
+  install -m 644 ../plugin.xine.conf		$pkgdir/etc/vdr/plugins/		|| return 1
+  
+  mkdir -p $pkgdir/usr/bin								|| return 1
+  install -m 755 xineplayer			$pkgdir/usr/bin/			|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-plugin-xine/						|| return 1
+  install -m 644 data/*.mpg			$pkgdir/usr/share/vdr-plugin-xine/	|| return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins/xine						|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/plugins/xine-fifo						|| return 1
+  cd $pkgdir/var/lib/vdr/plugins/xine							|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-xine/noSignal4x3.mpg	noSignal4x3.mpg			|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-xine/noSignal16x9.mpg	noSignal16x9.mpg		|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-xine/noSignal16x9.mpg	noSignal.mpg		|| return 1
+}

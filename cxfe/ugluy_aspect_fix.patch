@@ -1,0 +1,31 @@
+--- cxfe-0.9.2/cxfe.c	2010-09-05 10:51:12.000000000 +0200
++++ cxfe-0.9.2-patched/cxfe.c	2010-09-05 10:50:57.000000000 +0200
+@@ -64,7 +64,7 @@
+ static Window               window[2];
+ static int                  completion_event;
+ static int                  xpos, ypos, width, height, fullscreen;
+-static double               pixel_aspect;
++static double               pixel_aspect = 1.0;
+ 
+ static int                  running = 0;
+ static int		    next_mrl = FALSE;
+@@ -374,7 +374,8 @@
+   *win_y             = ypos;
+   *dest_width        = width;
+   *dest_height       = height;
+-  *dest_pixel_aspect = video_pixel_aspect;
++  *dest_pixel_aspect = pixel_aspect;
++
+ }
+ 
+ //static void frame_output_cb_x11(void *data, int video_width, int video_height,
+@@ -1342,7 +1343,8 @@
+     //else
+     vis.frame_output_cb   = frame_output_cb;
+     vis.user_data         = NULL;
+-    pixel_aspect          = res_h / res_v;
++    //pixel_aspect          = res_h / res_v;
++    pixel_aspect          = 1.0;
+     }
+ 
+ 

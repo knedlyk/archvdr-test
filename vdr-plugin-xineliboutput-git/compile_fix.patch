@@ -1,0 +1,11 @@
+--- xineliboutput/configure	2012-02-05 09:43:51.447362277 +0100
++++ xineliboutput-patched/configure	2012-02-05 09:53:07.237343823 +0100
+@@ -388,6 +388,8 @@
+ 
+ check_deps
+ 
++add_flags "LIBS_X11" "-lm"
++add_flags "LIBS_XINE" "-lm"
+ # need -lm for ceil/floor in HUD OSD
+ enabled xrender && add_flags "LIBS_X11" "-lm"
+ # need -ldl and -lpthread with opengl

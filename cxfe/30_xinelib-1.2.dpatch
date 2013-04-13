@@ -1,0 +1,66 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 30_xinelib-1.2.dpatch by  <gda@localhost>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad cxfe-0.9.2~/cxfe.c cxfe-0.9.2/cxfe.c
+--- cxfe-0.9.2~/cxfe.c	2009-10-26 17:49:30.000000000 +0100
++++ cxfe-0.9.2/cxfe.c	2009-10-26 17:49:50.000000000 +0100
+@@ -913,7 +913,7 @@
+ 				     0, 0, &xpos, &ypos, &tmp_win);
+ 	       XUnlockDisplay(display);
+ 
+-	       xine_gui_send_vo_data(cxfe.stream, XINE_GUI_SEND_DRAWABLE_CHANGED,
++	       xine_port_send_gui_data(cxfe.vo_port, XINE_GUI_SEND_DRAWABLE_CHANGED,
+ 		  		     (void*) window[fullscreen]);
+ 	     }
+ 	     
+@@ -1056,7 +1056,7 @@
+        case Expose:
+          if(xevent.xexpose.count != 0)
+            break;
+-         xine_gui_send_vo_data(cxfe.stream, XINE_GUI_SEND_EXPOSE_EVENT, &xevent);
++         xine_port_send_gui_data(cxfe.vo_port, XINE_GUI_SEND_EXPOSE_EVENT, &xevent);
+          break;
+ 
+        case ConfigureNotify:
+@@ -1083,7 +1083,7 @@
+     }
+ 
+        if(xevent.type == completion_event) {
+-	 xine_gui_send_vo_data(cxfe.stream, XINE_GUI_SEND_COMPLETION_EVENT, &xevent);
++	 xine_port_send_gui_data(cxfe.vo_port, XINE_GUI_SEND_COMPLETION_EVENT, &xevent);
+          }     
+    }
+ }
+@@ -1353,8 +1353,8 @@
+   xine_event_create_listener_thread(event_queue, event_listener, NULL);
+ 
+   if (x11){
+-     xine_gui_send_vo_data(cxfe.stream, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window[fullscreen]);
+-     xine_gui_send_vo_data(cxfe.stream, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
++     xine_port_send_gui_data(cxfe.vo_port, XINE_GUI_SEND_DRAWABLE_CHANGED, (void *) window[fullscreen]);
++     xine_port_send_gui_data(cxfe.vo_port, XINE_GUI_SEND_VIDEOWIN_VISIBLE, (void *) 1);
+      }
+ 
+   if(pplugins_num) {
+diff -urNad cxfe-0.9.2~/post.c cxfe-0.9.2/post.c
+--- cxfe-0.9.2~/post.c	2009-10-26 17:48:08.000000000 +0100
++++ cxfe-0.9.2/post.c	2009-10-26 17:50:56.000000000 +0100
+@@ -25,6 +25,14 @@
+ #include "main.h"
+ 
+ 
++#define xine_strdupa(d, s) do {                                             \
++                                (d) = NULL;                                 \
++                                if((s) != NULL) {                           \
++                                  (d) = (char *) alloca(strlen((s)) + 1);   \
++                                  strcpy((d), (s));                         \
++                                }                                           \
++                              } while(0)
++
+ typedef struct {
+   xine_post_t                 *post;
+   xine_post_api_t             *api;

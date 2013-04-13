@@ -1,0 +1,37 @@
+--- a/PLUGINS/src/skincurses/skincurses.c 2012-03-19 13:43:27.441957681 +0100
++++ b/PLUGINS/src/skincurses/skincurses.c	2012-03-19 13:43:34.445302519 +0100
+@@ -6,7 +6,7 @@
+  * $Id: skincurses.c 2.7 2011/08/21 11:04:38 kls Exp $
+  */
+ 
+-#include <ncursesw/ncurses.h>
++#include <ncurses.h>
+ #include <vdr/osd.h>
+ #include <vdr/plugin.h>
+ #include <vdr/skins.h>
+--- a/recording.h 2012-03-25 19:11:13.157567044 +0200
++++ b/recording.h	2012-03-25 19:12:14.594231672 +0200
+@@ -104,11 +104,11 @@
+ #ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
+ public:
+ #endif
+-  time_t start;
+   int priority;
+   int lifetime;
+   time_t deleted;
+ public:
++  time_t start;
+   cRecording(cTimer *Timer, const cEvent *Event);
+   cRecording(const char *FileName);
+   virtual ~cRecording();
+@@ -213,9 +213,9 @@
+ #ifdef __RECORDING_H_DEPRECATED_DIRECT_MEMBER_ACCESS
+ public:
+ #endif
+-  int position;
+   cString comment;
+ public:
++  int position;
+   cMark(int Position = 0, const char *Comment = NULL, double FramesPerSecond = DEFAULTFRAMESPERSECOND);
+   virtual ~cMark();
+   int Position(void) const { return position; }

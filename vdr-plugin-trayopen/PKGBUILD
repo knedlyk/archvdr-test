@@ -1,0 +1,41 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=trayopen
+pkgname=vdr-plugin-$_pkgname
+pkgver=0.0.3
+revision=29
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin eject DVD drive with your remote."
+url="http://www.glaserei-franz.de/VDR/Moronimo2/index.html"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=()
+source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/vdr-multipatch/${pkgname}_${pkgver}-${revision}.diff.gz
+	http://www.e-tobi.net/vdr-experimental/pool-sid/source/vdr-multipatch/${pkgname}_${pkgver}.orig.tar.gz)
+md5sums=()
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  patch -p1 -i ../${pkgname}_${pkgver}-${revision}.diff					|| return 1
+  patch -p1 -i debian/patches/01_Makefile-fPIC-fix.dpatch				|| return 1
+  patch -p1 -i debian/patches/02_bugfix.dpatch						|| return 1
+
+  chmod +x debian/patches/90_APIVERSION.dpatch						|| return 1
+  ./debian/patches/90_APIVERSION.dpatch -patch						|| return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
+}
+md5sums=('b830e02d60c6e433680181d074757e14'
+         'c6fdc3e0e95b335089dc87764425d3b1')

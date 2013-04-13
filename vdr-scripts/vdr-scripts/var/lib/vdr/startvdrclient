@@ -1,0 +1,38 @@
+#!/bin/sh
+
+. /etc/default/vdrscripts
+. $SCRIPTDIR/vdr-functions
+
+case "$1" in
+  start)
+  	while [ true ]; do
+      $SCRIPTDIR/vdr-client start
+
+  		if [ -e $VDRHOME/doXbmcExitAction ]; then
+  			. $VDRHOME/doXbmcExitAction
+  			if [ "$SHUTDOWNACTION" == "shutdown" ]; then
+  				stop_client
+  				svdrpsend -d 127.0.0.1 "REMO ON"
+  				svdrpsend -d 127.0.0.1 "HITK POWER"
+  				return 1
+  				break
+  			fi
+  			if [ "$SHUTDOWNACTION" == "reboot" ]; then
+  				stop_client
+  				sudo /sbin/reboot
+  				return 1
+  				break
+  			fi
+  		fi
+
+  		killall -9 vdr-client 2>&1 >/dev/null 2>&1 >/dev/null
+
+      sleep 3
+  	done
+    ;;
+  *)
+    exit 1
+    ;;
+esac
+
+exit 0

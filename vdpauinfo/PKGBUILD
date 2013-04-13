@@ -1,0 +1,44 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdpauinfo
+pkgver=0.0.6
+pkgrel=6
+gitid=" fb754701e83d565e4333ce7d3fce216194b40266"
+pkgdesc="VDR plugin for automaticaly setting add marks"
+arch=('i686' 'x86_64')
+url="http://cgit.freedesktop.org/~aplattner/vdpauinfo"
+license=('GPL2')
+depends=('libvdpau')
+makedepends=('gcc' 'libvdpau' 'git')
+
+build() {
+  cd "$srcdir/"	|| return 1
+  
+  _githost="git://anongit.freedesktop.org/~aplattner"
+  _gitrepo="vdpauinfo"
+
+  if [ -e $srcdir/${_gitrepo} ]; then	  
+    cd $srcdir/${_gitrepo}
+    git rebase origin
+    git checkout $gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/${_gitrepo}
+    git checkout $gitid
+  fi
+
+  if [ -e $srcdir/${_gitrepo}-build ]; then
+    rm -rf $srcdir/${_gitrepo}-build
+  fi
+
+  cp -r $srcdir/${_gitrepo} $srcdir/${_gitrepo}-build
+
+  cd $srcdir/${_gitrepo}-build
+
+  ./autogen.sh
+  ./configure --prefix=/usr
+  make || return 1
+
+  make install prefix=$pkgdir/usr || return 1
+  
+}

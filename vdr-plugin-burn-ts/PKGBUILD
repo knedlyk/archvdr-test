@@ -1,0 +1,80 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=burn
+pkgname=vdr-plugin-$_pkgname-ts
+pkgver=0.2.0
+pkgrel=5
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin create DVD's from your recordings."
+url="http://projects.vdr-developer.org/projects/show/plg-burn"
+license="GPL"
+makedepends=('vdr>=1.7.0' 'gettext' 'boost' 'gd')
+depends=('vdr>=1.7.9' 'transcode' 'mjpegtools' 'dvdauthor' 'cdrkit' 'dvd+rw-tools' 'eject' 'vdrsync' 'projectx-cvs' 'vdr-genindex' 'ttf-bitstream-vera' 'imagemagick' 'sharutils' 'tcrequant')
+backup=('etc/vdr/plugins/plugin.burn.conf')
+source=(http://projects.vdr-developer.org/attachments/download/832/vdr-burn-0.2.0.tgz)
+install=$pkgname.install
+md5sums=('6a0b5e8d68c06e8db441039a62ca2c01')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+  echo "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" >> Makefile
+
+  PATCHES="01_genisoimage 03_default-requantizer.dpatch 04_burn-set-pathes 05_fix_includes.dpatch 06_1.7.27-burn-0.2.0.dpatch"
+
+  for i in $PATCHES
+  do
+    echo "Apply debian/patches/$i"
+    patch -p1 -i ${startdir}/files/$i					|| return 1
+  done
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" \
+       TMPDIR=/var/cache/vdr-plugin-burn ISODIR=/video/iso all || return 1
+  
+  cp ${startdir}/files/pxsup2dast.c .								|| return 1
+  sed -e 's/getline/getline_/g' -i pxsup2dast.c							|| return 1
+  /bin/sh pxsup2dast.c										|| return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins								|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/				|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins								|| return 1
+  install -m 644 ${startdir}/files/plugin.burn.conf	$pkgdir/etc/vdr/plugins/
+
+  mkdir -p $pkgdir/usr/lib/vdr-plugin-burn							|| return 1
+  #install -m 755 burn-buffers                     $pkgdir/usr/lib/vdr-plugin-burn/		|| return 1
+  install -m 755 pxsup2dast                $pkgdir/usr/lib/vdr-plugin-burn/		|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-plugin-burn/counters						|| return 1
+  install -m 755 vdrburn-archive.sh               $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 755 vdrburn-dvd.sh                   $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 644 burn/menu-button.png             $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 644 burn/menu-silence.mp2            $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 644 burn/menu-bg.png                 $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 644 burn/ProjectX.ini                $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 644 ${startdir}/files/template.png              $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 755 ${startdir}/files/grab.sh                   $pkgdir/usr/share/vdr-plugin-burn/		|| return 1
+  install -m 644 burn/counters/standard           $pkgdir/usr/share/vdr-plugin-burn/counters/	|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr/command-hooks							|| return 1
+  install -m 644 ${startdir}/files/commands.vdr-burn.conf    $pkgdir/usr/share/vdr/command-hooks/		|| return 1
+
+  mkdir -p $pkgdir/var/cache/vdr-plugin-burn							|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/plugins/burn/counters						|| return 1
+  mkdir -p $pkgdir/var/lib/vdr/plugins/burn/skins/Grabbed					|| return 1
+
+  # links
+  mkdir -p $pkgdir/var/lib/vdr/plugins/burn							|| return 1
+  cd $pkgdir/var/lib/vdr/plugins/burn								|| return 1
+  ln -s ../../../../../usr/share/fonts/TTF/Vera.ttf                 Vera.ttf					|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-burn/menu-button.png    menu-button.png				|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-burn/menu-silence.mp2   menu-silence.mp2				|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-burn/menu-bg.png	      menu-bg.png				|| return 1
+  ln -s ../../../../../usr/share/vdr-plugin-burn/ProjectX.ini       ProjectX.ini				|| return 1
+}
+

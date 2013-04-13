@@ -1,0 +1,29 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_packagename=dummydevice
+pkgname=vdr-plugin-$_packagename
+pkgver=1.0.2
+revision=1
+pkgrel=1
+arch=(i686 x86_64 arm)
+pkgdesc="VDR-Plugin dummy device VDR."
+url="http://phivdr.dyndns.org/vdr/vdr-dummydevice/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=()
+source=(http://phivdr.dyndns.org/vdr/vdr-dummydevice/vdr-$_packagename-$pkgver.tgz)
+md5sums=('92b2bfaaaf0b4c98aa557dc263b1e581')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_packagename-${pkgver}
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+}

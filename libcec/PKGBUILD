@@ -1,0 +1,55 @@
+# Contributor: Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=libcec
+pkgver=20121209
+pkgrel=1
+pkgdesc="USB CEC Adaptor communication Library"
+url="https://github.com/Pulse-Eight/libcec"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=('lockdev')
+makedepends=('git' 'gcc' 'autoconf' 'lockdev-xbmc')
+source=()
+md5sums=()
+conflicts=()
+options=(!libtool)
+
+
+build() {
+  
+  _gitroot="https://github.com/Pulse-Eight/libcec.git"
+  _gitname="libcec"
+  _gitid=e2b8f1ca47e1ff9579d6b92072556ada8cb1465e
+  _prefix=/usr
+
+  cd ${srcdir}
+
+  if [ -d "${_gitname}" ] ; then
+    cd "${_gitname}"
+    git pull --rebase 
+  else
+    git clone "${_gitroot}" "${_gitname}"
+  fi
+
+  if [ -d "$srcdir/$_gitname-build" ]; then
+    rm -r "$srcdir/$_gitname-build"
+  fi
+
+  cp -r "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  if [ -e $srcdir/${pkgname}-build ]; then
+    rm -rf $srcdir/${pkgname}-build
+  fi
+
+  cp -r $srcdir/${pkgname} $srcdir/${pkgname}-build
+  cd $srcdir/${pkgname}-build
+  git checkout "${_gitid}"
+
+  autoreconf -vif
+  ./configure --prefix=/usr
+
+  make
+
+  make DESTDIR=$pkgdir install
+}

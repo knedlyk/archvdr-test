@@ -1,0 +1,6 @@
+begin
+ prog = irexec
+ button = Frontend
+ config = /var/lib/vdr/vdr-client start
+end
+

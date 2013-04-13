@@ -1,0 +1,21 @@
+diff -uNr epgsearch-0.9.25.beta13/mail.c epgsearch-0.9.25.beta13-patched/mail.c
+--- epgsearch-0.9.25.beta13/mail.c	2009-03-23 19:10:43.000000000 +0100
++++ epgsearch-0.9.25.beta13-patched/mail.c	2009-04-13 10:52:48.000000000 +0200
+@@ -34,7 +34,7 @@
+ extern bool isUTF8;
+ using namespace std;
+ 
+-string cMailNotifier::MailCmd = "sendEmail.pl";
++string cMailNotifier::MailCmd = "sendEmail";
+ 
+ // ----------------------
+ // cMailTimerNotification
+@@ -204,7 +204,7 @@
+ {
+     string mailCmd = MailCmd;
+     LogFile.Log(3, "starting mail script: %s with parameters: %s", mailCmd.c_str(), ScriptArgs.c_str());
+-    if (mailCmd == "sendEmail.pl") // beautify output for standard script
++    if (mailCmd == "sendEmail") // beautify output for standard script
+ 	ScriptArgs += " | cut -d\" \" -f 6-";
+ 
+     cCommand cmd; 

@@ -1,0 +1,31 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr-addon-acpiwakeup
+pkgver=0.0.10
+revision=1
+pkgrel=1
+arch=('i686' 'x86_64')
+url=""
+license=(GPL)
+pkgdesc=""
+depends=('vdr' )
+source=(S90.acpiwakeup
+        vdr-addon-acpiwakeup.conf
+        vdr-addon-acpiwakeup.init)
+
+backup=('etc/vdr/vdr-addon-acpiwakeup.conf')
+
+md5sums=('28f184c0ef8fbf963c3bcc4f1649fa73'
+         'c505ff410941c91dc36a5bca36c6dd3c'
+         '5df7cce87e15a260ff57d91624ecabe5')
+
+build() {
+	mkdir -p $pkgdir/etc/rc.d									|| return 1
+	install -m 755 ../vdr-addon-acpiwakeup.init		$pkgdir/etc/rc.d/vdr-addon-acpiwakeup	|| return 1
+
+	mkdir -p $pkgdir/usr/share/vdr/shutdown-hooks							|| return 1
+	install -m 755 ../S90.acpiwakeup			$pkgdir/usr/share/vdr/shutdown-hooks	|| return 1
+
+	mkdir -p $pkgdir/etc/vdr									|| return 1
+	install -m 644 ../vdr-addon-acpiwakeup.conf		$pkgdir/etc/vdr				|| return 1
+}

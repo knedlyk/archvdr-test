@@ -1,0 +1,9 @@
+#!/bin/sh
+
+DISPLAY=127.0.0.1:1 
+export DISPLAY
+export HOME=/var/lib/vdr
+svdrpsend -p 2001 -d 127.0.0.1 "REMO OFF"
+#sudo su - vdr -c "/var/lib/vdr/vdr-xbmc"
+sudo su - vdr -c "/usr/bin/xinit /usr/bin/xbmc-standalone -- :1 "
+svdrpsend -p 2001 -d 127.0.0.1 "REMO ON"

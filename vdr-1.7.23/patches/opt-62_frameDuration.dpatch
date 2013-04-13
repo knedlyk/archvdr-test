@@ -1,0 +1,23 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## opt-62_frameDuration.dpatch http://vdrportal.de/board/thread.php?postid=951626#post951626
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad '--exclude=CVS' '--exclude=.svn' '--exclude=.git' '--exclude=.arch' '--exclude=.hg' '--exclude=_darcs' '--exclude=.bzr' vdr-1.7.16~/remux.c vdr-1.7.16/remux.c
+--- vdr-1.7.16~/remux.c	2010-06-05 15:32:15.000000000 +0200
++++ vdr-1.7.16/remux.c	2010-10-31 13:35:53.564167001 +0100
+@@ -863,10 +863,8 @@
+                              frameDuration = 3600; // PAL, 25 fps, timing with jitter
+                           else if (Delta % 3003 == 0)
+                              frameDuration = 3003; // NTSC, 29.97 fps
+-                          else if (abs(Delta - 1800) <= 1) {
+-                             frameDuration = 3600; // PAL, 25 fps
+-                             framesPerPayloadUnit = -2;
+-                             }
++                          else if (abs(Delta - 1800) <= 1)
++                             frameDuration = 1800; // PAL, 50 fps
+                           else if (Delta == 1501) {
+                              frameDuration = 3003; // NTSC, 29.97 fps
+                              framesPerPayloadUnit = -2;

@@ -1,0 +1,11 @@
+--- a/xine/ts2es.c	2010-05-12 06:31:13.000000000 +0200
++++ b/xine/ts2es.c	2010-05-12 07:02:26.000000000 +0200
+@@ -140,7 +140,7 @@
+     return NULL;
+   }
+   if (!ts_HAS_PAYLOAD(data)) {
+-    LOGDBG("ts2es: no payload, size %d", bytes);
++    //LOGDBG("ts2es: no payload, size %d", bytes);
+     return NULL;
+   }
+ 

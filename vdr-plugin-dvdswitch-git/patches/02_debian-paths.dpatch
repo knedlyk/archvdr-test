@@ -1,0 +1,30 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 04_debian-paths.dpatch 
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Change paths do debian conform paths.
+
+@DPATCH@
+diff -urNad vdr-plugin-dvdswitch-0.1.5~/setup.c vdr-plugin-dvdswitch-0.1.5/setup.c
+--- vdr-plugin-dvdswitch-0.1.5~/setup.c	2009-10-19 19:10:22.000000000 +0200
++++ vdr-plugin-dvdswitch-0.1.5/setup.c	2009-10-19 19:32:30.299191975 +0200
+@@ -13,7 +13,7 @@
+   HideMenuEntry = 0;
+   strncpy(MenuName, "DVDSwitch", memberof(MenuName));
+   CustomMenuName = false;
+-  strncpy(ImageDir, "/video/dvd", memberof(ImageDir));
++  strncpy(ImageDir, "/var/lib/video/film/dvd", memberof(ImageDir));
+   ImageDirPerParam = false;
+   ViewFreeDiskSpace = 1;
+ 
+@@ -52,8 +52,8 @@
+   kOk = 4;
+ 
+   DVDPluginExist = false;
+-  strncpy(DVDReadScript, "/usr/local/bin/dvdswitch_readdvd.sh",memberof(DVDReadScript));
+-  strncpy(DVDWriteScript, "/usr/local/bin/dvdswitch_writedvd.sh",memberof(DVDWriteScript));
++  strncpy(DVDReadScript, "/usr/share/vdr-plugin-dvdswitch/dvdswitch_readdvd.sh",memberof(DVDReadScript));
++  strncpy(DVDWriteScript, "/usr/share/vdr-plugin-dvdswitch/dvdswitch_writedvd.sh",memberof(DVDWriteScript));
+ }
+ 
+ cDVDSwitchSetup::~ cDVDSwitchSetup(void)

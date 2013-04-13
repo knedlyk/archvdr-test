@@ -1,0 +1,67 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr-channellogos
+pkgver=0.0.3
+revision=3
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin to sort menus in VDR."
+url="http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=()
+source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons/${pkgname}_${pkgver}.orig.tar.gz)
+md5sums=('c33c2ffe6d62d517616568b7f7d09900')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/Aluminium
+
+  mkdir -p $pkgdir/usr/share/vdr-channellogos					|| return 1
+  install -m 644 logos/*	$pkgdir/usr/share/vdr-channellogos/		|| return 1
+
+  cd $pkgdir/usr/share/vdr-channellogos						|| return 1
+            ln -s "WDR.mng"                            "WDR Köln.mng";\
+            ln -s "WDR.mng"                            "WDR Düsseldorf.mng";\
+            ln -s "WDR.mng"                            "WDR Münster.mng";\
+            ln -s "Hessen Fernsehen.mng"               "hr-fernsehen.mng";\
+            ln -s "SWR-FS.mng"                         "SR Fernsehen Südwest.mng";\
+            ln -s "SWR-FS.mng"                         "SÜDWEST BW.mng";\
+            ln -s "SWR-FS.mng"                         "SÜDWEST RP.mng";\
+            ln -s "MDR FERNSEHEN.mng"                  "MDR THÜRINGEN.mng";\
+            ln -s "TV.B,TV.BERLIN.mng"                 "TV.BERLIN.mng";\
+            ln -s "ONTV,ONTV Regional.mng"             "ONTV Regional.mng";\
+            ln -s "13 TH,13 TH STREET.mng"             "13 TH STREET.mng";\
+            ln -s "BLUE 1,BLUE MOVIE 1.mng"            "BLUE MOVIE 1.mng";\
+            ln -s "BLUE 2,BLUE MOVIE 2.mng"            "BLUE MOVIE 2.mng";\
+            ln -s "B-UHSE,BEATE-UHSE.TV.mng"           "BEATE-UHSE.TV.mng";\
+            ln -s "DISCOVERY,DISCOVERY CHANNEL.mng"    "DISCOVERY CHANNEL.mng";\
+            ln -s "GOD,GOD Channel.mng"                "GOD Channel.mng";\
+            ln -s "GOLDSTAR,GOLDSTAR TV.mng"           "GOLDSTAR TV.mng";\
+            ln -s "hcinema,hollywood cinema.mng"       "hollywood cinema.mng";\
+            ln -s "HEIMAT,HEIMATKANAL.mng"             "HEIMATKANAL.mng";\
+            ln -s "KRIMI,PREMIERE KRIMI.mng"           "PREMIERE KRIMI.mng";\
+            ln -s "lastmin,lastminute.de.mng"          "lastminute.de.mng";\
+            ln -s "NEUN LIVE,NEUN LIVE Television.mng" "NEUN LIVE Television.mng";\
+            ln -s "NOSTALGIE,PREMIERE NOSTALGIE.mng"   "PREMIERE NOSTALGIE.mng";\
+            ln -s "OTTO,OTTO SHOP.mng"                 "OTTO SHOP.mng";\
+            ln -s "PREM 1,PREMIERE 1.mng"              "PREMIERE 1.mng";\
+            ln -s "PREM 2,PREMIERE 2.mng"              "PREMIERE 2.mng";\
+            ln -s "PREM 3,PREMIERE 3.mng"              "PREMIERE 3.mng";\
+            ln -s "PREM 4,PREMIERE 4.mng"              "PREMIERE 4.mng";\
+            ln -s "PREM 5,PREMIERE 5.mng"              "PREMIERE 5.mng";\
+            ln -s "PREM 6,PREMIERE 6.mng"              "PREMIERE 6.mng";\
+            ln -s "PREM 7,PREMIERE 7.mng"              "PREMIERE 7.mng";\
+            ln -s "PREM A,PREMIERE Austria.mng"        "PREMIERE Austria.mng";\
+            ln -s "SERIE,PREMIERE SERIE.mng"           "PREMIERE SERIE.mng";\
+            ln -s "SPORT 1,PREMIERE SPORT 1.mng"       "PREMIERE SPORT 1.mng";\
+            ln -s "SPORT 2,PREMIERE SPORT 2.mng"       "PREMIERE SPORT 2.mng";\
+            ln -s "START,PREMIERE START.mng"           "PREMIERE START.mng";\
+            ln -s "TRAVEL,TV TRAVEL SHOP.mng"          "TV TRAVEL SHOP.mng"
+
+  mkdir -p $pkgdir/var/lib/vdr							|| return 1
+  cd $pkgdir/var/lib/vdr							|| return 1
+  ln -s /usr/share/vdr-channellogos logos					|| return 1
+}

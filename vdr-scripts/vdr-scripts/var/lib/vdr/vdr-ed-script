@@ -1,0 +1,48 @@
+#!/bin/sh 
+
+. /etc/default/vdrscripts
+. $SCRIPTDIR/vdr-functions
+
+case "$1" in
+frontend)
+	set_frontend $2
+	stop_client
+	;;
+frontendonly_restart)
+	stop_client
+	;;
+wlan)
+	$SCRIPTDIR/vdr-wlan $2
+	;;
+dmesg)
+	dmesg
+	;;
+syslog)
+	tail -n 200 /var/log/syslog 2>&1
+	;;
+backup)
+	sudo $SCRIPTDIR/vdr-backup-main &>/dev/null &
+	#/sbin/start-stop-daemon -S -b -x $SCRIPTDIR/vdr-backup-main -p /var/run/vdr_backup.pid
+	;;
+pstree)
+	pstree
+	;;
+reboot)
+	reboot
+	;;
+cpufreq)
+	cpufreq-set --min $2
+	;;
+mount)
+	sudo $SCRIPTDIR/vdr-mount
+	;;
+eject)
+	sudo /usr/bin/eject
+	;;
+*)
+	exit 1
+	;;
+esac
+
+exit 0
+

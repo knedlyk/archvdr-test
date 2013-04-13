@@ -1,0 +1,9 @@
+# arg 1:  the new package version
+post_install() {
+  chown -R vdr:vdr /var/lib/vdr
+  chown vdr:vdr /etc/default/vdrfrontend
+}
+
+post_upgrade() {
+  id vdr &>/dev/null || post_install
+}

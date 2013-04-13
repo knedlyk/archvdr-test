@@ -1,0 +1,95 @@
+#!/bin/sh
+
+. /etc/default/vdrscripts
+. $SCRIPTDIR/vdr-functions
+
+if [ -e /etc/default/vdrfrontend ]; then
+	. /etc/default/vdrfrontend
+fi
+
+rm -f $VDRHOME/doXbmcExitAction
+rm -f $VDRHOME/.xinitrc
+
+case $1 in
+start)
+	stop_client
+	irexec --daemon
+	iecset audio on
+
+	start_x
+
+	#export INTEL_BATCH="1"
+	#export LIBGL_ALWAYS_INDIRECT="1"
+	export DISPLAY=127.0.0.1:0.0
+
+	REMOCMD="svdrpsend -p 2001 -d 127.0.0.1 REMO ON"
+
+	case $FRONTEND in
+		cxfevaapi)
+    CLIENT="cxfe -fs -ao alsa -vo vaapi -d -p tvtime:method=use_vo_driver netvdr:/127.0.0.1"
+			;;
+		cxfevdpau)
+    CLIENT="cxfe -fs -ao alsa -vo vdpau -d -p tvtime:method=use_vo_driver netvdr:/127.0.0.1"
+			;;
+		xinevdpau)
+    CLIENT="xine --no-gui --no-logo --no-splash --deinterlace -pq -f -A alsa -V vdpau --post vdr --post vdr_audio --post vdr_video --post tvtime:method=use_vo_driver vdr:/var/lib/vdr/plugins/xine-fifo/fifo/stream#demux:mpeg_pes --config=/var/lib/vdr/.xine/config"
+			;;
+		xinevaapi)
+    CLIENT="xine --no-gui --no-logo --no-splash -f -A alsa -V vaapi --post vdr --post vdr_audio --post vdr_video --post tvtime:method=use_vo_driver vdr:/var/lib/vdr/plugins/xine-fifo/fifo/stream#demux:mpeg_pes --config=/var/lib/vdr/.xine/config_ffmpeg"
+			;;
+		xinexv)
+    CLIENT="xine --no-gui --no-logo --no-splash --deinterlace -pq -A alsa -f -V xv --post vdr --post vdr_video --post tvtime:method=Greedy2Frame,enabled=1,pulldown=vektor,framerate_mode=full,judder_correction=0,use_progressive_frame_flag=0,chroma_filter=0,cheap_mode=0 vdr:/var/lib/vdr/plugins/xine-fifo/fifo/stream#demux:mpeg_pes --config=/var/lib/vdr/.xine/config"
+			;;
+		sxfevdpau)
+			CLIENT="vdr-sxfe --audio=alsa --video=vdpau --post vdr --post vdr_video --post tvtime:method=use_vo_driver --reconnect --aspect=default --fullscreen xvdr+tcp://127.0.0.1:37890 --tcp --config=/var/lib/vdr/.xine/config_xineliboutput"
+			;;
+		sxfexv)
+			CLIENT="vdr-sxfe --audio=alsa --video=xv --reconnect --post vdr --post vdr_video --post tvtime:method=Greedy2Frame,enabled=1,pulldown=vektor,framerate_mode=full,judder_correction=0,use_progressive_frame_flag=0,chroma_filter=0,cheap_mode=0 --aspect=default --fullscreen xvdr+tcp://127.0.0.1:37890 --tcp --config=/var/lib/vdr/.xine/config_xineliboutput"
+			;;
+		sxfevaapi)
+			CLIENT="vdr-sxfe --audio=alsa --video=vaapi --reconnect --post vdr_video --post tvtime:method=use_vo_driver --aspect=default --fullscreen xvdr+tcp://127.0.0.1:37890 --tcp --config=/var/lib/vdr/.xine/config_ffmpeg"
+			;;
+
+		xbmc)
+			CLIENT="${SCRIPTDIR}/vdr-xbmc"
+			REMOCMD="svdrpsend -p 2001 -d 127.0.0.1 REMO OFF"
+			;;
+
+		rxvt)
+			rxvt
+			exit 1
+			;;
+
+	esac
+
+  PID=`pidof X`
+
+  if [ "$PID" = "" ]; then
+    exit
+	fi
+
+  #if [ $FRONTEND == "xbmc" || $FRONTEND == "xinexv" || $FRONTEND == "xinevdpau" ]; then
+	  wait_vdr
+  #fi
+
+	xset s off
+	#xset -dpms
+	#DISPLAY=:0 /usr/bin/nvidia-settings -a OverscanCompensation=100
+
+	$REMOCMD
+
+	$CLIENT
+	;;
+
+restart)
+	$0 start
+	;;
+stop)
+	stop_client
+	;;
+
+
+esac
+
+exit 0
+

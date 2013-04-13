@@ -1,0 +1,27 @@
+# Maintainer : Edgar Hucek <gimli at dark green dot com>
+
+_pluginname=femon
+pkgname=vdr-plugin-${_pluginname}
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="VDR plugin that displays channel signal informations."
+arch=('i686' 'x86_64')
+url="http://www.saunalahti.fi/~rahrenbe/vdr/femon/"
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+install=
+source=(http://www.saunalahti.fi/~rahrenbe/vdr/femon/files/vdr-$_pluginname-$pkgver.tgz)
+
+build() {
+  cd "$startdir/src/${_pluginname}-$pkgver"
+
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+}
+package() {  
+  cd "$startdir/src/${_pluginname}-$pkgver"
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
+  }
+
+md5sums=('b3977c1098df24492ada218bbe73df32')

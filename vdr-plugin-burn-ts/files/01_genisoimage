@@ -1,0 +1,40 @@
+--- vdr-plugin-burn-0.2.0~beta6.orig/vdrburn-dvd.sh
++++ vdr-plugin-burn-0.2.0~beta6/vdrburn-dvd.sh
+@@ -247,7 +247,7 @@ case $1 in
+ 	;;
+ 
+ 	mkiso)
+-		$IO_NICE mkisofs -V "$DISC_ID" -dvd-video "$DVDAUTHOR_PATH" > "$ISO_FILE"
++		$IO_NICE genisoimage -V "$DISC_ID" -dvd-video "$DVDAUTHOR_PATH" > "$ISO_FILE"
+ 	;;
+ 
+ 	burndir)
+@@ -260,7 +260,7 @@ case $1 in
+ 	;;
+ 
+ 	pipeiso)
+-		$IO_NICE mkisofs -V "$DISC_ID" -dvd-video "$DVDAUTHOR_PATH" \
++		$IO_NICE genisoimage -V "$DISC_ID" -dvd-video "$DVDAUTHOR_PATH" \
+ 			| tee "$ISO_FILE" > "$ISO_PIPE"
+ 	;;
+ 
+--- vdr-plugin-burn-0.2.0~beta6.orig/vdrburn-archive.sh
++++ vdr-plugin-burn-0.2.0~beta6/vdrburn-archive.sh
+@@ -14,7 +14,7 @@ echo "Script invokation: $*"
+ 
+ case $1 in
+ 	mkiso)
+-		mkisofs -V "$DISC_ID" -f -r -J -l -allow-lowercase -allow-multidot \
++		genisoimage -V "$DISC_ID" -f -r -J -l -allow-lowercase -allow-multidot \
+ 				-graft-points $GRAFT_POINTS >"$ISO_FILE"
+ 	;;
+ 
+@@ -29,7 +29,7 @@ case $1 in
+ 	;;
+ 
+ 	pipeiso)
+-		mkisofs -V "$DISC_ID" -f -r -J -l -allow-lowercase -allow-multidot \
++		genisoimage -V "$DISC_ID" -f -r -J -l -allow-lowercase -allow-multidot \
+ 				-graft-points $GRAFT_POINTS | tee "$ISO_FILE" > $ISO_PIPE
+ 	;;
+ 

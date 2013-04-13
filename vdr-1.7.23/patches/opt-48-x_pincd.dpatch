@@ -1,0 +1,7 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## opt-48-x_pincd.dpatch by  <Gerald Dachs <gda@dachsweb.de>>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@

@@ -1,0 +1,40 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=burnbackgrounds
+pkgname=vdr-$_pkgname
+pkgver=0.0.1
+revision=4
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin burnbackgrounds for burn plugin."
+url="http://www.xeatre.tv/community/burn/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=('etc/vdr/plugins/plugin.burn.conf')
+source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons/${pkgname}_${pkgver}.orig.tar.gz
+	http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons/${pkgname}_${pkgver}-${revision}.diff.gz)
+install=$pkgname.install
+md5sums=('19128e9c3a8e0eb2879c32535652e8f3'
+         'f0483a4b394ad082452aecddf88c6968')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/vdrdevel-$_pkgname-${pkgver}.orig
+
+  patch -p1 -i ../${pkgname}_${pkgver}-${revision}.diff						|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-burnbackgrounds						|| return 1
+  install -m 644 *.png		$pkgdir/usr/share/vdr-burnbackgrounds/				|| return 1
+
+  # links
+  FILES="doku kinder kino musik natur sport"
+  for i in $FILES
+  do
+	  mkdir -p $pkgdir/var/lib/vdr/plugins/burn/skins/fo-$i					|| return 1
+	  cd $pkgdir/var/lib/vdr/plugins/burn/skins/fo-$i					|| return 1
+	  ln -s ../../../../../../../usr/share/vdr-burnbackgrounds/vorlage_$i.png menu-bg.png			|| return 1
+  done
+}
+

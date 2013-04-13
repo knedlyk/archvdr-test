@@ -1,0 +1,23 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr-sysinfo
+pkgver=2008.06.18
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://www.e-tobi.net/vdr-experimental/pool-sid/source/base/"
+license=(GPL)
+pkgdesc=""
+depends=('vdr' )
+source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/base/${pkgname}_${pkgver}.tar.gz)
+md5sums=('783c7c635417281f260f75defd301bbf')
+
+build() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+
+  mkdir -p ${pkgdir}/usr/share/vdr-sysinfo/			|| return 1
+  cp -r lib		${pkgdir}/usr/share/vdr-sysinfo/	|| return 1
+  cp -r scripts		${pkgdir}/usr/share/vdr-sysinfo/	|| return 1
+
+  mkdir -p ${pkgdir}/usr/bin/					|| return 1
+  install -m 755 vdr-sysinfo		${pkgdir}/usr/bin/	|| return 1
+}

@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## 90_remote-0.4.0-1.5.7.dpatch by Thomas Günther <tom@toms-cafe.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fixes compilation for VDR >= 1.5.7 if VDRDIR contains only header files
+## DP: (e.g. Debian package).
+
+@DPATCH@
+diff -urNad vdr-plugin-remote-0.4.0~/Makefile vdr-plugin-remote-0.4.0/Makefile
+--- vdr-plugin-remote-0.4.0~/Makefile	2007-10-06 14:58:06.000000000 +0200
++++ vdr-plugin-remote-0.4.0/Makefile	2007-11-27 23:38:34.000000000 +0100
+@@ -81,7 +81,7 @@
+ 
+ ### Internationalization (I18N):
+ 
+-ifneq ($(shell grep 'LOCALEDIR' $(VDRDIR)/Makefile),)
++ifneq ($(shell grep 'I18N_DEFAULT_LOCALE' $(VDRDIR)/i18n.h),)
+ PODIR     = po
+ LOCALEDIR = $(VDRDIR)/locale
+ I18Npo    = $(wildcard $(PODIR)/*.po)

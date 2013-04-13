@@ -1,0 +1,16 @@
+--- libva/test/Makefile.am	2012-04-10 10:34:13.722250282 +0200
++++ libva-build/test/Makefile.am	2012-04-10 10:42:19.589472216 +0200
+@@ -23,10 +23,10 @@
+ 
+ AM_CFLAGS = -I$(top_srcdir)/va -I$(top_srcdir)/test/basic -I$(top_srcdir)/src/x11
+ 
+-SUBDIRS = basic decode encode putsurface vainfo v4l_h264
++SUBDIRS = basic vainfo
+ 
+ if BUILD_EGL_TEST
+ SUBDIRS += egl
+ endif
+ 
+-EXTRA_DIST = loadsurface.h loadsurface_yuv.h
+\ Kein Zeilenumbruch am Dateiende.
++EXTRA_DIST = loadsurface.h loadsurface_yuv.h

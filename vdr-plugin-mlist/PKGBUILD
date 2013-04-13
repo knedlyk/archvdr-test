@@ -1,0 +1,35 @@
+# Maintainer :  Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=mlist
+pkgname=vdr-plugin-$_pkgname
+pkgver=0.0.5
+revision=1
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin display last VDR messages."
+url="http://www.joachim-wilke.de/?alias=vdr-mlist"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=()
+source=("http://www.joachim-wilke.de/dl.htm?ct=gz&dir=vdr-mlist&file=vdr-$_pkgname-$pkgver.tgz")
+md5sums=('adf19d493ee71c19960550fd0eacca22')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  sed -e 's/include\/vdr\///g' -i Makefile
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       INCLUDES="-I/usr/include -I/usr/include/vdr" \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" \
+       HASLOCALE="1" || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+}

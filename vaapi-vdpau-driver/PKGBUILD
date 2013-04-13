@@ -1,0 +1,51 @@
+# $Id$
+# Maintainer: Edgar Hucek <gimli at dark-green dot com>
+pkgname=vaapi-vdpau-driver
+pkgver=20111210
+pkgrel=1
+pkgdesc="VDPAU backend for VA API"
+arch=('i686' 'x86_64')
+url="http://cgit.freedesktop.org/vaapi/vdpau-driver/"
+license=('GPL')
+depends=('libva' 'libvdpau')
+makedepends=('mesa')
+options=('!libtool')
+source=(set_background_color.patch)
+md5sums=('a57435ff1b743fb9d95949b2a1b300b1')
+conflicts=(vdpau-video)
+
+build() {
+  cd "${srcdir}"
+
+  _gitroot="git://anongit.freedesktop.org/vaapi/vdpau-driver"
+  _gitname="vaapi-vdpau-driver"
+
+  _gitid=5a3fc5f7d27eae6c433b6331d5eed76b0cf30f0c
+
+  if [ -d "${_gitname}" ] ; then
+    cd "${_gitname}" && git checkout master && git pull origin 
+    [[ "${_gitid}" ]] && git checkout "${_gitid}"
+    msg "The local files are updated."
+  else
+    git clone "${_gitroot}" "${_gitname}"
+    cd "${_gitname}"
+    [[ "${_gitid}" ]] && git checkout "${_gitid}"
+  fi
+
+  if [ -d "$srcdir/$_gitname-build" ]; then
+    rm -r "$srcdir/$_gitname-build"
+  fi
+
+  cp -r "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+
+  patch -p1 -i ${srcdir}/set_background_color.patch || return 1
+
+  ./autogen.sh --prefix=/usr --enable-debug
+  make
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim:set ts=2 sw=2 et:
+
+

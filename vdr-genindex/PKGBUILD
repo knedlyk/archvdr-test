@@ -1,0 +1,27 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=genindex
+pkgname=vdr-$_pkgname
+pkgver=0.1.3
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin for Multifeed channels."
+url="http://www.muempf.de/"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+source=(http://www.muempf.de/down/$_pkgname-$pkgver.tar.gz)
+md5sums=('da67b1ae819bf9c064af49ab64dbf27b')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  make || return 1
+
+  mkdir -p $pkgdir/usr/bin								|| return 1
+  install -m 755 genindex			$pkgdir/usr/bin				|| return 1
+
+
+}

@@ -1,0 +1,11 @@
+--- xine-ui/src/xitk/stream_infos.c	2010-08-21 01:32:22.000000000 +0200
++++ xine-ui-build/src/xitk/stream_infos.c	2010-08-21 01:34:41.000000000 +0200
+@@ -188,6 +188,8 @@
+   char        *ident   = NULL;
+   xitk_recode_t *xr;
+   
++  return NULL;
++
+   if(!stream)
+     return NULL;
+   

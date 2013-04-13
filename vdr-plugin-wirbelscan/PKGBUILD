@@ -1,0 +1,32 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=wirbelscan
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.0.7
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc="A channelscan plugin for VDR"
+url="http://wirbel.htpc-forum.de"
+license="GPL"
+depends=('vdr' 'zvbi')
+makedepends=('gcc' 'vdr' 'zvbi')
+backup=()
+source=(http://wirbel.htpc-forum.de/wirbelscan/vdr-wirbelscan-0.0.7.tgz)
+md5sums=('b07d57cecbb0dc3cbf1d13f3d47bc7f3')
+
+build() {
+  unset CXXFLAGS
+
+  cd $startdir/src/wirbelscan-0.0.7
+  patch -p1 < ../../receiver-api-fixes.patch
+  mkdir -p $pkgdir/usr/lib/vdr/plugins
+  mkdir -p $pkgdir/usr/share/locale
+
+  make VDRDIR="/usr/include/vdr" LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all \
+       INCLUDES="-I /usr/include/vdr"       || return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins 						|| return 1
+  install -m 755 libvdr-*.so.* $pkgdir/usr/lib/vdr/plugins/			|| return 1
+  
+}

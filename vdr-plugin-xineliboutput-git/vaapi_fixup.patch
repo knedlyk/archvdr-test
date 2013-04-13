@@ -1,0 +1,51 @@
+diff -uNr xineliboutput/xine_input_vdr.c xineliboutput-patched/xine_input_vdr.c
+--- xineliboutput/xine_input_vdr.c	2011-08-29 09:05:53.000000000 +0200
++++ xineliboutput-patched/xine_input_vdr.c	2011-08-29 10:06:18.000000000 +0200
+@@ -1702,6 +1702,9 @@
+ 
+ static void queue_blank_yv12(vdr_input_plugin_t *this)
+ {
++  printf("queue_blank_yv12\n");
++  return;
++
+   if(!this || !this->stream || !this->stream->video_out)
+     return;
+ 
+@@ -4766,7 +4769,16 @@
+ 	     this->stream->video_fifo->fifo_size);
+     } else {
+       vdr_x_demux_control_newpts(this->stream, 0, BUF_FLAG_SEEK);
+-      queue_blank_yv12(this);
++      // TODO: find a smarter way to handle this.
++      //       xineliboutput does not make a clean
++      //       in opening and closing streams
++      //       so the xine plugins get a chance to reinitialize
++      //       correct.
++      //       vaapi implementation in xine have a problem
++      //       when the decoder plugin is open and inited
++      //       the output plugin and then getting
++      //       different image formats for outputing.
++      //queue_blank_yv12(this);
+     }
+     pthread_mutex_unlock(&this->lock);
+ 
+@@ -4968,8 +4980,17 @@
+ 
+         this->read_timeouts++;
+ 	if (this->read_timeouts > 80) {
+-	  LOGMSG("No data in 8 seconds, queuing no signal image");
+-	  queue_nosignal(this);
++      // TODO: find a smarter way to handle this.
++      //       xineliboutput does not make a clean
++      //       in opening and closing streams
++      //       so the xine plugins get a chance to reinitialize
++      //       correct.
++      //       vaapi implementation in xine have a problem
++      //       when the decoder plugin is open and inited
++      //       the output plugin and then getting
++      //       different image formats for outputing.
++	  //LOGMSG("No data in 8 seconds, queuing no signal image");
++	  //queue_nosignal(this);
+ 	  this->read_timeouts = 0;
+ 	}
+       } else {

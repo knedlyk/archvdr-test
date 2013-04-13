@@ -1,0 +1,31 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=vdr-scripts
+pkgver=0.0.1
+pkgrel=12
+pkgdesc="VDR Scripts to make setting up a stand alone vdr easier."
+url=""
+arch=('i686' 'x86_64' 'arm')
+license=('GPL')
+depends=('vdr')
+optdepends=('vdr-plugin-xine: graphical output'
+            'vdr-plugin-signal: wait until vdr writes /tmp/signal.log')
+source=()
+md5sums=()
+install=$pkgname.install
+backup=('etc/default/vdrfrontend')
+
+package() {
+	#install -g 0 -o 0 -m 0755 -d ${startdir}/pkg/etc/rc.d ${startdir}/pkg/var/lib/vdr
+
+	cd ${startdir}/${pkgname}
+	for i in `find`
+	do
+		if [ -d $i ]; then
+			install -g 0 -o 0 -m 0755 -d ${pkgdir}/${i}
+		else
+			install -g 0 -o 0 -m 0755 $i ${pkgdir}/${i}
+		fi
+	done
+	find ${pkgdir}/* -name '.svn' | xargs rm -rf
+}

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+[ -x /usr/bin/netcfg ] || exit 0
+
+NETNAME="fw1"
+
+case "$1" in
+start)
+	/usr/bin/netcfg ${NETNAME}
+	;;
+
+stop)
+	/usr/bin/netcfg -d ${NETNAME}
+	;;
+
+restart)
+	$0 stop
+	$0 start
+	;;
+
+*)
+	echo "Usage: vdr-wlan {start|stop|restart}"
+	exit 1
+	;;
+esac
+
+exit 0
+

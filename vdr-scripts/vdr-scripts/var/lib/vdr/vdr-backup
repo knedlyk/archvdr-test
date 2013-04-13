@@ -1,0 +1,40 @@
+#!/bin/sh
+
+
+. /etc/default/vdrscripts
+
+svdrpsend -p 2001 -d 127.0.0.1 MESG "Backup start"
+
+DATE=`date +%H%M%d%m%Y`
+mkdir -p /backup/${BACKUPNAME}
+cd /backup
+rm -f /backup/${BACKUPNAME}-*
+apt-get clean
+rm -f /var/log/*.gz
+rm -f /var/log/*.0
+rm -f /var/log/*.1
+rm -f /var/log/*.old
+pacman -Scc --noconfirm
+rm -f /tmp/*.jpg
+rm -f /tmp/vdr-err.*
+echo "" > /root/.bash_history
+echo "" > /var/lib/vdr/.bash_history
+for i in /var/log/*.log
+do
+	echo "" > $i
+done
+echo "" > /var/log/messages
+echo "" > /var/log/maillog
+echo "" > /var/log/lircd
+echo "" > /var/log/secure
+echo "" > /var/log/spooler
+echo "" > /var/log/lastlog
+echo "" > /var/log/faillog
+mount -o bind / ${BACKUPNAME}
+
+tar --numeric-owner -czpf ${BACKUPNAME}-$DATE.tar.gz --exclude ${BACKUPNAME}/tmp/vdr-xine --exclude ${BACKUPNAME}/var/log/ --exclude ${BACKUPNAME}/backup/gentoo --exclude ${BACKUPNAME}/backup/${BACKUPNAME}* --exclude ${BACKUPNAME}/backup/${BACKUPNAME}*.tar.gz --exclude ${BACKUPNAME}/var/lib/video.00/* --exclude ${BACKUPNAME}/var/lib/video.01/* ${BACKUPNAME} >${BACKUPNAME}-$DATE.log  2>&1
+md5sum ${BACKUPNAME}-$DATE.tar.gz > ${BACKUPNAME}-$DATE.tar.gz.md5
+
+umount ${BACKUPNAME}
+
+svdrpsend -p 2001 -d 127.0.0.1 MESG "Backup done"

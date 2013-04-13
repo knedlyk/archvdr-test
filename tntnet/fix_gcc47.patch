@@ -1,0 +1,18 @@
+Description: Include unistd.h to fix FTBFS with gcc-4.7
+ tntnet (2.1-1ubuntu1) quantal; urgency=low
+ .
+   * Add missing header to fix FTBFS with gcc4.7 on non-amd64 archs
+Author: Micah Gersten <micahg@ubuntu.com>
+
+Index: tntnet-2.1/framework/defcomp/static.cpp
+===================================================================
+--- tntnet-2.1.orig/framework/defcomp/static.cpp	2012-05-26 12:31:24.704352061 +0300
++++ tntnet-2.1/framework/defcomp/static.cpp	2012-05-26 12:34:14.060349967 +0300
+@@ -34,6 +34,7 @@
+ #include <tnt/http.h>
+ #include <tnt/httpheader.h>
+ #include <tnt/comploader.h>
++#include <unistd.h>
+ #include <fstream>
+ #include <cxxtools/log.h>
+ #include <cxxtools/systemerror.h>

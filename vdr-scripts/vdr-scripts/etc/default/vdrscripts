@@ -1,0 +1,6 @@
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+VDRHOME=/var/lib/vdr
+SCRIPTDIR=/var/lib/vdr
+INITDIR=/etc/rc.d
+BACKUPNAME=archvdr-bcm
+ROUTER=192.168.10.1

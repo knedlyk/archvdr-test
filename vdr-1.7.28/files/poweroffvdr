@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# poweroffvdr - Tobias Grimm <tg@e-tobi.net>
+# -----------
+#
+# Hit's the virtual power key of VDR
+#
+
+at now <<EOF
+  /usr/lib/vdr/svdrpsend.pl -d 127.0.0.1 -p 2001 HITK Power
+EOF

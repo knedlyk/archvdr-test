@@ -1,0 +1,83 @@
+Section "ServerLayout"
+	Identifier     "X.org Configured"
+	Screen      0  "Screen0" 0 0
+	InputDevice    "Mouse0" "CorePointer"
+	InputDevice    "Keyboard0" "CoreKeyboard"
+EndSection
+
+Section "Module"
+	Load  "dbe"
+	Load  "record"
+	Load  "glx"
+	Load  "dri2"
+	Load  "dri"
+	Load  "extmod"
+EndSection
+
+Section "InputDevice"
+	Identifier  "Keyboard0"
+	Driver      "kbd"
+  Option      "XkbLayout" "de"
+  Option      "XkbVariant" "nodeadkeys"
+EndSection
+
+Section "InputDevice"
+	Identifier  "Mouse0"
+	Driver      "mouse"
+	Option	    "Protocol" "auto"
+	Option	    "Device" "/dev/input/mice"
+	Option	    "ZAxisMapping" "4 5 6 7"
+EndSection
+
+Section "Device"
+	Identifier  "Card0"
+	Driver      "nvidia"
+  	Option      "NoLogo"  "True"
+  	Option      "DRI"     "True"
+  	Option      "DynamicTwinView" "False"
+  	Option      "TwinView" "0"
+  	#Option      "OverscanCompensation" "75"
+  	Option      "TripleBuffer" "False"
+  	Option      "UseEvents" "True"
+	Option      "AddARGBGLXVisuals" "True"
+EndSection
+
+
+Section "Monitor"
+	Identifier   "DVI1"
+	VendorName   "Monitor Vendor"
+	ModelName    "Monitor Model"
+	HorizSync    15.000 - 68.000
+	VertRefresh  23.000 - 61.000
+EndSection
+
+Section "Screen"
+	Identifier "Screen0"
+	Device     "Card0"
+	Monitor    "TMDS-0"
+
+	SubSection "Display"
+		#Viewport   0 0
+		Depth      24
+		Modes      "1920x1080" "1280x720" "720x576"
+		#Modes      "1280x720" "720x576"
+	EndSubSection
+EndSection
+
+Section "ServerFlags"
+	Option "Xinerama" "0"
+	Option "DontZap"  "0" 
+  Option "AllowEmptyInput" "False"
+  #Option "AutoAddDevices" "False"
+  #Option "AutoEnableDevices" "False"
+EndSection
+
+Section "Extensions" 
+	Option "Composite" "Disable"
+  Option "RENDER" "Enable"
+EndSection
+
+Section "DRI"
+	Group	"video"
+	Mode	0666
+EndSection

@@ -1,0 +1,49 @@
+# Contributor: Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=libaacs
+pkgver=20120423
+pkgrel=1
+_gitid=487dbdeef8aa4dd7b055a8a04f21ec2bb3bc3902
+pkgdesc="AACS library."
+url="http://www.videolan.org/developers/libaacs.html"
+arch=('i686' 'x86_64')
+license=('GPL')
+depends=()
+makedepends=('git' 'gcc' 'autoconf' 'libgcrypt')
+source=()
+md5sums=()
+conflicts=()
+
+build() {
+  
+  cd ${srcdir}
+
+  _githost="git://git.videolan.org"
+  _gitrepo="libaacs.git"
+
+  if [ -e $srcdir/${pkgname} ]; then	  
+    cd $srcdir/${pkgname}
+    git rebase origin
+    git checkout $_gitid
+  else
+    git clone ${_githost}/${_gitrepo}
+    cd $srcdir/${pkgname}
+    git checkout $_gitid
+  fi
+
+  if [ -e $srcdir/${pkgname}-build ]; then
+    rm -rf $srcdir/${pkgname}-build
+  fi
+
+  cp -r $srcdir/${pkgname} $srcdir/${pkgname}-build
+  cd $srcdir/${pkgname}-build
+
+  ./bootstrap
+
+  ./configure --prefix=/usr
+
+  make
+
+  make DESTDIR=$pkgdir install
+
+}

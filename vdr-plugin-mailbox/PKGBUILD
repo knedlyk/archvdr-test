@@ -1,0 +1,40 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=mailbox
+pkgname=vdr-plugin-$_pkgname
+pkgver=0.6.0
+pkgrel=1
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin to display mails in the OSD."
+url="http://alex.vdr-developer.org/mailbox/"
+license="GPL"
+makedepends=('vdr' 'imap-vdr')
+depends=('vdr' 'imap-vdr')
+backup=()
+source=(http://alex.vdr-developer.org/download/vdr-$_pkgname-$pkgver.tgz
+	plugin.mailbox.conf
+        mailbox-0.5.0-vdr-1.7.13.diff)
+md5sums=('c04b52fda206e30aec36b0173fc1d8d9'
+         'aecbe6c235f9d4016af2a28ec99560e4'
+         'e72ed0cd126a6e29e7668be49ec1b360')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  patch -p1 -i ../mailbox-0.5.0-vdr-1.7.13.diff || return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins						|| return 1
+  install -m 644 ../plugin.mailbox.conf	$pkgdir/etc/vdr/plugins			|| return 1
+
+  mkdir -p $pkgdir/etc/vdr/plugins/mailbox					|| return 1
+  install -m 755 mailcmd.sh		$pkgdir/etc/vdr/plugins/mailbox/	|| return 1
+}

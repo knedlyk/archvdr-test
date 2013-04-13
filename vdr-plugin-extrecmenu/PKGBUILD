@@ -1,0 +1,40 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+_pkgname=extrecmenu
+pkgname=vdr-plugin-$_pkgname
+pkgver=1.2
+pkgrel=1
+revision=
+arch=(i686 x86_64)
+pkgdesc="VDR-Plugin for a enhanced recording menu."
+url="http://martins-kabuff.de/extrecmenu.html"
+license="GPL"
+makedepends=('vdr')
+depends=('vdr')
+backup=()
+source=(http://projects.vdr-developer.org/attachments/download/334/vdr-${_pkgname}-${pkgver}.tgz)
+
+md5sums=('0b83b281462e854936d2192094c04b87')
+
+build() {
+  unset CXXFLAGS
+
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+	for i in `grep -v ^$ ${startdir}/patches/00list  | grep -v ^#` ; do
+		echo "Apply patch $i"
+		patch -p1 -i ${startdir}/patches/$i.dpatch || return 1
+	done
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
+  make VDRDIR=/usr/include/vdr \
+       LIBDIR=. \
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+  
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-plugin-extrecmenu				|| return 1
+  install -m 755 scripts/dvdarchive.sh	$pkgdir/usr/share/vdr-plugin-extrecmenu	|| return 1
+}

@@ -1,0 +1,32 @@
+diff -Naur vdr-plugin-osdpip/decoder.h vdr-plugin-osdpip-new/decoder.h
+--- vdr-plugin-osdpip/decoder.h	2013-04-06 20:14:49.029441167 +0200
++++ vdr-plugin-osdpip-new/decoder.h	2013-04-06 20:41:31.210175574 +0200
+@@ -24,6 +24,7 @@
+ 
+ extern "C"
+ {
++#define UINT64_C(c) (c ## ULL)
+ #ifdef HAVE_FFMPEG_STATIC
+   #include <avcodec.h>
+   #ifdef USE_SWSCALE
+@@ -34,7 +35,7 @@
+   #include <libavcodec/avcodec.h>
+   #ifdef USE_SWSCALE
+     #include <libswscale/swscale.h>
+-    #include <libavcodec/opt.h>
++    #include <libavutil/opt.h>
+   #endif
+ #else
+   #include <ffmpeg/avcodec.h>
+diff -Naur vdr-plugin-osdpip/osdpip.c vdr-plugin-osdpip-new/osdpip.c
+--- vdr-plugin-osdpip/osdpip.c	2013-04-06 20:14:49.032774053 +0200
++++ vdr-plugin-osdpip-new/osdpip.c	2013-04-06 20:38:24.922223074 +0200
+@@ -71,7 +71,7 @@
+ bool cPluginOsdpip::Initialize(void)
+ {
+     // must be called before using avcodec lib
+-    avcodec_init();
++    //avcodec_init();
+     // register all the codecs (you can also register only the codec
+     // you wish to have smaller code)
+     avcodec_register_all();

@@ -1,0 +1,50 @@
+# $Id$
+# Maintainer: Edgar Hucek <gimli at dark-green dot com>
+pkgname=vaapi-intel-driver
+pkgver=20120529
+pkgrel=1
+pkgdesc="Intel backend for VA API"
+arch=('i686' 'x86_64')
+url="http://cgit.freedesktop.org/vaapi/intel-driver/"
+license=('GPL')
+depends=('libva-git')
+makedepends=('mesa')
+options=('!libtool')
+conflicts=('vaapi-ext-intel-driver' 'vaapi-staging-intel-driver')
+source=(patch_for_implicit_weighted_prediction_on_Sandybridge.patch)
+md5sums=('729def9dd755d98365cd2737c08109fc')
+
+
+build() {
+  _gitroot="git://anongit.freedesktop.org/vaapi/intel-driver"
+  _gitname="vaapi-intel-driver"
+  _gitid=27719c529e1fdd61927f89b671bd62590865d4ef
+
+  cd "${srcdir}"
+
+  if [ -d "${_gitname}" ] ; then
+    cd "${_gitname}" && git checkout master &&git pull --rebase
+    msg "The local files are updated."
+  else
+    git clone "${_gitroot}" "${_gitname}"
+    cd "${_gitname}"
+  fi
+
+  if [ -d "$srcdir/$_gitname-build" ]; then
+    rm -r "$srcdir/$_gitname-build"
+  fi
+
+  cp -r "$srcdir/$_gitname" "$srcdir/$_gitname-build"
+  cd "$srcdir/$_gitname-build"
+  git checkout "${_gitid}"
+
+  #patch -p1 -i ${srcdir}/patch_for_implicit_weighted_prediction_on_Sandybridge.patch || return 1
+
+  ./autogen.sh --prefix=/usr
+  make
+  make DESTDIR="${pkgdir}" install
+}
+
+# vim:set ts=2 sw=2 et:
+
+

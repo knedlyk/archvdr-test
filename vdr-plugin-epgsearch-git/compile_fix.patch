@@ -1,0 +1,10 @@
+--- a/recstatus.c	2010-02-02 16:03:59.000000000 +0100
++++ b/recstatus.c	2010-02-02 16:04:15.000000000 +0100
+@@ -21,6 +21,7 @@
+ The project's page is at http://winni.vdr-developer.org/epgsearch
+ */
+ 
++#include <math.h>
+ #include "epgsearchtools.h"
+ #include "recstatus.h"
+ #include "recdone.h"

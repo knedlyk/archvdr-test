@@ -1,0 +1,67 @@
+#! /bin/sh
+#
+# vdr-addon-acpiwakeup start-stop script
+#
+
+NAME="vdr-addon-acpiwakeup"
+WAKEUP_FILE="/var/cache/vdr/acpiwakeup.time"
+
+reset_wakeup_time()
+{
+    echo "$NAME: Resetting wakeup time"
+    rm -f $WAKEUP_FILE >/dev/null 2>&1
+}
+
+set_wakeup_time()
+{
+    if [ -e $WAKEUP_FILE ]; then
+        TIME_TO_SET=`cat $WAKEUP_FILE`
+        echo "$NAME: Setting wakeup time to $TIME_TO_SET"
+
+        echo $TIME_TO_SET >$ACPI_ALARM
+        # Set it once more - some boards require this!
+        echo $TIME_TO_SET >$ACPI_ALARM
+    fi
+}
+
+show_help()
+{
+    N=/etc/init.d/$NAME
+    echo "Usage: $N {start|stop|restart|force-reload}" >&2
+    exit 1
+}
+
+load_configuration()
+{
+    # read arguments for acpi-wakeup from conf-file
+    . /etc/vdr/vdr-addon-acpiwakeup.conf
+
+    # Defaults:
+    [ -z "$ACPI_ENABLED" ]        && export ACPI_ENABLED="yes"
+    [ -z "$ACPI_ALARM" ]          && export ACPI_ALARM="/proc/acpi/alarm"
+}
+
+#
+# main()
+#
+
+load_configuration
+
+if [ ! $ACPI_ENABLED = "yes" ]; then
+    echo "ACPI Wakeup disabled - doing nothing"
+    exit 0
+fi
+
+case "$1" in
+    start)
+        reset_wakeup_time
+        ;;
+    stop|restart|force-reload)
+        set_wakeup_time
+        ;;
+    status)
+        ;;
+    *)
+        show_help
+        ;;
+esac

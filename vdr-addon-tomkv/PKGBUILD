@@ -1,0 +1,35 @@
+# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
+_pluginname=tomkv
+pkgname=vdr-addon-${_pluginname}
+pkgver=0.0.1
+pkgrel=1
+pkgdesc="Reccmd hoock to convert recording to mkv."
+arch=('i686' 'x86_64')
+url=""
+license=('GPL')
+groups=()
+depends=('vdr' 'ffmpeg')
+makedepends=('vdr')
+source=(tomkv.sh
+        reccmds.tomkv.conf
+        vdr-addon-tomkv.conf
+        tomkv.sh)
+md5sums=('77a83d8aff8be36a24ad38a590e80c9d'
+         '4555db83490ca5b0e403b8db91d2ed20'
+         'a6337770c609f8da1032ed8f1e777ffc'
+         '77a83d8aff8be36a24ad38a590e80c9d')
+
+build() {
+
+  mkdir -p $pkgdir/etc/vdr/command-hooks
+  install -m 644 $srcdir/reccmds.tomkv.conf		$pkgdir/etc/vdr/command-hooks/		|| return 1
+  install -m 644 $srcdir/vdr-addon-tomkv.conf		$pkgdir/etc/vdr/		|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr/command-hooks						|| return 1
+  cd $pkgdir/usr/share/vdr/command-hooks						|| return 1
+  ln -s ../../../../etc/vdr/command-hooks/reccmds.tomkv.conf	reccmds.tomkv.conf		|| return 1
+
+  mkdir -p $pkgdir/usr/share/vdr-addon-tomkv/
+  install -m 0755 $srcdir/tomkv.sh $pkgdir/usr/share/vdr-addon-tomkv/ || return 1
+}

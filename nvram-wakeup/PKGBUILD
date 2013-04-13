@@ -1,0 +1,46 @@
+# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+
+pkgname=nvram-wakeup
+pkgver=0.99b
+revision=1
+pkgrel=1
+arch=('i686' 'x86_64')
+url="http://sourceforge.net/projects/nvram-wakeup"
+license=(GPL)
+pkgdesc=""
+depends=('vdr' )
+source=(http://www.e-tobi.net/vdr-experimental/pool-etch/source/base/${pkgname}_0.99b-1.diff.gz
+	http://www.e-tobi.net/vdr-experimental/pool-etch/source/base/${pkgname}_0.99b.orig.tar.gz)
+backup=('etc/vdr/vdr-nvram-wakeup.conf')
+md5sums=()
+
+build() {
+  cd ${srcdir}/nvram-wakup-${pkgver}
+
+  patch -p1 -i ../${pkgname}_${pkgver}-${revision}.diff
+
+  make
+
+  mkdir -p ${pkgdir}/usr/sbin									|| return 1
+  install -m 755 nvram-wakeup                 ${pkgdir}/usr/sbin/				|| return 1
+  install -m 755 set_timer                    ${pkgdir}/usr/sbin/				|| return 1
+  install -m 755 rtc                          ${pkgdir}/usr/sbin/				|| return 1
+  install -m 755 biosinfo                     ${pkgdir}/usr/sbin/				|| return 1
+  install -m 755 guess                        ${pkgdir}/usr/sbin/				|| return 1
+  install -m 755 cat_nvram                    ${pkgdir}/usr/sbin/				|| return 1
+  install -m 755 guess-helper                 ${pkgdir}/usr/sbin/				|| return 1
+
+  mkdir -p ${pkgdir}/usr/share/locale/de/LC_MESSAGES						|| return 1
+  install -m 755 guess-helper.mo              ${pkgdir}/usr/share/locale/de/LC_MESSAGES/	|| return 1
+
+  mkdir -p ${pkgdir}/etc									|| return 1
+  install -m 755 nvram-wakeup.conf            ${pkgdir}/etc/
+
+  mkdir -p ${pkgdir}/usr/share/vdr/shutdown-hooks						|| return 1
+  install -m 755 debian/S90.nvram-wakeup      ${pkgdir}/usr/share/vdr/shutdown-hooks/		|| return 1
+
+  mkdir -p ${pkgdir}/etc/vdr									|| return 1
+  install -m 644 debian/vdr-nvram-wakeup.conf ${pkgdir}/etc/vdr/				|| return 1
+}
+md5sums=('366253bed93b876ec113b6acb667b20b'
+         'a668132b1daa9c4c48f4ed45b95f3df0')
