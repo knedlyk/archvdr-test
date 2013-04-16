@@ -12,11 +12,11 @@ url="http://andreas.vdr-developer.org/fonts/"
 license=('Public domain')
 depends=('fontconfig' 'xorg-font-utils')
 install=ttf-vdrsymbols.install
-#source=(http://andreas.vdr-developer.org/fonts/download/${_basename}-ttf-$pkgver.tgz)
-source=(http://justlinux.de/vdr/testing/${_basename}-ttf-$pkgver.tgz)
+source=(http://andreas.vdr-developer.org/fonts/download/${_basename}-ttf-$pkgver.tgz)
+#source=(http://justlinux.de/vdr/testing/${_basename}-ttf-$pkgver.tgz)
 md5sums=('dad98a1cdb2b7deb3301ecf46181d258')
 
-build() {
+package() {
   cd "$srcdir/${_basename}"
   
   mkdir -p $pkgdir/usr/share/fonts/TTF								|| return 1

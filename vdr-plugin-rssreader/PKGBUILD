@@ -11,9 +11,8 @@ url="http://www.saunalahti.fi/~rahrenbe/vdr/rssreader"
 license="GPL"
 makedepends=('vdr' 'expat' 'curl')
 depends=('vdr' 'expat' 'curl')
-source=(http://www.saunalahti.fi/~rahrenbe/vdr/rssreader/files/vdr-$_pkgname-$pkgver.tgz
-        rssreader.conf)
-backup=('etc/vdr/plugins/rssreader/rssreader.conf')
+source=(http://www.saunalahti.fi/~rahrenbe/vdr/rssreader/files/vdr-$_pkgname-$pkgver.tgz)
+backup=('var/lib/vdr/plugins/rssreader/rssreader.conf')
 build() {
   unset CXXFLAGS
 
@@ -39,5 +38,4 @@ package() {
   ln -s ../../../../etc/vdr/plugins/rssreader	rssreader				|| return 1
 }
 
-md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc'
-         'd46340e43dd205e002e9197eb468b547')
+md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc')
