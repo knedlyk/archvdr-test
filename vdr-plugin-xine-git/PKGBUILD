@@ -20,7 +20,7 @@ md5sums=('ac26395efab835b305f02dec4962ccce'
 _gitroot=git://git.debian.org/git/pkg-vdr-dvb/vdr-plugin-xine.git
 _gitname=vdr-plugin-xine
 
-build() {
+package() {
   cd $srcdir
   msg "Connecting to GIT server...."
   if [ -d $startdir/src/$_gitname ] ; then
@@ -42,7 +42,7 @@ build() {
   	LIBDIR=. \
     VDR_XINE_FIFO_DIR="/var/lib/vdr/plugins/xine-fifo/fifo" \
   	LOCALEDIR="$startdir/pkg/usr/share/locale/"|| return 1
-  
+ 
   mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
   install -m 755 libvdr-*.so.*			$pkgdir/usr/lib/vdr/plugins/		|| return 1
 

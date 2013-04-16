@@ -33,7 +33,7 @@ backup=('etc/vdr/diseqc.conf'
   'var/lib/vdr/setup.conf'
   'var/lib/vdr/channels.conf')
 
-build() {
+package() {
   MAKEOPTS="-j1"
 
   cd ${srcdir}/${pkgname}-${pkgver}
@@ -162,6 +162,7 @@ build() {
   install -m 644 ${startdir}/files/vdr.default                      $pkgdir/etc/default/vdr		|| return 1
   install -m 644 Make.config                                        $pkgdir/usr/include/vdr/		|| return 1
   install -m 644 Make.global                                        $pkgdir/usr/include/vdr/		|| return 1
+  install -m 644 vdr.pc                                             $pkgdir/usr/include/vdr/		|| return 1
   install -m 644 *.h                                                $pkgdir/usr/include/vdr/		|| return 1
   install -m 644 libsi/*.h                                          $pkgdir/usr/include/vdr/libsi/	|| return 1
   install -m 755 newplugin                                          $pkgdir/usr/bin/vdr-newplugin		|| return 1
