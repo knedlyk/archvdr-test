@@ -31,8 +31,8 @@ build() {
   fi
 
   cp -r $srcdir/${_pkgname} $srcdir/${_pkgname}-build
-
+}
+package(){
   cd $srcdir/${_pkgname}-build
-
   make DESTDIR=$pkgdir PREFIX=/usr install
 }

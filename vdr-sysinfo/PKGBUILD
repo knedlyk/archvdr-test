@@ -11,7 +11,7 @@ depends=('vdr' )
 source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/base/${pkgname}_${pkgver}.tar.gz)
 md5sums=('783c7c635417281f260f75defd301bbf')
 
-build() {
+package() {
   cd ${srcdir}/${pkgname}-${pkgver}
 
   mkdir -p ${pkgdir}/usr/share/vdr-sysinfo/			|| return 1
