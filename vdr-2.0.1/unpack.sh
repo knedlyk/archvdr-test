@@ -4,11 +4,11 @@ rm -rf src pkg
 
 makepkg --asroot -f
 
-if [ -e vdr-1.7.33 ]; then
-  rm -rf vdr-1.7.33
+if [ -e vdr-2.0.0 ]; then
+  rm -rf vdr-2.0.0
 fi
-if [ -e vdr-1.7.33-patched ]; then
-  rm -rf vdr-1.7.33-patched
+if [ -e vdr-2.0.0-patched ]; then
+  rm -rf vdr-2.0.0-patched
 fi
-cp -r src/vdr-1.7.33 vdr-1.7.33
-cp -r src/vdr-1.7.33 vdr-1.7.33-patched
+cp -r src/vdr-2.0.0 vdr-2.0.0
+cp -r src/vdr-2.0.0 vdr-2.0.0-patched

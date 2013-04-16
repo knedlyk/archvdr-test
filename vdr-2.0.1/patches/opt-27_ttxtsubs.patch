@@ -1,3 +1,6 @@
+Description: This patch is needed for the ttxtsubs plugin.
+Origin: ttxsubs plugin
+
 diff --git a/MANUAL b/MANUAL
 index e1f79f8..716fd78 100644
 --- a/MANUAL

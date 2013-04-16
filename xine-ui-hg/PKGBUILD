@@ -1,7 +1,7 @@
 # Maintainer: Edgar Hucek <gimli at dark-green dot com>
 
 pkgname=xine-ui-hg
-pkgver=3128
+pkgver=3132
 pkgrel=1
 pkgdesc="xine-ui with VDR keys enabled."
 arch=('i686' 'x86_64')
@@ -44,6 +44,7 @@ build() {
   #patch -p1 -i ${srcdir}/crash_fix_prutal.patch || return 1
   
   #add missing constant (defined in xine.h from xine-lib cvs)
+  sed -e 's:AM_CONFIG_HEADER:AC_CONFIG_HEADER:' -i configure.ac
   ./autogen.sh --prefix=/usr --mandir=/usr/share/man --enable-vdr-keys  \
     --with-x --disable-lirc --without-aalib --without-curl
   make || return 1

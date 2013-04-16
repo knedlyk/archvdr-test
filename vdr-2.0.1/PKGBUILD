@@ -17,9 +17,8 @@ depends=('libjpeg' 'libcap' 'fontconfig' 'freetype2' 'gettext' 'gcc-libs' 'bash'
 makedepends=('gcc' 'patch' 'make')
 optdepends=('vdr-addon-acpiwakeup')
 install=$pkgname.install
-source=(ftp://ftp.tvdr.de/vdr/Developer/vdr-${pkgver}.tar.bz2)
 source=(ftp://ftp.tvdr.de/vdr/vdr-${pkgver}.tar.bz2)
-
+md5sums=('e1b7a76c57c96300829dccd39eb20e7d')
 backup=('etc/vdr/diseqc.conf'
   'etc/vdr/keymacros.conf'
   'etc/vdr/sources.conf'
@@ -36,9 +35,8 @@ backup=('etc/vdr/diseqc.conf'
 
 build() {
   MAKEOPTS="-j1"
-  rm -rf $srcdir/$pkgname-$pkgver-build
-  cp -r $srcdir/$pkgname-$pkgver $srcdir/$pkgname-$pkgver-build
-  cd ${srcdir}/${pkgname}-${pkgver}-build
+
+  cd ${srcdir}/${pkgname}-${pkgver}
 
   #mkdir -p ${srcdir}/${pkgname}-${pkgver}/debian/patches || return 1
   #cp ${startdir}/patches/extension-patch-helper.sh ${srcdir}/${pkgname}-${pkgver}/debian/patches || return 1
@@ -59,7 +57,7 @@ build() {
 
   #exit 0
 
-  cd ${srcdir}/${pkgname}-${pkgver}-build
+  cd ${srcdir}/${pkgname}-${pkgver}
 
   rm -rf PLUGINS/src/dvbhddevice
 
@@ -67,14 +65,19 @@ build() {
 
   echo "DEFINES += -D__KERNEL_STRICT_NAMES -DUSE_GRAPHTFT" >> Make.config
 
-  make all PREFIX=/usr REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
-    VIDEODIR=/var/lib/video.00 LIBDIR=/usr/lib/vdr/plugins || return 1
+  make all REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
+    VIDEODIR=/var/lib/video PLUGINLIBDIR=/usr/lib/vdr/plugins \
+    PREFIX=/usr LIBDIR=/usr/lib/vdr/plugins || return 1
 
-  make plugins PREFIX=/usr REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
-    VIDEODIR=/var/lib/video.00 LIBDIR=/usr/lib/vdr/plugins || return 1
+  make plugins REMOTE=LIRC CONFDIR=/var/lib/vdr LOCDIR=/usr/share/locale \
+    VIDEODIR=/var/lib/video PLUGINLIBDIR=/usr/lib/vdr/plugins \
+    PREFIX=/usr LIBDIR=/usr/lib/vdr/plugins || return 1
 
   gcc -o ${startdir}/src/vdr-shutdown.wrapper ${startdir}/files/vdr-shutdown-wrapper.c
   gcc -o ${startdir}/src/ctvdrwrapper ${startdir}/files/ctvdrwrapper.c
+
+  #make install CONFDIR=${pkgdir}/var/lib/vdr LOCDIR=${pkgdir}/usr/share/locale \
+  #  PREFIX=${pkgdir}/usr VIDEODIR=${pkgdir}/var/lib/video LIBDIR=${pkgdir}/usr/lib/vdr/plugins || return 1
 
   # make directories
 
@@ -102,17 +105,23 @@ build() {
   mkdir -p $pkgdir/usr/include/vdr		|| return 1
   mkdir -p $pkgdir/usr/include/vdr/libsi		|| return 1
   mkdir -p $pkgdir/usr/lib/vdr/plugins		|| return 1
-}
+  mkdir -p $pkgdir/usr/lib/pkgconfig		|| return 1
 
-package() {
-
-  cd ${srcdir}/${pkgname}-${pkgver}-build
 
   # install pkg files
-  cp ${srcdir}/${pkgname}-${pkgver}-build/PLUGINS/src/dvbsddevice/libvdr-dvbsddevice.so \
-  ${srcdir}/${pkgname}-${pkgver}-build/PLUGINS/src/dvbsddevice/libvdr-dvbsddevice.so.$pkgver || return 1
-  install -m 755 ${srcdir}/${pkgname}-${pkgver}-build/PLUGINS/src/dvbsddevice/libvdr-dvbsddevice.so.$pkgver \
-  $pkgdir/usr/lib/vdr/plugins || return 1
+
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/src/dvbsddevice/libvdr-dvbsddevice.so \
+    $pkgdir/usr/lib/vdr/plugins/libvdr-dvbsddevice.so.${pkgver} || return 1
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/src/skincurses/libvdr-skincurses.so \
+    $pkgdir/usr/lib/vdr/plugins/libvdr-skincurses.so.${pkgver} || return 1
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/src/rcu/libvdr-rcu.so \
+    $pkgdir/usr/lib/vdr/plugins/libvdr-rcu.so.${pkgver} || return 1
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/src/status/libvdr-status.so \
+    $pkgdir/usr/lib/vdr/plugins/libvdr-status.so.${pkgver} || return 1
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/src/pictures/libvdr-pictures.so \
+    $pkgdir/usr/lib/vdr/plugins/libvdr-pictures.so.${pkgver} || return 1
+  install -m 755 ${srcdir}/${pkgname}-${pkgver}/PLUGINS/src/epgtableid0/libvdr-epgtableid0.so \
+    $pkgdir/usr/lib/vdr/plugins/libvdr-epgtableid0.so.${pkgver} || return 1
 
   install -m 755 ${startdir}/files/vdr.init	                        $pkgdir/etc/rc.d/vdr			|| return 1
   install -m 755 ${startdir}/files/vdr-pre.init	                    $pkgdir/etc/rc.d/vdr-pre	|| return 1
@@ -153,7 +162,6 @@ package() {
   install -m 644 ${startdir}/files/vdr.default                      $pkgdir/etc/default/vdr		|| return 1
   install -m 644 Make.config                                        $pkgdir/usr/include/vdr/		|| return 1
   install -m 644 Make.global                                        $pkgdir/usr/include/vdr/		|| return 1
-  install -m 644 vdr.pc                                             $pkgdir/usr/include/vdr/		|| return 1
   install -m 644 *.h                                                $pkgdir/usr/include/vdr/		|| return 1
   install -m 644 libsi/*.h                                          $pkgdir/usr/include/vdr/libsi/	|| return 1
   install -m 755 newplugin                                          $pkgdir/usr/bin/vdr-newplugin		|| return 1
@@ -201,4 +209,3 @@ package() {
   ln -s ../../usr/lib/vdr/svdrpsend.pl				svdrpsend.pl				|| return 1
 
 }
-md5sums=('e1b7a76c57c96300829dccd39eb20e7d')
