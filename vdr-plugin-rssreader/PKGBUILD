@@ -23,19 +23,10 @@ build() {
   make VDRDIR=/usr/include/vdr \
        LIBDIR="." \
        LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
-  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins  DESTDIR=$pkgdir install || return 1
 }
 package() {
   cd ${srcdir}/$_pkgname-${pkgver}
-#  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-#  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
-
-  mkdir -p $pkgdir/etc/vdr/plugins/rssreader					|| return 1
-  install -m 644 ../rssreader.conf	$pkgdir/etc/vdr/plugins/rssreader	|| return 1
-
-  mkdir -p $pkgdir/var/lib/vdr/plugins						|| return 1
-  cd $pkgdir/var/lib/vdr/plugins						|| return 1
-  ln -s ../../../../etc/vdr/plugins/rssreader	rssreader				|| return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins  DESTDIR=$pkgdir install || return 1
 }
 
 md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc')
