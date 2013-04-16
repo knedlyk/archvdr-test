@@ -56,9 +56,6 @@ build() {
   mkdir -p $pkgdir/usr/lib/vdr/plugins 						|| return 1
 
   make VDRDIR="/usr/include/vdr" LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
-
-#  install -m 755 libvdr-${_pluginname}.so.* \
-#    $pkgdir/usr/lib/vdr/plugins/			|| return 1
 }
 
 # vim:set ts=2 sw=2 et:

@@ -32,9 +32,6 @@ package() {
   make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
 
 
-#  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-#  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
-
   mkdir -p $pkgdir/etc/vdr/plugins/iptv/vlcinput || return 1
 
   mkdir -p $pkgdir/usr/share/vdr-plugin-iptv/ || return 1

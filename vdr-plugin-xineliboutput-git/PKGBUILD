@@ -12,7 +12,7 @@ license=('GPL')
 depends=('vdr' 'xine-lib' 'libbluray' 'libgl' 'libjpeg' 'libcap')
 makedepends=('git' 'vdr>=1.7.0')
 source=(nosignal.mpg
-      	plugin.xineliboutput.conf
+        plugin.xineliboutput.conf
         remove_log_message.patch
         pipes_dir.patch
         vaapi_fixup.patch
