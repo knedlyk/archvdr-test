@@ -1,0 +1,14 @@
+[Unit]
+Description=VDR
+After=lircvdr.service
+Wants=lircvdr.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/etc/rc.d/vdr start
+ExecStop=/etc/rc.d/vdr stop
+KillMode=none
+
+[Install]
+WantedBy=multi-user.target

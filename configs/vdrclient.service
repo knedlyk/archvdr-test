@@ -1,0 +1,10 @@
+[Unit]
+Description=Start stop VDR client
+
+[Service]
+Type=forking
+ExecStart=/etc/rc.d/vdrclient start
+ExecStop=/etc/rc.d/vdrclient stop
+
+[Install]
+WantedBy=multi-user.target
