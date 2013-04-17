@@ -36,26 +36,27 @@ build() {
   cp -r $srcdir/$_gitname $srcdir/$_gitname-build
   cd $srcdir/$_gitname-build
 
-  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
-
   sed -i Make.config -e 's/VDRPLUGINLIBDIR\ ?=\ \/usr/VDRPLUGINLIBDIR\ ?=\ $(DESTDIR)\/usr/'
   sed -i Make.config -e 's/VDRCFGDIR\ ?=\ \/etc/VDRCFGDIR\ ?=\ $(DESTDIR)\/etc/'
-  
+
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+       LOCALEDIR="$srcdir/usr/share/locale/" all || return 1
 }
+
 package() {
   cd $srcdir/$_gitname-build
 
+#  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" DESTDIR=$pkgdir   install || return 1
+       LOCALEDIR="$pkgdir/usr/share/locale/" DESTDIR=$pkgdir   install || return 1
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" DESTDIR=$pkgdir install-subplugins || return 1
+       LOCALEDIR="$pkgdir/usr/share/locale/" DESTDIR=$pkgdir install-subplugins || return 1
 }
 

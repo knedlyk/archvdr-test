@@ -4,7 +4,7 @@ _pluginname=vnsi
 pkgname=vdr-plugin-${_pluginname}
 pkgver=20130115
 pkgrel=1
-gitid=a9780e023c8b7728017851bfd12d4df9e5c26993
+#gitid=a9780e023c8b7728017851bfd12d4df9e5c26993
 pkgdesc="VDR vsni server"
 arch=('i686' 'x86_64' 'arm')
 url="https://github.com/opdenkamp/xbmc-pvr-addons"
@@ -45,18 +45,27 @@ build() {
   cd $srcdir/vdr-plugin-${_pluginname}-build
 
   make VDRDIR="/usr/include/vdr"  LIBDIR="." \
-    LOCALEDIR="$pkgdir/usr/share/locale" \
+    LOCALEDIR="$srcdir/usr/share/locale" \
     INCLUDES="-I /usr/include/vdr -I./src" all || return 1
-  
+}
+
+package() {
+  cd $srcdir/vdr-plugin-${_pluginname}-build
+
+  make VDRDIR="/usr/include/vdr"  LIBDIR="/usr/lib/vdr/plugins" \
+    LOCALEDIR="$pkgdir/usr/share/locale" \
+    INCLUDES="-I /usr/include/vdr -I./src"\
+    DESTDIR=$pkgdir  install || return 1
+
   mkdir -p $pkgdir/etc/vdr/plugins/vnsiserver			|| return 1
   install -m 644 vnsiserver/allowed_hosts.conf $pkgdir/etc/vdr/plugins/vnsiserver/ || return 1
 
-  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
-  
+#  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+#  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
   mkdir -p $pkgdir/usr/share/vdr-plugin-vnsiserver   		|| return 1
 
   mkdir -p $pkgdir/var/lib/vdr/plugins/vnsiserver				|| return 1
   cd $pkgdir/var/lib/vdr/plugins/vnsiserver			        || return 1
-  ln -s ../../../../..//etc/vdr/plugins/vnsiserver/allowed_hosts.conf . || return 1
+  ln -s ../../../../../etc/vdr/plugins/vnsiserver/allowed_hosts.conf . || return 1
 }
