@@ -16,7 +16,7 @@ mkdir $WORK/packages/
 #VDR=`ls -l | grep vdr-1.7 | awk -F ' ' '{print $9;}' | tail -n 1`
 VDR=`ls -l | grep vdr-2. | awk -F ' ' '{print $9;}' | tail -n 1`
 
-#VDR=vdr-1.7.29
+#VDR=vdr-1.7.31
 echo $VDR
 cd $WORK/$VDR
 rm -rf src pkg  > /dev/null

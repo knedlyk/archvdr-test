@@ -1,7 +1,7 @@
 [Unit]
 Description=VDR
-After=lircvdr.service
-Wants=lircvdr.service
+After=lirc.service
+Wants=lirc.service
 
 [Service]
 Type=oneshot

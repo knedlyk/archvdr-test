@@ -13,7 +13,7 @@ source=(http://projects.vdr-developer.org/attachments/download/1088/$_pkgname-$p
 	plugin.rotorng.conf)
 backup=('etc/vdr/plugins/plugin.rotorng.conf')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
@@ -23,9 +23,9 @@ build() {
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
        LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
-}
+#}
 
-package() {
+#package() {
   cd ${srcdir}/$_pkgname-${pkgver}
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
   mkdir -p $pkgdir/var/lib/vdr/plugins/transponders/ || return 1
