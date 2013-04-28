@@ -17,7 +17,6 @@ build() {
 
   cd ${srcdir}/$_pkgname-${pkgver}
   
-  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
   sed -i Make.config -e 's/VDRPLUGINLIBDIR\ ?=\ \/usr/VDRPLUGINLIBDIR\ ?=\ $(DESTDIR)\/usr/'
   sed -i Make.config -e 's/VDRCFGDIR\ ?=\ \/etc/VDRCFGDIR\ ?=\ $(DESTDIR)\/etc/'
   
@@ -28,6 +27,10 @@ build() {
 }
 
 package () {
+  cd ${srcdir}/$_pkgname-${pkgver}
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
