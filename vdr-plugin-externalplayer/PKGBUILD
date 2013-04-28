@@ -27,7 +27,8 @@ build() {
        LIBDIR=. \
        LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
 }
-package() {  
+
+package() {
   cd ${srcdir}/$_pkgname-${pkgver}
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1

@@ -35,6 +35,7 @@ build() {
     VDR_XINE_FIFO_DIR="/var/lib/vdr/plugins/xine-fifo/fifo" \
   	LOCALEDIR="$startdir/pkg/usr/share/locale/"|| return 1
 }
+
 package() {
   cd "$srcdir/${_packagename}-$pkgver" || return 1
   

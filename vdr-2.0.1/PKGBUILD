@@ -213,5 +213,4 @@ package() {
   cd $pkgdir/usr/bin										|| return 1
   ln -s ../../usr/lib/vdr/svdrpsend.pl				svdrpsend				|| return 1
   ln -s ../../usr/lib/vdr/svdrpsend.pl				svdrpsend.pl				|| return 1
-
 }

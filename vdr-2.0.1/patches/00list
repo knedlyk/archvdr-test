@@ -20,7 +20,7 @@ opt-41-x_timer-info.patch
 # Patch to allow plugins to replace the VDR mainmenus
 opt-42-x_MainMenuHooks.patch
 
-# Patch for rotorng
+# Patch needed for rotorng and actuator plugins
 opt-44_rotor.patch
 
 # Patch needed for the yaepg plugin.
