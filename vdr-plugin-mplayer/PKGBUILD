@@ -40,9 +40,11 @@ build() {
 	done
 
 	make VDRDIR=/usr/include/vdr \
-		LIBDIR=$startdir/pkg/usr/lib/vdr/plugins \
-		LOCALEDIR=$startdir/pkg/usr/share/locale \
-		PLUGINLIBDIR=$startdir/pkg/usr/lib/vdr/plugins all || return 1
+		LIBDIR=. \
+		LOCALEDIR=$pkgdir/usr/share/locale \
+		PLUGINLIBDIR=$pkgdir/usr/lib/vdr/plugins all || return 1
+
+	install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
 
 	install -m 755 debian/mount.sh \
 		$pkgdir/usr/share/vdr-plugin-mp3/mount || return 1
@@ -80,5 +82,7 @@ build() {
 	cd $pkgdir/var/lib/vdr/plugins || return 1
 	ln -s ../../../../etc/vdr/plugins/mp3sources.conf mp3sources.conf || return 1
 	ln -s ../../../../etc/vdr/plugins/mplayersources.conf mplayersources.conf || return 1
-
+	
+	cd $pkgdir/usr/share/vdr-plugin-mplayer || return 1
+	ln -s ../../../etc/vdr/plugins/vdrmplayer.sh.conf mplayer.conf || return 1
 }
