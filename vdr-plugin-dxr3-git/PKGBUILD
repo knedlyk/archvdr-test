@@ -15,7 +15,7 @@ md5sums=()
 _gitroot=git://dxr3plugin.git.sourceforge.net/gitroot/dxr3plugin/dxr3plugin
 _gitname=dxr3-plugin
 
-build() {
+package() {
   cd $srcdir
   msg "Connecting to GIT server...."
 

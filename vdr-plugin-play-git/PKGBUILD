@@ -35,13 +35,14 @@ build() {
   cp -r $srcdir/$_gitname $srcdir/$_gitname-build
   cd $srcdir/$_gitname-build
 
-  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
        LOCALEDIR="$startdir/pkg/usr/share/locale/" -f Makefile-pre1.7.36 all || return 1
-  
+}
+package() {
+  cd $srcdir/$_gitname-build
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
 }
