@@ -18,6 +18,7 @@ md5sums=('503452532add3d4a37f2aa0b4a4488b7')
 package() {
   unset CXXFLAGS
 
+
   cd ${srcdir}/$_pkgname-${pkgver}
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1

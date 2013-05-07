@@ -19,6 +19,10 @@ source=(
   plugin.systeminfo.conf
 )
 backup=('etc/vdr/plugins/plugin.systeminfo.conf')
+md5sums=('1fe264cf2059628103f134c9aba53529'
+         '0517862d8159daa59d409938eed944af'
+         '0367d911568071ae44447bbb6dc5c407'
+         'f28cf78032b2ab4db616cf89b1a474bf')
 
 package() {
   cd "$srcdir/${_pluginname}-$pkgver"
@@ -35,7 +39,3 @@ package() {
   mkdir -p $pkgdir/etc/vdr/plugins									|| return 1
   install -m 644 ../plugin.systeminfo.conf		$pkgdir/etc/vdr/plugins				|| return 1
 }
-md5sums=('1fe264cf2059628103f134c9aba53529'
-         '0517862d8159daa59d409938eed944af'
-         '0367d911568071ae44447bbb6dc5c407'
-         'f28cf78032b2ab4db616cf89b1a474bf')
