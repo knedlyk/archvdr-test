@@ -15,7 +15,7 @@ backup=()
 source=(http://www.u32.de/download/vdr-$_pkgname-$pkgver.tgz)
 md5sums=('503452532add3d4a37f2aa0b4a4488b7')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}

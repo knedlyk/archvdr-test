@@ -1,9 +1,9 @@
 # Contributor: Sebastian Pohle <sepo at users dot berlios dot de>
-# Maintainer  : Edgar Hucek <gimli at dark-green dot com>
+
 
 _pluginname=systeminfo
 pkgname=vdr-plugin-${_pluginname}
-pkgver=0.1.1
+pkgver=0.1.3
 pkgrel=1
 pkgdesc="VDR plugin that displays system informations."
 arch=('i686' 'x86_64')
@@ -19,20 +19,15 @@ source=(
   plugin.systeminfo.conf
 )
 backup=('etc/vdr/plugins/plugin.systeminfo.conf')
-md5sums=('e61369c47008451376b1f8650eada484'
-         '0517862d8159daa59d409938eed944af'
-         '0367d911568071ae44447bbb6dc5c407'
-         'f28cf78032b2ab4db616cf89b1a474bf')
 
-build() {
+package() {
   cd "$srcdir/${_pluginname}-$pkgver"
   
   make VDRDIR="/usr/include/vdr" INCLUDES="-I/usr/include/vdr" LIBDIR="." \
     LOCALEDIR="$pkgdir/usr/share/locale" all || return 1
-  
-  mkdir -p $pkgdir/usr/lib/vdr/plugins									|| return 1
-  install -m 755 libvdr-*.so.*				$pkgdir/usr/lib/vdr/plugins/			|| return 1
-  
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
+
   mkdir -p $pkgdir//usr/share/vdr-plugin-systeminfo							|| return 1
   install -m 755 ../test-vdr-systeminfo.sh		$pkgdir/usr/share/vdr-plugin-systeminfo/	|| return 1
   install -m 755 ../systeminfo.sh		 	$pkgdir/usr/share/vdr-plugin-systeminfo/	|| return 1
@@ -40,3 +35,7 @@ build() {
   mkdir -p $pkgdir/etc/vdr/plugins									|| return 1
   install -m 644 ../plugin.systeminfo.conf		$pkgdir/etc/vdr/plugins				|| return 1
 }
+md5sums=('1fe264cf2059628103f134c9aba53529'
+         '0517862d8159daa59d409938eed944af'
+         '0367d911568071ae44447bbb6dc5c407'
+         'f28cf78032b2ab4db616cf89b1a474bf')
