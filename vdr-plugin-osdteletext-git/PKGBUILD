@@ -17,9 +17,9 @@ backup=('etc/vdr/plugins/plugin.osdteletext.conf')
 install=vdr-plugin-$_pluginname-git.install
 conflicts=(vdr-plugin-$_pluginname)
 source=('plugin.osdteletext.conf')
-md5sums=('ac26395efab835b305f02dec4962ccce')
+md5sums=('d41d8cd98f00b204e9800998ecf8427e')
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"
@@ -43,20 +43,15 @@ build() {
 
   cd $srcdir/vdr-plugin-${_pluginname}-build
 
-  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
-
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
-}
-package() {
-  cd $srcdir/vdr-plugin-${_pluginname}-build
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
   install -m 755 libvdr-*.so.*			$pkgdir/usr/lib/vdr/plugins/		|| return 1
 
   mkdir -p $pkgdir/etc/vdr/plugins/							|| return 1
-  install -m 644 ../plugin.osdteletext.conf	$pkgdir/etc/vdr/plugins/		|| return 1
+  install -m 644 $srcdir/plugin.osdteletext.conf	$pkgdir/etc/vdr/plugins/		|| return 1
 
   mkdir -p $pkgdir/var/cache/vdr/vtx							|| return 1
 }

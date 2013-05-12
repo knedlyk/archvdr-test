@@ -13,21 +13,20 @@ makedepends=('vdr' 'expat' 'curl')
 depends=('vdr' 'expat' 'curl')
 source=(http://www.saunalahti.fi/~rahrenbe/vdr/rssreader/files/vdr-$_pkgname-$pkgver.tgz)
 backup=('var/lib/vdr/plugins/rssreader/rssreader.conf')
-build() {
-  unset CXXFLAGS
+md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc')
+
+package() {
+#  unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
+
+
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR="." \
        LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
-}
 
-package() {
-  cd ${srcdir}/$_pkgname-${pkgver}
   make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins  DESTDIR=$pkgdir install || return 1
 }
-
-md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc')
