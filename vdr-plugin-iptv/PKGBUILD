@@ -15,7 +15,7 @@ install=$pkgname.install
 source=(http://www.saunalahti.fi/~rahrenbe/vdr/iptv/files/vdr-$_pkgname-$pkgver.tgz)
 md5sums=('513cef515a4044c7026f3bc9aebda8d3')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
@@ -25,10 +25,7 @@ build() {
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
-}
-
-package() {
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
 
   make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
 

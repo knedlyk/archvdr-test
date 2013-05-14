@@ -13,7 +13,7 @@ depends=('vdr' 'ffmpeg')
 makedepends=('gcc' 'vdr' 'git' 'ffmpeg')
 source=(build_fix.patch)
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"

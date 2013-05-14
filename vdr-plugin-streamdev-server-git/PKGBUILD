@@ -17,7 +17,7 @@ install=
 source=(makefile_fix-patch)
 md5sums=('4fa78c03a61f1b89e55f660fc40a540b')
 
-build() {
+package() {
   cd ${srcdir}
 
   _githost="git://projects.vdr-developer.org"
@@ -48,13 +48,16 @@ build() {
   make VDRDIR="/usr/include/vdr" LIBDIR="." \
     LOCALEDIR="$pkgdir/usr/share/locale" \
     INCLUDES="-I/usr/include -I/usr/include/vdr -I.." all || return 1
-  
+
+  make VDRDIR=/usr/include/vdr LIBDIR=. DESTDIR=$pkgdir install || return 1
+
   mkdir -p $pkgdir/usr/lib/vdr/plugins 						|| return 1
   install -m 755 libvdr-streamdev-server.so.* \
-    $pkgdir/usr/lib/vdr/plugins/			|| return 1
+    $pkgdir/usr/lib/vdr/plugins/			|| return 
   install -m 755 libvdr-streamdev-client.so.* \
     $pkgdir/usr/lib/vdr/plugins/			|| return 1
-  
+
+
   mkdir -p $pkgdir/etc/vdr/plugins/streamdev-server					|| return 1
   install -m 644 streamdev-server/streamdevhosts.conf \
     $pkgdir/etc/vdr/plugins/streamdev-server/streamdevhosts.conf 			|| return 1  

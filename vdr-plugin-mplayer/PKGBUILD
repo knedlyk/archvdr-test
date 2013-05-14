@@ -19,7 +19,7 @@ backup=('etc/vdr/plugins/mplayersources.conf'
 	'etc/vdr/plugins/plugin.mplayer.conf'
 	'etc/vdr/plugins/vdrmplayer.sh.conf')
 
-build() {
+package() {
 
 	cd $startdir/src/mp3-$pkgver
 

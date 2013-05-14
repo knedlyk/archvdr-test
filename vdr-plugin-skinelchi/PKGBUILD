@@ -2,22 +2,23 @@
 
 _pkgname=skinelchi
 pkgname=vdr-plugin-$_pkgname
-pkgver=0.2.7
+pkgver=0.2.8
 revision=1
 pkgrel=1
 arch=(i686 x86_64)
 pkgdesc="VDR-Plugin skinelchi."
 url="http://firefly.vdr-developer.org/skinelchi/index.html"
 license="GPL"
-makedepends=('vdr')
+makedepends=('vdr' 'imagemagick')
 depends=('vdr')
 backup=('etc/vdr/plugins/plugin.skinelchi.conf')
 source=(http://firefly.vdr-developer.org/skinelchi/vdr-skinelchi-${pkgver}.tar.bz2
 	plugin.skinelchi.conf)
-md5sums=('dc4686b95bc9fac2fb8255d3114f8689'
+
+md5sums=('b4d3160033fa6541eab55bbf7ad41276'
          'd41d8cd98f00b204e9800998ecf8427e')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
@@ -31,8 +32,10 @@ build() {
        LIBDIR=. \
        LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
   
-  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
-  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
+#  mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1
+#  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
 
   mkdir -p $pkgdir/etc/vdr/plugins							|| return 1
   install -m 644 ../plugin.skinelchi.conf	$pkgdir/etc/vdr/plugins/	|| return 1
