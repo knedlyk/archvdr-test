@@ -12,6 +12,7 @@ depends=('vdr')
 makedepends=('vdr')
 install=
 source=(http://www.saunalahti.fi/~rahrenbe/vdr/femon/files/vdr-$_pluginname-$pkgver.tgz)
+md5sums=('b3977c1098df24492ada218bbe73df32')
 
 build() {
   cd "$startdir/src/${_pluginname}-$pkgver"
@@ -24,4 +25,3 @@ package() {
   make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
   }
 
-md5sums=('b3977c1098df24492ada218bbe73df32')
