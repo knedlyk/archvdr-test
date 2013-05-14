@@ -23,9 +23,7 @@ package() {
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
        LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
-#}
 
-#package() {
   cd ${srcdir}/$_pkgname-${pkgver}
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
   mkdir -p $pkgdir/var/lib/vdr/plugins/transponders/ || return 1
