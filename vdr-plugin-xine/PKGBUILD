@@ -21,7 +21,7 @@ md5sums=('0374123d6991f55d91122b020361d8f6'
          '25b40fbb727f248e9ca9384d13f2acad'
          'a77c81d2315ea39fdc29f02386c139be')
 
-build() {
+package() {
   
   cd "$srcdir/${_packagename}-$pkgver" || return 1
 
@@ -34,9 +34,7 @@ build() {
   	LIBDIR=. \
     VDR_XINE_FIFO_DIR="/var/lib/vdr/plugins/xine-fifo/fifo" \
   	LOCALEDIR="$startdir/pkg/usr/share/locale/"|| return 1
-}
 
-package() {
   cd "$srcdir/${_packagename}-$pkgver" || return 1
   
   mkdir -p $pkgdir/usr/lib/vdr/plugins							|| return 1

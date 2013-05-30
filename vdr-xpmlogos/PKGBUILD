@@ -1,8 +1,8 @@
 # Maintainer : Edgar Hucek <gimli at dark-green dot com>
 
 pkgname=vdr-xpmlogos
-pkgver=0.0.1
-revision=3
+pkgver=0.0.2
+revision=1
 pkgrel=1
 arch=(i686 x86_64)
 pkgdesc="VDR-Plugin to sort menus in VDR."
@@ -12,99 +12,103 @@ makedepends=('vdr')
 depends=('vdr')
 source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/addons/${pkgname}_${pkgver}.orig.tar.gz)
 md5sums=('09bb62bf2e8513b5058d7726cfc84f3f')
+md5sums=('9891c53aeff1684d8fd1a83e6f1d3d1d')
 
 build() {
   unset CXXFLAGS
 
-  cd ${srcdir}/logos
+  cd ${srcdir}/elchilogos
 
-  mkdir -p $pkgdir/usr/share/vdr-xpmlogos					|| return 1
-  install -m 644 *.xpm		$pkgdir/usr/share/vdr-xpmlogos/			|| return 1
+  mkdir -p $pkgdir/usr/share/vdr-xpmlogos/{1080,576,720}					|| return 1
+  install -m 644 1080/*.xpm		$pkgdir/usr/share/vdr-xpmlogos/1080/			|| return 1
+  install -m 644 720/*.xpm		$pkgdir/usr/share/vdr-xpmlogos/720/			|| return 1
+  install -m 644 576/*.xpm		$pkgdir/usr/share/vdr-xpmlogos/576/			|| return 1
+
 
   cd $pkgdir/usr/share/vdr-xpmlogos						|| return 1
-	    ln -s "13 TH,13 TH STREET.xpm"              "13 TH.xpm";\
-	    ln -s "AB 1.xpm"                            "AB1.xpm";\
-	    ln -s "Animal Planet.xpm"                   "ANIMAL.xpm";\
-	    ln -s "ATV+.xpm"                            "ATV.xpm";\
-	    ln -s "BBC Prime.xpm"                       "BBC PRIME.xpm";\
-	    ln -s "BROTHER,BIG BROTHER.xpm"             "BROTHER.xpm";\
-	    ln -s "B-UHSE,BEATE-UHSE.TV.xpm"            "B-UHSE.xpm";\
-	    ln -s "DISNEY,DISNEY CHANNEL.xpm"           "DISNEY.xpm";\
-	    ln -s "Eurosport.xpm"                       "EUROSPORT.xpm";\
-	    ln -s "FM4.xpm"                             "FM4 - 28Feb05.xpm";\
-	    ln -s "FOX KIDS.xpm"                        "FOXKIDS.xpm";\
-	    ln -s "FSAT,Franken SAT.xpm"                "Franken SAT.xpm";\
-	    ln -s "FSAT,Franken SAT.xpm"                "FSAT.xpm";\
-	    ln -s "GOD,GOD Channel.xpm"                 "GOD.xpm";\
-	    ln -s "GOLDSTAR,GOLDSTAR TV.xpm"            "GOLDSTAR.xpm";\
-	    ln -s "HEIMAT,HEIMATKANAL.xpm"              "HEIMAT.xpm";\
-	    ln -s "hessen fernsehen.xpm"                "hr-fernsehen.xpm";\
-	    ln -s "Kabel 1.xpm"                         "KABEL1.xpm";\
-	    ln -s "KRIMI,PREMIERE KRIMI.xpm"            "KRIMI.xpm";\
-	    ln -s "KRIMI,PREMIERE KRIMI.xpm"            "PREMIERE KRIMI.xpm";\
-	    ln -s "MTV Base..xpm"                       "MTV Base.xpm";\
-	    ln -s "MTV.xpm"                             "MTV Europe.xpm";\
-	    ln -s "MTV HITS..xpm"                       "MTV HITS.xpm";\
-	    ln -s "Neun Live.xpm"                       "NEUN LIVE Television.xpm";\
-	    ln -s "OE1.xpm"                             "OE1 - 28Feb05.xpm";\
-	    ln -s "OE 2 B.xpm"                          "OE2 B - 28Feb05.xpm";\
-	    ln -s "OE 2 K.xpm"                          "OE2 K - 28Feb05.xpm";\
-	    ln -s "OE 2 N.xpm"                          "OE2 N - 28Feb05.xpm";\
-	    ln -s "OE 2 O.xpm"                          "OE2 O - 28Feb05.xpm";\
-	    ln -s "OE 2 S.xpm"                          "OE2 S - 28Feb05.xpm";\
-	    ln -s "OE 2 St.xpm"                         "OE2 St - 28Feb05.xpm";\
-	    ln -s "OE 2 T.xpm"                          "OE2 T - 28Feb05.xpm";\
-	    ln -s "OE 2 V.xpm"                          "OE2 V - 28Feb05.xpm";\
-	    ln -s "OE 2 W.xpm"                          "OE2 W - 28Feb05.xpm";\
-	    ln -s "OE 3.xpm"                            "OE3 - 28Feb05.xpm";\
-	    ln -s "ONTV,ONTV Regional.xpm"              "ONTV.xpm";\
-	    ln -s "ONTV,ONTV Regional.xpm"              "ONTV Regional.xpm";\
-	    ln -s "ORF 1.xpm"                           "ORF1.xpm";\
-	    ln -s "ORF 2.xpm"                           "ORF2.xpm";\
-	    ln -s "ORF 2 B.xpm"                         "ORF2 B.xpm";\
-	    ln -s "ORF 2 K.xpm"                         "ORF2 K.xpm";\
-	    ln -s "ORF 2 N.xpm"                         "ORF2 N.xpm";\
-	    ln -s "ORF 2 O.xpm"                         "ORF2 O.xpm";\
-	    ln -s "ORF 2 S.xpm"                         "ORF2 S.xpm";\
-	    ln -s "ORF 2 St.xpm"                        "ORF2 St.xpm";\
-	    ln -s "ORF 2 T.xpm"                         "ORF2 T.xpm";\
-	    ln -s "ORF 2 V.xpm"                         "ORF2 V.xpm";\
-	    ln -s "ORF 2 W.xpm"                         "ORF2 W.xpm";\
-	    ln -s "PREM 1,PREMIERE 1.xpm"               "PREMIERE 1.xpm";\
-	    ln -s "PREM 1,PREMIERE 1.xpm"               "PREM 1.xpm";\
-	    ln -s "PREM 2,PREMIERE 2.xpm"               "PREMIERE 2.xpm";\
-	    ln -s "PREM 2,PREMIERE 2.xpm"               "PREM 2.xpm";\
-	    ln -s "PREM 3,PREMIERE 3.xpm"               "PREMIERE 3.xpm";\
-	    ln -s "PREM 3,PREMIERE 3.xpm"               "PREM 3.xpm";\
-	    ln -s "PREM 4,PREMIERE 4.xpm"               "PREMIERE 4.xpm";\
-	    ln -s "PREM 4,PREMIERE 4.xpm"               "PREM 4.xpm";\
-	    ln -s "PREM 5,PREMIERE 5.xpm"               "PREMIERE 5.xpm";\
-	    ln -s "PREM 5,PREMIERE 5.xpm"               "PREM 5.xpm";\
-	    ln -s "PREM 6,PREMIERE 6.xpm"               "PREMIERE 6.xpm";\
-	    ln -s "PREM 6,PREMIERE 6.xpm"               "PREM 6.xpm";\
-	    ln -s "PREM 7,PREMIERE 7.xpm"               "PREMIERE 7.xpm";\
-	    ln -s "PREM 7,PREMIERE 7.xpm"               "PREM 7.xpm";\
-	    ln -s "PREM A,PREMIERE Austria.xpm"         "PREMIERE Austria.xpm";\
-	    ln -s "PREM A,PREMIERE Austria.xpm"         "PREM A.xpm";\
-	    ln -s "QVC GERMANY.xpm"                     "QVC Deutschland.xpm";\
-	    ln -s "RTL.xpm"                             "RTL Television.xpm";\
-	    ln -s "SERIE,PREMIERE SERIE.xpm"            "PREMIERE SERIE.xpm";\
-	    ln -s "SERIE,PREMIERE SERIE.xpm"            "SERIE.xpm";\
-	    ln -s "Sky News Intl.xpm"                   "Sky News.xpm";\
-	    ln -s "SPORT 1,PREMIERE SPORT 1.xpm"        "PREMIERE SPORT 1.xpm";\
-	    ln -s "SPORT 1,PREMIERE SPORT 1.xpm"        "SPORT 1.xpm";\
-	    ln -s "SPORT 1,PREMIERE SPORT 1.xpm"        "Sport 1.xpm";\
-	    ln -s "SPORT 2,PREMIERE SPORT 2.xpm"        "PREMIERE SPORT 2.xpm";\
-	    ln -s "SPORT 2,PREMIERE SPORT 2.xpm"        "SPORT 2.xpm";\
-	    ln -s "SPORT 2,PREMIERE SPORT 2.xpm"        "Sport 2.xpm";\
-	    ln -s "Super RTL.xpm"                       "S RTL.xpm";\
-	    ln -s "START,PREMIERE START.xpm"            "PREMIERE START.xpm";\
-	    ln -s "START,PREMIERE START.xpm"            "START.xpm";\
-	    ln -s "toute L' HISTOIRE.xpm"               "toute L'HISTOIRE.xpm";\
-	    ln -s "TV.B,TV.BERLIN.xpm"                  "TV.BERLIN.xpm";\
-	    ln -s "TW1.xpm"                             "TW1 - 28Feb05.xpm"
+	    # ln -s "13 TH,13 TH STREET.xpm"              "13 TH.xpm";\
+	    # ln -s "AB 1.xpm"                            "AB1.xpm";\
+	    # ln -s "Animal Planet.xpm"                   "ANIMAL.xpm";\
+	    # ln -s "ATV+.xpm"                            "ATV.xpm";\
+	    # ln -s "BBC Prime.xpm"                       "BBC PRIME.xpm";\
+	    # ln -s "BROTHER,BIG BROTHER.xpm"             "BROTHER.xpm";\
+	    # ln -s "B-UHSE,BEATE-UHSE.TV.xpm"            "B-UHSE.xpm";\
+	    # ln -s "DISNEY,DISNEY CHANNEL.xpm"           "DISNEY.xpm";\
+	    # ln -s "Eurosport.xpm"                       "EUROSPORT.xpm";\
+	    # ln -s "FM4.xpm"                             "FM4 - 28Feb05.xpm";\
+	    # ln -s "FOX KIDS.xpm"                        "FOXKIDS.xpm";\
+	    # ln -s "FSAT,Franken SAT.xpm"                "Franken SAT.xpm";\
+	    # ln -s "FSAT,Franken SAT.xpm"                "FSAT.xpm";\
+	    # ln -s "GOD,GOD Channel.xpm"                 "GOD.xpm";\
+	    # ln -s "GOLDSTAR,GOLDSTAR TV.xpm"            "GOLDSTAR.xpm";\
+	    # ln -s "HEIMAT,HEIMATKANAL.xpm"              "HEIMAT.xpm";\
+	    # ln -s "hessen fernsehen.xpm"                "hr-fernsehen.xpm";\
+	    # ln -s "Kabel 1.xpm"                         "KABEL1.xpm";\
+	    # ln -s "KRIMI,PREMIERE KRIMI.xpm"            "KRIMI.xpm";\
+	    # ln -s "KRIMI,PREMIERE KRIMI.xpm"            "PREMIERE KRIMI.xpm";\
+	    # ln -s "MTV Base..xpm"                       "MTV Base.xpm";\
+	    # ln -s "MTV.xpm"                             "MTV Europe.xpm";\
+	    # ln -s "MTV HITS..xpm"                       "MTV HITS.xpm";\
+	    # ln -s "Neun Live.xpm"                       "NEUN LIVE Television.xpm";\
+	    # ln -s "OE1.xpm"                             "OE1 - 28Feb05.xpm";\
+	    # ln -s "OE 2 B.xpm"                          "OE2 B - 28Feb05.xpm";\
+	    # ln -s "OE 2 K.xpm"                          "OE2 K - 28Feb05.xpm";\
+	    # ln -s "OE 2 N.xpm"                          "OE2 N - 28Feb05.xpm";\
+	    # ln -s "OE 2 O.xpm"                          "OE2 O - 28Feb05.xpm";\
+	    # ln -s "OE 2 S.xpm"                          "OE2 S - 28Feb05.xpm";\
+	    # ln -s "OE 2 St.xpm"                         "OE2 St - 28Feb05.xpm";\
+	    # ln -s "OE 2 T.xpm"                          "OE2 T - 28Feb05.xpm";\
+	    # ln -s "OE 2 V.xpm"                          "OE2 V - 28Feb05.xpm";\
+	    # ln -s "OE 2 W.xpm"                          "OE2 W - 28Feb05.xpm";\
+	    # ln -s "OE 3.xpm"                            "OE3 - 28Feb05.xpm";\
+	    # ln -s "ONTV,ONTV Regional.xpm"              "ONTV.xpm";\
+	    # ln -s "ONTV,ONTV Regional.xpm"              "ONTV Regional.xpm";\
+	    # ln -s "ORF 1.xpm"                           "ORF1.xpm";\
+	    # ln -s "ORF 2.xpm"                           "ORF2.xpm";\
+	    # ln -s "ORF 2 B.xpm"                         "ORF2 B.xpm";\
+	    # ln -s "ORF 2 K.xpm"                         "ORF2 K.xpm";\
+	    # ln -s "ORF 2 N.xpm"                         "ORF2 N.xpm";\
+	    # ln -s "ORF 2 O.xpm"                         "ORF2 O.xpm";\
+	    # ln -s "ORF 2 S.xpm"                         "ORF2 S.xpm";\
+	    # ln -s "ORF 2 St.xpm"                        "ORF2 St.xpm";\
+	    # ln -s "ORF 2 T.xpm"                         "ORF2 T.xpm";\
+	    # ln -s "ORF 2 V.xpm"                         "ORF2 V.xpm";\
+	    # ln -s "ORF 2 W.xpm"                         "ORF2 W.xpm";\
+	    # ln -s "PREM 1,PREMIERE 1.xpm"               "PREMIERE 1.xpm";\
+	    # ln -s "PREM 1,PREMIERE 1.xpm"               "PREM 1.xpm";\
+	    # ln -s "PREM 2,PREMIERE 2.xpm"               "PREMIERE 2.xpm";\
+	    # ln -s "PREM 2,PREMIERE 2.xpm"               "PREM 2.xpm";\
+	    # ln -s "PREM 3,PREMIERE 3.xpm"               "PREMIERE 3.xpm";\
+	    # ln -s "PREM 3,PREMIERE 3.xpm"               "PREM 3.xpm";\
+	    # ln -s "PREM 4,PREMIERE 4.xpm"               "PREMIERE 4.xpm";\
+	    # ln -s "PREM 4,PREMIERE 4.xpm"               "PREM 4.xpm";\
+	    # ln -s "PREM 5,PREMIERE 5.xpm"               "PREMIERE 5.xpm";\
+	    # ln -s "PREM 5,PREMIERE 5.xpm"               "PREM 5.xpm";\
+	    # ln -s "PREM 6,PREMIERE 6.xpm"               "PREMIERE 6.xpm";\
+	    # ln -s "PREM 6,PREMIERE 6.xpm"               "PREM 6.xpm";\
+	    # ln -s "PREM 7,PREMIERE 7.xpm"               "PREMIERE 7.xpm";\
+	    # ln -s "PREM 7,PREMIERE 7.xpm"               "PREM 7.xpm";\
+	    # ln -s "PREM A,PREMIERE Austria.xpm"         "PREMIERE Austria.xpm";\
+	    # ln -s "PREM A,PREMIERE Austria.xpm"         "PREM A.xpm";\
+	    # ln -s "QVC GERMANY.xpm"                     "QVC Deutschland.xpm";\
+	    # ln -s "RTL.xpm"                             "RTL Television.xpm";\
+	    # ln -s "SERIE,PREMIERE SERIE.xpm"            "PREMIERE SERIE.xpm";\
+	    # ln -s "SERIE,PREMIERE SERIE.xpm"            "SERIE.xpm";\
+	    # ln -s "Sky News Intl.xpm"                   "Sky News.xpm";\
+	    # ln -s "SPORT 1,PREMIERE SPORT 1.xpm"        "PREMIERE SPORT 1.xpm";\
+	    # ln -s "SPORT 1,PREMIERE SPORT 1.xpm"        "SPORT 1.xpm";\
+	    # ln -s "SPORT 1,PREMIERE SPORT 1.xpm"        "Sport 1.xpm";\
+	    # ln -s "SPORT 2,PREMIERE SPORT 2.xpm"        "PREMIERE SPORT 2.xpm";\
+	    # ln -s "SPORT 2,PREMIERE SPORT 2.xpm"        "SPORT 2.xpm";\
+	    # ln -s "SPORT 2,PREMIERE SPORT 2.xpm"        "Sport 2.xpm";\
+	    # ln -s "Super RTL.xpm"                       "S RTL.xpm";\
+	    # ln -s "START,PREMIERE START.xpm"            "PREMIERE START.xpm";\
+	    # ln -s "START,PREMIERE START.xpm"            "START.xpm";\
+	    # ln -s "toute L' HISTOIRE.xpm"               "toute L'HISTOIRE.xpm";\
+	    # ln -s "TV.B,TV.BERLIN.xpm"                  "TV.BERLIN.xpm";\
+	    # ln -s "TW1.xpm"                             "TW1 - 28Feb05.xpm"
 
   mkdir -p $pkgdir/var/lib/vdr							|| return 1
   cd $pkgdir/var/lib/vdr							|| return 1
-  ln -s ../../../usr/share/vdr-xpmlogos	xpmlogos					|| return 1
+   ln -s ../../../usr/share/vdr-xpmlogos	xpmlogos					|| return 1
 }

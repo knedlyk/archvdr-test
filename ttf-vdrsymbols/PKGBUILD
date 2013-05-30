@@ -3,7 +3,6 @@
 
 _basename=vdrsymbols
 pkgname=ttf-${_basename}
-#pkgver=20080905
 pkgver=20100612
 pkgrel=1
 pkgdesc="A TrueType font that includes symbols used by some VDR plugins and patches."

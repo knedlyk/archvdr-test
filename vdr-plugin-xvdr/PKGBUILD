@@ -17,7 +17,7 @@ conflicts=()
 source=()
 md5sums=()
 
-build() {
+package() {
 
   export MAKEFLAGS="-j1"
 

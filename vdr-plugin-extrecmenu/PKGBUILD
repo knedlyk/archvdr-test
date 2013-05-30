@@ -16,7 +16,7 @@ source=(http://projects.vdr-developer.org/attachments/download/334/vdr-${_pkgnam
 
 md5sums=('0b83b281462e854936d2192094c04b87')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
