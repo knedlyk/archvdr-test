@@ -17,9 +17,10 @@ build() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
-
   make || return 1
-
+}
+package() {
+  cd ${srcdir}/$_pkgname-${pkgver}
   mkdir -p $pkgdir/usr/bin								|| return 1
   install -m 755 genindex			$pkgdir/usr/bin				|| return 1
 
