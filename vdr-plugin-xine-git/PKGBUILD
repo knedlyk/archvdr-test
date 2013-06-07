@@ -1,5 +1,4 @@
 # Maintainer : Edgar Hucek <gimli@dark-green.com>
-
 _packagename=xine
 pkgname=vdr-plugin-xine-git
 pkgver=20130416
@@ -34,6 +33,7 @@ package() {
   rm -rf $srcdir/$_gitname-build
   cp -r $srcdir/$_gitname $srcdir/$_gitname-build
   cd $srcdir/$_gitname-build 
+
   unset CXXFLAGS
 
   patch -p1 -i ${srcdir}/remove_old_i18n.patch || return 1
