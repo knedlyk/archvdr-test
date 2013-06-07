@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+
+## 01_Makefile-fPIC-fix.dpatch by Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Adds -fPIC to Makefile
+
+@DPATCH@
+diff -urNad /home/chelli/vdr/cvs-buildpackage/vdr-plugin-weather/vdr-plugin-weather-0.2.1e/Makefile vdr-plugin-weather-0.2.1e/Makefile
+--- /home/chelli/vdr/cvs-buildpackage/vdr-plugin-weather/vdr-plugin-weather-0.2.1e/Makefile	2003-12-04 16:04:24.000000000 +0100
++++ vdr-plugin-weather-0.2.1e/Makefile	2004-08-09 15:15:15.000000000 +0200
+@@ -16,7 +16,7 @@
+ ### The C++ compiler and options:
+ 
+ CXX      ?= g++
+-CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
++CXXFLAGS ?= -fPIC -O2 -Wall -Woverloaded-virtual
+ 
+ ### The directory environment:
+ 

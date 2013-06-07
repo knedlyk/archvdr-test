@@ -1,0 +1,51 @@
+
+
+_pluginname=weather
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.2.1e
+pkgrel=1
+arch=('i686' 'x86_64')
+pkgdesc="A weather plugin for VDR"
+url="http://www.moldaner.de/vdr/"
+license="GPL"
+depends=('vdr' 'mdsplib' 'ftplib')
+makedepends=('gcc' 'vdr')
+backup=()
+source=(http://ftp.de.debian.org/debian/pool/main/v/vdr-plugin-weather/vdr-plugin-weather_$pkgver.orig.tar.gz
+    01_Makefile-fPIC-fix.patch  
+    02_vdr_1.3-fix.patch
+    03_g++4.1-fix.patch    
+    04_ftp-location.patch
+    90_APIVERSION.patch  
+    vdr-1.7.27.patch)
+
+
+build() {
+  unset CXXFLAGS
+  cd $srcdir/vdr-plugin-$_pluginname-$pkgver.orig
+  patch -p1< $srcdir/01_Makefile-fPIC-fix.patch  
+  patch -p1< $srcdir/02_vdr_1.3-fix.patch        
+  patch -p1< $srcdir/03_g++4.1-fix.patch
+  patch -p1< $srcdir/04_ftp-location.patch  
+  patch -p1< $srcdir/90_APIVERSION.patch
+  patch -p1< $srcdir/vdr-1.7.27.patch
+  cp images/*.xpm .
+  make VDRDIR="/usr/include/vdr" LIBDIR=. \
+       LOCALEDIR=$srcdir/usr/share/locale \
+       INCLUDES="-I /usr/include/vdr" all || return 1
+}
+
+package() {
+  cd $srcdir/vdr-plugin-$_pluginname-$pkgver.orig
+  mkdir -p $pkgdir/usr/lib/vdr/plugins
+  mkdir -p $pkgdir/usr/share/locale
+  cp -r $srcdir/usr/share/locale $pkgdir/usr/share/
+  install -m 755 libvdr-*.so.* $pkgdir/usr/lib/vdr/plugins/			|| return 1
+}
+md5sums=('430a62b994098833dbd07485eb1241e1'
+         '997c6ffd95bf4fdf2e6979cb900edaaa'
+         'f430f72a4dfe04473bff8f53c238b1ab'
+         '8ec8ec9b480f59241e86f033ac809b5f'
+         '6610186598cdc0781b01f3c47a74e8ec'
+         'f53352caabaaa8d56a79945c47339823'
+         '34fec233d17a2b0b2ad59111c1865356')

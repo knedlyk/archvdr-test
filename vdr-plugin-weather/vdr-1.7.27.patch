@@ -1,0 +1,2772 @@
+Index: vdr-plugin-weather/i18n.c
+===================================================================
+--- vdr-plugin-weather.orig/i18n.c	2012-04-22 15:20:10.000000000 +0200
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,477 +0,0 @@
+-/*
+- * i18n.c: Internationalization
+- *
+- * See the README file for copyright information and how to reach the author.
+- *
+- * $Id: i18n.c 1.3 2002/06/23 13:05:59 kls Exp $
+- */
+-
+-#include "i18n.h"
+-
+-const tI18nPhrase Phrases[] = {
+-  { "Weather",
+-    "Wetter",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Météo",
+-    "",// TODO
+-    "Sää",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Station Id",
+-    "Stations Id",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Station Id",
+-    "",// TODO
+-    "Asematunnus",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Username",
+-    "Anmeldename",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Utilisateur",
+-    "",// TODO
+-    "Käyttäjätunnus",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Password (e-mail)",
+-    "Passwort (E-Mail)",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Mot de passe (e-mail)",
+-    "",// TODO
+-    "Salasana (e-mail)",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Updatetime (min)",
+-    "Aktualisierungsintervall (min)",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Mise à jour (min)",
+-    "",// TODO
+-    "Päivitysväli (min)",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Wind",
+-    "Wind",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Vent",
+-    "",// TODO
+-    "Tuuli",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Wind speed",
+-    "Windgeschwindigkeit",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Vitesse du vent",
+-    "",// TODO
+-    "Tuulen nopeus",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Wind direction",
+-    "Windrichtung",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Direction du vent",
+-    "",// TODO
+-    "Tuulen suunta",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Temperature",
+-    "Temperatur",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Température",
+-    "",// TODO
+-    "Lämpötila",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Windchill",
+-    "Gefühlte Temperatur",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Température du vent",
+-    "",// TODO
+-    "Tuulivaikutus",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Dew point",
+-    "Taupunkt",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Point de condensation",
+-    "",// TODO
+-    "Kastepiste",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Humidity",
+-    "Luftfeuchte",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Humidité",
+-    "",// TODO
+-    "Ilmankosteus",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Altimeter",
+-    "Luftdruck",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Altimètre ",
+-    "",// TODO
+-    "Ilmanpaine",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "N",
+-    "N",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Nord",
+-    "",// TODO
+-    "Pohjoinen",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "NE",
+-    "NO",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "N-O",
+-    "",// TODO
+-    "Koillinen",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "E",
+-    "O",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Est",
+-    "",// TODO
+-    "Itä",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "SE",
+-    "SO",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "S-E",
+-    "",// TODO
+-    "Kaakko",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "S",
+-    "S",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Sud",
+-    "",// TODO
+-    "Etelä",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "SW",
+-    "SW",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "S-O",
+-    "",// TODO
+-    "Lounas",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "W",
+-    "W",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Ouest",
+-    "",// TODO
+-    "Länsi",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "NW",
+-    "NW",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "N-W",
+-    "",// TODO
+-    "Luode",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Display",
+-    "Anzeige",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Affichage",
+-    "",// TODO
+-    "Näyttö",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Simple",
+-    "Einfach",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Simple",
+-    "",// TODO
+-    "Yksinkertainen",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Advanced",
+-    "Erweitert",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Avancé",
+-    "",// TODO
+-    "Laajennettu",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Displays the current weather conditons.",
+-    "Zeigt das aktuelle Wetter",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Affiche la météo courante",
+-    "",// TODO
+-    "Näyttää tämänhetkisen säätilan",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "On",
+-    "An",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "En marche",
+-    "",// TODO
+-    "Päällä",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Off",
+-    "Aus",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Arrêt",
+-    "",// TODO
+-    "Poissa",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "Use passive connection",
+-    "Benutzte passive Verbindung",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Utiliser une connection passive",
+-    "",// TODO
+-    "Käytä passiivista yhteyttä",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { "No Data available",
+-    "Keine Daten verfügbar",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "Aucune donnée utilisable",
+-    "",// TODO
+-    "Ei tietoja saatavilla",
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-    "",// TODO
+-  },
+-  { NULL }
+-  };
+Index: vdr-plugin-weather/i18n.h
+===================================================================
+--- vdr-plugin-weather.orig/i18n.h	2012-04-22 15:20:10.000000000 +0200
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,16 +0,0 @@
+-/*
+- * i18n.h: Internationalization
+- *
+- * See the README file for copyright information and how to reach the author.
+- *
+- * $Id: i18n.h 1.2 2002/05/11 14:48:16 kls Exp $
+- */
+-
+-#ifndef _I18N__H
+-#define _I18N__H
+-
+-#include <vdr/i18n.h>
+-
+-extern const tI18nPhrase Phrases[];
+-
+-#endif //_I18N__H
+Index: vdr-plugin-weather/Makefile
+===================================================================
+--- vdr-plugin-weather.orig/Makefile	2012-04-22 15:21:20.000000000 +0200
++++ vdr-plugin-weather/Makefile	2012-04-22 15:21:20.000000000 +0200
+@@ -48,7 +48,7 @@
+ 
+ ### The object files (add further files here):
+ 
+-OBJS = $(PLUGIN).o setup.o i18n.o weatherUtil.o display.o metarReader.o simpleDisplay.o
++OBJS = $(PLUGIN).o setup.o weatherUtil.o display.o metarReader.o simpleDisplay.o
+ 
+ ### Implicit rules:
+ 
+@@ -64,9 +64,34 @@
+ 
+ -include $(DEPFILE)
+ 
++### Internationalization (I18N):
++
++PODIR     = po
++LOCALEDIR = $(VDRDIR)/locale
++I18Npo    = $(wildcard $(PODIR)/*.po)
++I18Nmsgs  = $(addprefix $(LOCALEDIR)/, $(addsuffix /LC_MESSAGES/vdr-$(PLUGIN).mo, $(notdir $(foreach file, $(I18Npo), $(basename $(file))))))
++I18Npot   = $(PODIR)/$(PLUGIN).pot
++
++%.mo: %.po
++	msgfmt -c -o $@ $<
++
++$(I18Npot): $(wildcard *.c)
++	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<vdr@e-tobi.net>' -o $@ $^
++
++%.po: $(I18Npot)
++	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<
++	@touch $@
++
++$(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr-$(PLUGIN).mo: $(PODIR)/%.mo
++	@mkdir -p $(dir $@)
++	cp $< $@
++
++.PHONY: i18n
++i18n: $(I18Nmsgs)
++
+ ### Targets:
+ 
+-all: libvdr-$(PLUGIN).so
++all: libvdr-$(PLUGIN).so i18n
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+ 	$(CXX) $(CXXFLAGS) -shared $(OBJS) $(LIBS) -o $@
+@@ -81,4 +106,5 @@
+ 	@echo Distribution package created as $(PACKAGE).tgz
+ 
+ clean:
++	@-rm -f $(PODIR)/*.mo $(PODIR)/*.pot
+ 	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
+Index: vdr-plugin-weather/po/ca_ES.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/ca_ES.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,100 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Marc Rovira Vall <tm05462@salleURL.edu>, 2003
++# Ramon Roca <ramon.roca@xcombo.com>, 2003
++# Jordi Vilà <jvila@tinet.org>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Jordi Vilà <jvila@tinet.org>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/cs_CZ.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/cs_CZ.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Vladimír Bárta <vladimir.barta@k2atmitec.cz>, 2006
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Vladimír Bárta <vladimir.barta@k2atmitec.cz>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/da_DK.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/da_DK.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Mogens Elneff <mogens@elneff.dk>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/de_DE.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/de_DE.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Klaus Schmidinger <kls@tvdr.de>, 2000
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr "Wetter"
++
++msgid "Wind"
++msgstr "Wind"
++
++msgid "No Data available"
++msgstr "Keine Daten verfügbar"
++
++msgid "Temperature"
++msgstr "Temperatur"
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr "Gefühlte Temperatur"
++
++msgid "Dew point"
++msgstr "Taupunkt"
++
++msgid "Wind speed"
++msgstr "Windgeschwindigkeit"
++
++msgid "Wind direction"
++msgstr "Windrichtung"
++
++msgid "Humidity"
++msgstr "Luftfeuchte"
++
++msgid "Altimeter"
++msgstr "Luftdruck"
++
++msgid "Station Id"
++msgstr "Stations Id"
++
++msgid "Username"
++msgstr "Anmeldename"
++
++msgid "Password (e-mail)"
++msgstr "Passwort (E-Mail)"
++
++msgid "Updatetime (min)"
++msgstr "Aktualisierungsintervall (min)"
++
++msgid "Use passive connection"
++msgstr "Benutzte passive Verbindung"
++
++msgid "Display"
++msgstr "Anzeige"
++
++msgid "Advanced"
++msgstr "Erweitert"
++
++msgid "Simple"
++msgstr "Einfach"
++
++msgid "N"
++msgstr "N"
++
++msgid "NE"
++msgstr "NO"
++
++msgid "E"
++msgstr "O"
++
++msgid "SE"
++msgstr "SO"
++
++msgid "S"
++msgstr "S"
++
++msgid "SW"
++msgstr "SW"
++
++msgid "W"
++msgstr "W"
++
++msgid "NW"
++msgstr "NW"
+Index: vdr-plugin-weather/po/el_GR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/el_GR.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Dimitrios Dimitrakos <mail@dimitrios.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-7\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/es_ES.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/es_ES.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Ruben Nunez Francisco <ruben.nunez@tang-it.com>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Ruben Nunez Francisco <ruben.nunez@tang-it.com>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/et_EE.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/et_EE.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Arthur Konovalov <kasjas@hot.ee>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-13\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/fi_FI.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/fi_FI.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,101 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Hannu Savolainen <hannu@opensound.com>, 2002
++# Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002
++# Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
++# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr "Sää"
++
++msgid "Wind"
++msgstr "Tuuli"
++
++msgid "No Data available"
++msgstr "Ei tietoja saatavilla"
++
++msgid "Temperature"
++msgstr "Lämpötila"
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr "Tuulivaikutus"
++
++msgid "Dew point"
++msgstr "Kastepiste"
++
++msgid "Wind speed"
++msgstr "Tuulen nopeus"
++
++msgid "Wind direction"
++msgstr "Tuulen suunta"
++
++msgid "Humidity"
++msgstr "Ilmankosteus"
++
++msgid "Altimeter"
++msgstr "Ilmanpaine"
++
++msgid "Station Id"
++msgstr "Asematunnus"
++
++msgid "Username"
++msgstr "Käyttäjätunnus"
++
++msgid "Password (e-mail)"
++msgstr "Salasana (e-mail)"
++
++msgid "Updatetime (min)"
++msgstr "Päivitysväli (min)"
++
++msgid "Use passive connection"
++msgstr "Käytä passiivista yhteyttä"
++
++msgid "Display"
++msgstr "Näyttö"
++
++msgid "Advanced"
++msgstr "Laajennettu"
++
++msgid "Simple"
++msgstr "Yksinkertainen"
++
++msgid "N"
++msgstr "Pohjoinen"
++
++msgid "NE"
++msgstr "Koillinen"
++
++msgid "E"
++msgstr "Itä"
++
++msgid "SE"
++msgstr "Kaakko"
++
++msgid "S"
++msgstr "Etelä"
++
++msgid "SW"
++msgstr "Lounas"
++
++msgid "W"
++msgstr "Länsi"
++
++msgid "NW"
++msgstr "Luode"
+Index: vdr-plugin-weather/po/fr_FR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/fr_FR.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,101 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Jean-Claude Repetto <jc@repetto.org>, 2001
++# Olivier Jacques <jacquesolivier@hotmail.com>, 2003
++# Gregoire Favre <greg@magma.unil.ch>, 2003
++# Nicolas Huillard <nhuillard@e-dition.fr>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Nicolas Huillard <nhuillard@e-dition.fr>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr "Météo"
++
++msgid "Wind"
++msgstr "Vent"
++
++msgid "No Data available"
++msgstr "Aucune donnée utilisable"
++
++msgid "Temperature"
++msgstr "Température"
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr "Température du vent"
++
++msgid "Dew point"
++msgstr "Point de condensation"
++
++msgid "Wind speed"
++msgstr "Vitesse du vent"
++
++msgid "Wind direction"
++msgstr "Direction du vent"
++
++msgid "Humidity"
++msgstr "Humidité"
++
++msgid "Altimeter"
++msgstr "Altimètre "
++
++msgid "Station Id"
++msgstr "Station Id"
++
++msgid "Username"
++msgstr "Utilisateur"
++
++msgid "Password (e-mail)"
++msgstr "Mot de passe (e-mail)"
++
++msgid "Updatetime (min)"
++msgstr "Mise à jour (min)"
++
++msgid "Use passive connection"
++msgstr "Utiliser une connection passive"
++
++msgid "Display"
++msgstr "Affichage"
++
++msgid "Advanced"
++msgstr "Avancé"
++
++msgid "Simple"
++msgstr "Simple"
++
++msgid "N"
++msgstr "Nord"
++
++msgid "NE"
++msgstr "N-O"
++
++msgid "E"
++msgstr "Est"
++
++msgid "SE"
++msgstr "S-E"
++
++msgid "S"
++msgstr "Sud"
++
++msgid "SW"
++msgstr "S-O"
++
++msgid "W"
++msgstr "Ouest"
++
++msgid "NW"
++msgstr "N-W"
+Index: vdr-plugin-weather/po/hr_HR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/hr_HR.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,99 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Drazen Dupor <drazen.dupor@dupor.com>, 2004
++# Dino Ravnic <dino.ravnic@fer.hr>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Drazen Dupor <drazen.dupor@dupor.com>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/hu_HU.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/hu_HU.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,99 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Istvan Koenigsberger <istvnko@hotmail.com>, 2002
++# Guido Josten <guido.josten@t-online.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/it_IT.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/it_IT.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,100 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Alberto Carraro <bertocar@tin.it>, 2001
++# Antonio Ospite <ospite@studenti.unina.it>, 2003
++# Sean Carlos <seanc@libero.it>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Sean Carlos <seanc@libero.it>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/nl_NL.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/nl_NL.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,100 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
++# Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003
++# Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/nn_NO.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/nn_NO.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,99 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Jørgen Tvedt <pjtvedt@online.no>, 2001
++# Truls Slevigen <truls@slevigen.no>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/pl_PL.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/pl_PL.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Michael Rakowski <mrak@gmx.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/pt_PT.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/pt_PT.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Paulo Lopes <pmml@netvita.pt>, 2001
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Paulo Lopes <pmml@netvita.pt>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/ro_RO.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/ro_RO.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,99 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Paul Lacatus <paul@campina.iiruc.ro>, 2002
++# Lucian Muresan <lucianm@users.sourceforge.net>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/ru_RU.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/ru_RU.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Vyacheslav Dikonov <sdiconov@mail.ru>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Vyacheslav Dikonov <sdiconov@mail.ru>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-5\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/sl_SI.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/sl_SI.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,99 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Miha Setina <mihasetina@softhome.net>, 2000
++# Matjaz Thaler <matjaz.thaler@guest.arnes.si>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/sv_SE.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/sv_SE.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,99 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Tomas Prybil <tomas@prybil.se>, 2002
++# Jan Ekholm <chakie@infa.abo.fi>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Tomas Prybil <tomas@prybil.se>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/po/tr_TR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-weather/po/tr_TR.po	2012-04-22 15:22:22.000000000 +0200
+@@ -0,0 +1,98 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Oktay Yolgeçen <oktay_73@yahoo.de>, 2007
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <vdr@e-tobi.net>\n"
++"POT-Creation-Date: 2012-04-22 15:22+0200\n"
++"PO-Revision-Date: 2012-04-22 15:14+0200\n"
++"Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-9\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Weather"
++msgstr ""
++
++msgid "Wind"
++msgstr ""
++
++msgid "No Data available"
++msgstr ""
++
++msgid "Temperature"
++msgstr ""
++
++msgid "No Data"
++msgstr ""
++
++msgid "Windchill"
++msgstr ""
++
++msgid "Dew point"
++msgstr ""
++
++msgid "Wind speed"
++msgstr ""
++
++msgid "Wind direction"
++msgstr ""
++
++msgid "Humidity"
++msgstr ""
++
++msgid "Altimeter"
++msgstr ""
++
++msgid "Station Id"
++msgstr ""
++
++msgid "Username"
++msgstr ""
++
++msgid "Password (e-mail)"
++msgstr ""
++
++msgid "Updatetime (min)"
++msgstr ""
++
++msgid "Use passive connection"
++msgstr ""
++
++msgid "Display"
++msgstr ""
++
++msgid "Advanced"
++msgstr ""
++
++msgid "Simple"
++msgstr ""
++
++msgid "N"
++msgstr ""
++
++msgid "NE"
++msgstr ""
++
++msgid "E"
++msgstr ""
++
++msgid "SE"
++msgstr ""
++
++msgid "S"
++msgstr ""
++
++msgid "SW"
++msgstr ""
++
++msgid "W"
++msgstr ""
++
++msgid "NW"
++msgstr ""
+Index: vdr-plugin-weather/weather.c
+===================================================================
+--- vdr-plugin-weather.orig/weather.c	2012-04-22 15:20:10.000000000 +0200
++++ vdr-plugin-weather/weather.c	2012-04-22 15:21:20.000000000 +0200
+@@ -8,7 +8,7 @@
+ #include "weather.h"
+ #include "display.h"
+ #include "simpleDisplay.h"
+-#include "i18n.h"
++#include <vdr/i18n.h>
+ #include <ctype.h>
+ #include <climits>
+ 
+@@ -71,7 +71,6 @@
+ }
+ 
+ bool cPluginWeather::Start(void) {
+-  RegisterI18n(Phrases);
+   metarReader.StartUpdate();
+ 
+   return true;
+Index: vdr-plugin-weather/weatherUtil.c
+===================================================================
+--- vdr-plugin-weather.orig/weatherUtil.c	2012-04-22 15:20:10.000000000 +0200
++++ vdr-plugin-weather/weatherUtil.c	2012-04-22 15:21:20.000000000 +0200
+@@ -1,6 +1,6 @@
+ #include <math.h>
+ #include "weatherUtil.h"
+-#include "i18n.h"
++#include <vdr/i18n.h>
+ 
+ int cWeatherUtil::calculateHumidity(double temperature, double dewPoint) {
+ 	return (int) (100.0 * cWeatherUtil::calculateSaturationVaporPressure(dewPoint) / cWeatherUtil::calculateSaturationVaporPressure(temperature));
