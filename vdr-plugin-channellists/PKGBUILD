@@ -1,0 +1,32 @@
+
+
+_pluginname=channellists
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.0.5
+pkgrel=1
+pkgdesc="A VDR Plugin to manage your Channellists"
+arch=('i686' 'x86_64')
+url="http://www.zulu-entertainment.de/content.php?f=VDR-Plugins&sub=Channellists/"
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+install=
+source=(http://www.zulu-entertainment.de/files/vdr-channellists/vdr-channellist-$pkgver.tgz
+	plugin.channellists.conf)
+backup=('etc/vdr/plugins/plugin.channellists.conf' 
+	'var/lib/vdr/channellists-update.sh')
+md5sums=('20ab294c48164b513ed0557acee5c66c'
+         'ae31fc3d740226ca6d9a153901cdc73c')
+
+package() {
+  cd "$srcdir/${_pluginname}-$pkgver"
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
+  mkdir -p $pkgdir/var/lib/vdr
+  mkdir -p $pkgdir/etc/vdr/plugins
+  install -m 755 scripts/channellists-update.sh	$pkgdir/var/lib/vdr || return 1
+  install -m 644 $srcdir/plugin.channellists.conf $pkgdir/etc/vdr/plugins || return 1
+}
+

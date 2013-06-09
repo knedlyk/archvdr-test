@@ -14,14 +14,12 @@ install=
 source=(http://www.saunalahti.fi/~rahrenbe/vdr/femon/files/vdr-$_pluginname-$pkgver.tgz)
 md5sums=('b3977c1098df24492ada218bbe73df32')
 
-build() {
+package() {
   cd "$startdir/src/${_pluginname}-$pkgver"
 
   make VDRDIR=/usr/include/vdr LIBDIR=. \
        LOCALEDIR=$pkgdir/usr/share/locale all || return 1
-}
-package() {  
-  cd "$startdir/src/${_pluginname}-$pkgver"
+
   make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
   }
 

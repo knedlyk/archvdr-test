@@ -1,0 +1,31 @@
+
+_pluginname=webvideo
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="Webvi is a tool for downloading and playing videos from popular video sharing webvites such as YouTube"
+arch=('i686' 'x86_64')
+url="http://users.tkk.fi/~aajanki/vdr/webvideo/"
+license=('GPL')
+depends=('vdr' 'curl' 'python' 'python2-pycurl' 'libxml2' 'libxslt' 'python2-simplejson')
+makedepends=('vdr')
+install=
+source=(http://projects.vdr-developer.org/attachments/download/1355/vdr-webvideo-$pkgver.tgz)
+backup=(etc/vdr/plugins/plugin.${_pluginname}.conf)
+
+package() {
+  cd "$srcdir/${_pluginname}-$pkgver"
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+
+  mkdir -p $pkgdir/var/lib/vdr/plugins
+  mkdir -p $pkgdir/etc/vdr/plugins
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins \
+       DESTDIR=$pkgdir PREFIX=/usr VDRPLUGINCONFDIR=/var/lib/vdr/plugins install || return 1
+       
+  install -m 644 src/vdr-plugin/mime.types	$pkgdir/var/lib/vdr/plugins/webvideo || return 1
+  install -m 644 debian/plugin.webvideo.conf	$pkgdir/etc/vdr/plugins || return 1
+}
+
+md5sums=('8621164a87a3025a44cb2b14b7416062')

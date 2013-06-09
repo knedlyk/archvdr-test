@@ -1,0 +1,29 @@
+
+
+_pluginname=plugin
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.0.5
+pkgrel=1
+pkgdesc=""
+arch=('i686' 'x86_64')
+url=""
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+install=
+source=()
+backup=()
+md5sums=()
+
+package() {
+  cd "$srcdir/${_pluginname}-$pkgver"
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
+  mkdir -p $pkgdir/var/lib/vdr
+  mkdir -p $pkgdir/etc/vdr/plugins
+  install -m 755 scripts/scripts	$pkgdir/var/lib/vdr || return 1
+  install -m 644 $srcdir/plugin.plugin.conf $pkgdir/etc/vdr/plugins || return 1
+}
+
