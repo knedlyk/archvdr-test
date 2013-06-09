@@ -7,14 +7,20 @@ pkgdesc="Webvi is a tool for downloading and playing videos from popular video s
 arch=('i686' 'x86_64')
 url="http://users.tkk.fi/~aajanki/vdr/webvideo/"
 license=('GPL')
-depends=('vdr' 'curl' 'python' 'python2-pycurl' 'libxml2' 'libxslt' 'python2-simplejson')
+depends=('vdr' 'curl' 'python2' 'python2-pycurl' 'python2-simplejson' 'python2-lxml' )
 makedepends=('vdr')
-install=
+optdepends=('mimms: for downloading mms URLs'
+	    'yle-downloader-gui: for downloading videos from Yle-Areena')
 source=(http://projects.vdr-developer.org/attachments/download/1355/vdr-webvideo-$pkgver.tgz)
-backup=(etc/vdr/plugins/plugin.${_pluginname}.conf)
+backup=(etc/vdr/plugins/plugin.${_pluginname}.conf
+	etc/webvi.conf)
 
 package() {
   cd "$srcdir/${_pluginname}-$pkgver"
+
+   sed -e "s:python setup.py:python2 setup.py:" -i Makefile
+   sed -e "s:python-config:python2-config:" -i src/libwebvi/Makefile
+  
   make VDRDIR=/usr/include/vdr LIBDIR=. \
        LOCALEDIR=$pkgdir/usr/share/locale all || return 1
 
