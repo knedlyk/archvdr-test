@@ -1,0 +1,31 @@
+Index: vdr-plugin-chanorg/Makefile
+===================================================================
+--- vdr-plugin-chanorg.orig/Makefile	2012-05-19 00:51:44.000000000 +0200
++++ vdr-plugin-chanorg/Makefile	2012-05-19 00:50:06.000000000 +0200
+@@ -16,7 +16,7 @@
+ ### The C++ compiler and options:
+ 
+ CXX      ?= g++
+-CXXFLAGS ?= -fPIC -O2 -Wall -Woverloaded-virtual
++CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
+ 
+ ### The directory environment:
+ 
+@@ -31,7 +31,7 @@
+ 
+ ### The version number of VDR (taken from VDR's "config.h"):
+ 
+-VDRVERSION = $(shell grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
++APIVERSION = $(shell grep 'define APIVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }' | sed -e 's/"//g')
+ 
+ ### The name of the distribution archive:
+ 
+@@ -68,7 +68,7 @@
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+ 	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
+-	@cp $@ $(LIBDIR)/$@.$(VDRVERSION)
++	@cp $@ $(LIBDIR)/$@.$(APIVERSION)
+ 
+ dist: clean
+ 	@-rm -rf $(TMPDIR)/$(ARCHIVE)

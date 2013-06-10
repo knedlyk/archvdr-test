@@ -1,0 +1,2586 @@
+Index: vdr-plugin-chanorg/Makefile
+===================================================================
+--- vdr-plugin-chanorg.orig/Makefile	2012-05-19 00:52:19.000000000 +0200
++++ vdr-plugin-chanorg/Makefile	2012-05-19 00:52:25.000000000 +0200
+@@ -46,7 +46,7 @@
+ 
+ ### The object files (add further files here):
+ 
+-OBJS = $(PLUGIN).o chan-menu.o i18n.o
++OBJS = $(PLUGIN).o chan-menu.o
+ 
+ ### Implicit rules:
+ 
+@@ -62,9 +62,34 @@
+ 
+ -include $(DEPFILE)
+ 
++### Internationalization (I18N):
++
++PODIR     = po
++LOCALEDIR = $(VDRDIR)/locale
++I18Npo    = $(wildcard $(PODIR)/*.po)
++I18Nmsgs  = $(addprefix $(LOCALEDIR)/, $(addsuffix /LC_MESSAGES/vdr-$(PLUGIN).mo, $(notdir $(foreach file, $(I18Npo), $(basename $(file))))))
++I18Npot   = $(PODIR)/$(PLUGIN).pot
++
++%.mo: %.po
++	msgfmt -c -o $@ $<
++
++$(I18Npot): $(wildcard *.c)
++	xgettext -C -cTRANSLATORS --no-wrap --no-location -k -ktr -ktrNOOP --msgid-bugs-address='<tobias.grimm@e-tobi.net>' -o $@ $^
++
++%.po: $(I18Npot)
++	msgmerge -U --no-wrap --no-location --backup=none -q $@ $<
++	@touch $@
++
++$(I18Nmsgs): $(LOCALEDIR)/%/LC_MESSAGES/vdr-$(PLUGIN).mo: $(PODIR)/%.mo
++	@mkdir -p $(dir $@)
++	cp $< $@
++
++.PHONY: i18n
++i18n: $(I18Nmsgs)
++
+ ### Targets:
+ 
+-all: libvdr-$(PLUGIN).so
++all: libvdr-$(PLUGIN).so i18n
+ 
+ libvdr-$(PLUGIN).so: $(OBJS)
+ 	$(CXX) $(CXXFLAGS) -shared $(OBJS) -o $@
+@@ -79,4 +104,5 @@
+ 	@echo Distribution package created as $(PACKAGE).tgz
+ 
+ clean:
++	@-rm -f $(PODIR)/*.mo $(PODIR)/*.pot
+ 	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~
+Index: vdr-plugin-chanorg/chan-menu.h
+===================================================================
+--- vdr-plugin-chanorg.orig/chan-menu.h	2012-05-19 00:48:26.000000000 +0200
++++ vdr-plugin-chanorg/chan-menu.h	2012-05-19 00:52:25.000000000 +0200
+@@ -2,7 +2,7 @@
+ #define __CHANMENU_H
+ #include <vdr/plugin.h>
+ #include <vdr/menu.h>
+-#include "i18n.h"
++#include <vdr/i18n.h>
+ class cGroupMove : public cOsdMenu
+ {
+ 	private:
+Index: vdr-plugin-chanorg/chanorg.c
+===================================================================
+--- vdr-plugin-chanorg.orig/chanorg.c	2012-05-19 00:52:19.000000000 +0200
++++ vdr-plugin-chanorg/chanorg.c	2012-05-19 00:52:25.000000000 +0200
+@@ -24,7 +24,6 @@
+ 
+ bool cPluginChanOrg::Initialize(void)
+ {
+-	RegisterI18n(Phrases);
+ 	return true;
+ }
+ 
+Index: vdr-plugin-chanorg/chanorg.h
+===================================================================
+--- vdr-plugin-chanorg.orig/chanorg.h	2012-05-19 00:52:19.000000000 +0200
++++ vdr-plugin-chanorg/chanorg.h	2012-05-19 00:52:25.000000000 +0200
+@@ -5,8 +5,8 @@
+ #include <vdr/i18n.h>
+ 
+ static const char *VERSION        = "0.0.6";
+-static const char *DESCRIPTION    = "Channels Organizer";
+-static const char *MAINMENUENTRY  = "Channels Organizer";
++static const char *DESCRIPTION    = trNOOP("Channels Organizer");
++static const char *MAINMENUENTRY  = trNOOP("Channels Organizer");
+ 
+ // --- cPluginLocker -------------------------------------------------------------
+ 
+Index: vdr-plugin-chanorg/i18n.c
+===================================================================
+--- vdr-plugin-chanorg.orig/i18n.c	2012-05-19 00:48:26.000000000 +0200
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,462 +0,0 @@
+-#include "i18n.h"
+-
+-const tI18nPhrase Phrases[] = {
+-  {
+-    "Channels Organizer",
+-    "Kanalverwaltung",
+-    "",
+-    "Organizza Canali",
+-    "",
+-    "",
+-    "Organisateur Chaines",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Редактор каналов",
+-    "",
+-  },
+-  { "Select Group for",
+-    "Wфhlen",
+-    "",
+-    "Seleziona grp",
+-    "",
+-    "",
+-    "Choix du groupe pour",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Выбор группы",
+-    "",
+-  },
+-  { "Group",
+-    "Gruppe",
+-    "",
+-    "Gruppo",
+-    "",
+-    "",
+-    "Groupe",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Группа",
+-    "",
+-  },
+-  { "Name",
+-    "Name",
+-    "",
+-    "Nome",
+-    "",
+-    "",
+-    "Nom",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Имя",
+-    "",
+-  },
+-  { "Number",
+-    "Nummer",
+-    "",
+-    "Numero",
+-    "",
+-    "",
+-    "Numero",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Номер",
+-    "",
+-  },
+-  { "Del Group",
+-    "Lіschen",
+-    "",
+-    "Cancella grp",
+-    "",
+-    "",
+-    "Suppr Groupe",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Удал. группу",
+-    "",
+-  },
+-  { "Edit Group",
+-    "Bearbeiten",
+-    "",
+-    "Modifica grp",
+-    "",
+-    "",
+-    "Modif Groupe",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Ред. группу",
+-    "",
+-  },
+-  { "Sort Group",
+-    "Sortieren",
+-    "",
+-    "Ordina grp",
+-    "",
+-    "",
+-    "Tri Group",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Сорт. группу",
+-    "",
+-  },
+-  { "Move",
+-    "Verschieben",
+-    "",
+-    "Muovi",
+-    "",
+-    "",
+-    "Deplacer",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Переместить",
+-    "",
+-  },
+-  { "Add Group",
+-    "Hinzufќgen",
+-    "",
+-    "Aggiungi grp",
+-    "",
+-    "",
+-    "Creer Groupe",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Новая группа",
+-    "",
+-  },
+-  { "Affect",
+-    "Zuweisen",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Affecter",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Применить",
+-    "",
+-  },
+-  { "Zap",
+-    "Umschalten",
+-    "",
+-    "Vedi canale",
+-    "",
+-    "",
+-    "Zap",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Переключить",
+-    "",
+-  },
+-  { "Cancel",
+-    "Abbrechen",
+-    "",
+-    "Cancella",
+-    "",
+-    "",
+-    "Annuler",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Отменить",
+-    "",
+-  },
+-  { "Before",
+-    "Davor",
+-    "",
+-    "In su",
+-    "",
+-    "",
+-    "Avant",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Перед",
+-    "",
+-  },
+-  { "After",
+-    "Dahinter",
+-    "",
+-    "In giu'",
+-    "",
+-    "",
+-    "Apres",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "После",
+-    "",
+-  },
+-  { "Sorting",
+-    "Sortieren",
+-    "",
+-    "Ordinamento",
+-    "",
+-    "",
+-    "Tri en cours",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Сортировка",
+-    "",
+-  },
+-  { "Sort done",
+-    "Sortieren beendet",
+-    "",
+-    "Ordinamento completato",
+-    "",
+-    "",
+-    "Tri termine",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Сортировка окончена",
+-    "",
+-  },
+-   { "Move before group",
+-    "Verschiebe vor Gruppe",
+-    "",
+-    "Muovi in su il gruppo",
+-    "",
+-    "",
+-    "Deplacer avant groupe",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Поместить перед группой",
+-    "",
+-  },
+-   { ":End",
+-    ":Ende",
+-    "",
+-    ":Fine",
+-    "",
+-    "",
+-    ":Fin",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    ":Конец",
+-    "",
+-  },
+-   { "Alpha Up",
+-    "Alpha auf",
+-    "",
+-    "Alpha su",
+-    "",
+-    "",
+-    "Alpha Croiss",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Алфавит возр.",
+-    "",
+-  },
+-   { "Alpha Down",
+-    "Alpha ab",
+-    "",
+-    "Alpha giu'",
+-    "",
+-    "",
+-    "Alpha Dec",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Алфавит убыв.",
+-    "",
+-  },
+-   { "Transp Up",
+-    "Transp auf",
+-    "",
+-    "Transp su",
+-    "",
+-    "",
+-    "Transp Croiss",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Трансп. возр.",
+-    "",
+-  },
+-   { "Transp Down",
+-    "Transp ab",
+-    "",
+-    "Transp giu'",
+-    "",
+-    "",
+-    "Transp Dec",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Трансп. убыв.",
+-    "",
+-  },
+-  { "Apply Changes?",
+-  "Фnderungen speichern?",
+-  "",
+-  "Applica cambiamenti?",
+-  "",
+-  "",
+-  "Appliquer les changements?",
+-  "",
+-  "",
+-  "",
+-  "",
+-  "",
+-    "",
+-    "",
+-    "",
+-    "",
+-    "Применить изменения?",
+-    "",
+-  },
+-  { NULL }
+-};
+Index: vdr-plugin-chanorg/i18n.h
+===================================================================
+--- vdr-plugin-chanorg.orig/i18n.h	2012-05-19 00:48:26.000000000 +0200
++++ /dev/null	1970-01-01 00:00:00.000000000 +0000
+@@ -1,27 +0,0 @@
+-/*
+- * Softcam plugin to VDR (C++)
+- *
+- * This code is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; either version 2
+- * of the License, or (at your option) any later version.
+- *
+- * This code is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+- * Or, point your browser to http://www.gnu.org/copyleft/gpl.html
+- */
+-
+-#ifndef __CHANORG_I18N_H
+-#define __CHANORG_I18N_H
+-
+-#include <vdr/i18n.h>
+-
+-extern const tI18nPhrase Phrases[];
+-
+-#endif //__I18N_H
+Index: vdr-plugin-chanorg/po/ca_ES.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/ca_ES.po	2012-05-19 00:52:29.000000000 +0200
+@@ -0,0 +1,91 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Marc Rovira Vall <tm05462@salleURL.edu>, 2003
++# Ramon Roca <ramon.roca@xcombo.com>, 2003
++# Jordi Vilр <jvila@tinet.org>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Jordi Vilр <jvila@tinet.org>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/cs_CZ.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/cs_CZ.po	2012-05-19 00:52:29.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Vladimэr Bсrta <vladimir.barta@k2atmitec.cz>, 2006
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Vladimэr Bсrta <vladimir.barta@k2atmitec.cz>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/da_DK.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/da_DK.po	2012-05-19 00:52:29.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Mogens Elneff <mogens@elneff.dk>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/de_DE.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/de_DE.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Klaus Schmidinger <kls@tvdr.de>, 2000
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Klaus Schmidinger <kls@tvdr.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr "Verschiebe vor Gruppe"
++
++msgid ":End"
++msgstr ":Ende"
++
++msgid "Select Group for"
++msgstr "Wфhlen"
++
++msgid "Group"
++msgstr "Gruppe"
++
++msgid "Name"
++msgstr "Name"
++
++msgid "Number"
++msgstr "Nummer"
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr "Lіschen"
++
++msgid "Edit Group"
++msgstr "Bearbeiten"
++
++msgid "Sort Group"
++msgstr "Sortieren"
++
++msgid "Move"
++msgstr "Verschieben"
++
++msgid "Add Group"
++msgstr "Hinzufќgen"
++
++msgid "Affect"
++msgstr "Zuweisen"
++
++msgid "Zap"
++msgstr "Umschalten"
++
++msgid "Apply Changes?"
++msgstr "Фnderungen speichern?"
++
++msgid "Cancel"
++msgstr "Abbrechen"
++
++msgid "Before"
++msgstr "Davor"
++
++msgid "After"
++msgstr "Dahinter"
++
++msgid "Sorting"
++msgstr "Sortieren"
++
++msgid "Sort done"
++msgstr "Sortieren beendet"
++
++msgid "Alpha Up"
++msgstr "Alpha auf"
++
++msgid "Alpha Down"
++msgstr "Alpha ab"
++
++msgid "Transp Up"
++msgstr "Transp auf"
++
++msgid "Transp Down"
++msgstr "Transp ab"
+Index: vdr-plugin-chanorg/po/el_GR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/el_GR.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Dimitrios Dimitrakos <mail@dimitrios.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-7\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/es_ES.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/es_ES.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Ruben Nunez Francisco <ruben.nunez@tang-it.com>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Ruben Nunez Francisco <ruben.nunez@tang-it.com>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/et_EE.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/et_EE.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Arthur Konovalov <kasjas@hot.ee>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Arthur Konovalov <kasjas@hot.ee>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-13\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/fi_FI.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/fi_FI.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,92 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Hannu Savolainen <hannu@opensound.com>, 2002
++# Jaakko Hyvфtti <jaakko@hyvatti.iki.fi>, 2002
++# Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
++# Rolf Ahrenberg <rahrenbe@cc.hut.fi>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Rolf Ahrenberg <rahrenbe@cc.hut.fi>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/fr_FR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/fr_FR.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,92 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Jean-Claude Repetto <jc@repetto.org>, 2001
++# Olivier Jacques <jacquesolivier@hotmail.com>, 2003
++# Gregoire Favre <greg@magma.unil.ch>, 2003
++# Nicolas Huillard <nhuillard@e-dition.fr>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Nicolas Huillard <nhuillard@e-dition.fr>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr "Deplacer avant groupe"
++
++msgid ":End"
++msgstr ":Fin"
++
++msgid "Select Group for"
++msgstr "Choix du groupe pour"
++
++msgid "Group"
++msgstr "Groupe"
++
++msgid "Name"
++msgstr "Nom"
++
++msgid "Number"
++msgstr "Numero"
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr "Suppr Groupe"
++
++msgid "Edit Group"
++msgstr "Modif Groupe"
++
++msgid "Sort Group"
++msgstr "Tri Group"
++
++msgid "Move"
++msgstr "Deplacer"
++
++msgid "Add Group"
++msgstr "Creer Groupe"
++
++msgid "Affect"
++msgstr "Affecter"
++
++msgid "Zap"
++msgstr "Zap"
++
++msgid "Apply Changes?"
++msgstr "Appliquer les changements?"
++
++msgid "Cancel"
++msgstr "Annuler"
++
++msgid "Before"
++msgstr "Avant"
++
++msgid "After"
++msgstr "Apres"
++
++msgid "Sorting"
++msgstr "Tri en cours"
++
++msgid "Sort done"
++msgstr "Tri termine"
++
++msgid "Alpha Up"
++msgstr "Alpha Croiss"
++
++msgid "Alpha Down"
++msgstr "Alpha Dec"
++
++msgid "Transp Up"
++msgstr "Transp Croiss"
++
++msgid "Transp Down"
++msgstr "Transp Dec"
+Index: vdr-plugin-chanorg/po/hr_HR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/hr_HR.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,90 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Drazen Dupor <drazen.dupor@dupor.com>, 2004
++# Dino Ravnic <dino.ravnic@fer.hr>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Drazen Dupor <drazen.dupor@dupor.com>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/hu_HU.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/hu_HU.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,90 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Istvan Koenigsberger <istvnko@hotmail.com>, 2002
++# Guido Josten <guido.josten@t-online.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/it_IT.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/it_IT.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,91 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Alberto Carraro <bertocar@tin.it>, 2001
++# Antonio Ospite <ospite@studenti.unina.it>, 2003
++# Sean Carlos <seanc@libero.it>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Sean Carlos <seanc@libero.it>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr "Muovi in su il gruppo"
++
++msgid ":End"
++msgstr ":Fine"
++
++msgid "Select Group for"
++msgstr "Seleziona grp"
++
++msgid "Group"
++msgstr "Gruppo"
++
++msgid "Name"
++msgstr "Nome"
++
++msgid "Number"
++msgstr "Numero"
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr "Cancella grp"
++
++msgid "Edit Group"
++msgstr "Modifica grp"
++
++msgid "Sort Group"
++msgstr "Ordina grp"
++
++msgid "Move"
++msgstr "Muovi"
++
++msgid "Add Group"
++msgstr "Aggiungi grp"
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr "Vedi canale"
++
++msgid "Apply Changes?"
++msgstr "Applica cambiamenti?"
++
++msgid "Cancel"
++msgstr "Cancella"
++
++msgid "Before"
++msgstr "In su"
++
++msgid "After"
++msgstr "In giu'"
++
++msgid "Sorting"
++msgstr "Ordinamento"
++
++msgid "Sort done"
++msgstr "Ordinamento completato"
++
++msgid "Alpha Up"
++msgstr "Alpha su"
++
++msgid "Alpha Down"
++msgstr "Alpha giu'"
++
++msgid "Transp Up"
++msgstr "Transp su"
++
++msgid "Transp Down"
++msgstr "Transp giu'"
+Index: vdr-plugin-chanorg/po/nl_NL.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/nl_NL.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,91 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
++# Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003
++# Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-15\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/nn_NO.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/nn_NO.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,90 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Jјrgen Tvedt <pjtvedt@online.no>, 2001
++# Truls Slevigen <truls@slevigen.no>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/pl_PL.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/pl_PL.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Michael Rakowski <mrak@gmx.de>, 2002
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Michael Rakowski <mrak@gmx.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/pt_PT.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/pt_PT.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Paulo Lopes <pmml@netvita.pt>, 2001
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Paulo Lopes <pmml@netvita.pt>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/ro_RO.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/ro_RO.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,90 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Paul Lacatus <paul@campina.iiruc.ro>, 2002
++# Lucian Muresan <lucianm@users.sourceforge.net>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/ru_RU.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/ru_RU.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Vyacheslav Dikonov <sdiconov@mail.ru>, 2004
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Vyacheslav Dikonov <sdiconov@mail.ru>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-5\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr "Поместить перед группой"
++
++msgid ":End"
++msgstr ":Конец"
++
++msgid "Select Group for"
++msgstr "Выбор группы"
++
++msgid "Group"
++msgstr "Группа"
++
++msgid "Name"
++msgstr "Имя"
++
++msgid "Number"
++msgstr "Номер"
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr "Удал. группу"
++
++msgid "Edit Group"
++msgstr "Ред. группу"
++
++msgid "Sort Group"
++msgstr "Сорт. группу"
++
++msgid "Move"
++msgstr "Переместить"
++
++msgid "Add Group"
++msgstr "Новая группа"
++
++msgid "Affect"
++msgstr "Применить"
++
++msgid "Zap"
++msgstr "Переключить"
++
++msgid "Apply Changes?"
++msgstr "Применить изменения?"
++
++msgid "Cancel"
++msgstr "Отменить"
++
++msgid "Before"
++msgstr "Перед"
++
++msgid "After"
++msgstr "После"
++
++msgid "Sorting"
++msgstr "Сортировка"
++
++msgid "Sort done"
++msgstr "Сортировка окончена"
++
++msgid "Alpha Up"
++msgstr "Алфавит возр."
++
++msgid "Alpha Down"
++msgstr "Алфавит убыв."
++
++msgid "Transp Up"
++msgstr "Трансп. возр."
++
++msgid "Transp Down"
++msgstr "Трансп. убыв."
+Index: vdr-plugin-chanorg/po/sl_SI.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/sl_SI.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,90 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Miha Setina <mihasetina@softhome.net>, 2000
++# Matjaz Thaler <matjaz.thaler@guest.arnes.si>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/sv_SE.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/sv_SE.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,90 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Tomas Prybil <tomas@prybil.se>, 2002
++# Jan Ekholm <chakie@infa.abo.fi>, 2003
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Tomas Prybil <tomas@prybil.se>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-1\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""
+Index: vdr-plugin-chanorg/po/tr_TR.po
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ vdr-plugin-chanorg/po/tr_TR.po	2012-05-19 00:52:30.000000000 +0200
+@@ -0,0 +1,89 @@
++# VDR plugin language source file.
++# Copyright (C) 2007 Klaus Schmidinger <kls@tvdr.de>
++# This file is distributed under the same license as the VDR package.
++# Oktay Yolgeчen <oktay_73@yahoo.de>, 2007
++#
++msgid ""
++msgstr ""
++"Project-Id-Version: VDR 1.5.7\n"
++"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
++"POT-Creation-Date: 2012-05-19 00:52+0200\n"
++"PO-Revision-Date: 2012-05-19 00:42+0200\n"
++"Last-Translator: Oktay Yolgeчen <oktay_73@yahoo.de>\n"
++"Language-Team: <vdr@linuxtv.org>\n"
++"Language: \n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-9\n"
++"Content-Transfer-Encoding: 8bit\n"
++
++msgid "Move before group"
++msgstr ""
++
++msgid ":End"
++msgstr ""
++
++msgid "Select Group for"
++msgstr ""
++
++msgid "Group"
++msgstr ""
++
++msgid "Name"
++msgstr ""
++
++msgid "Number"
++msgstr ""
++
++msgid "Channels Organizer"
++msgstr ""
++
++msgid "Del Group"
++msgstr ""
++
++msgid "Edit Group"
++msgstr ""
++
++msgid "Sort Group"
++msgstr ""
++
++msgid "Move"
++msgstr ""
++
++msgid "Add Group"
++msgstr ""
++
++msgid "Affect"
++msgstr ""
++
++msgid "Zap"
++msgstr ""
++
++msgid "Apply Changes?"
++msgstr ""
++
++msgid "Cancel"
++msgstr ""
++
++msgid "Before"
++msgstr ""
++
++msgid "After"
++msgstr ""
++
++msgid "Sorting"
++msgstr ""
++
++msgid "Sort done"
++msgstr ""
++
++msgid "Alpha Up"
++msgstr ""
++
++msgid "Alpha Down"
++msgstr ""
++
++msgid "Transp Up"
++msgstr ""
++
++msgid "Transp Down"
++msgstr ""

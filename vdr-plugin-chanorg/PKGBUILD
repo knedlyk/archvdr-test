@@ -1,0 +1,42 @@
+
+_pluginname=chanorg
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.0.6
+pkgrel=1
+pkgdesc="A VDR plugin for managing channels.conf file via OSD"
+arch=('i686' 'x86_64')
+url="http://www.freewebs.com/sadhome/EN/Plugin/Chanorg.html"
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+install=
+source=(http://www.freewebs.com/sadhome/Plugin/Chanorg/vdr-chanorg-$pkgver.tar.gz
+	01_Makefile-fPIC-fix.patch  
+	02_OOPS_Kill.patch  
+	03_chanorg-0.0.6_fix-EbS-crash.patch  
+	90_APIVERSION.patch  
+	vdr-1.7.27.patch)
+backup=()
+md5sums=('6c50cb810181589d6e1491cbd98921f2'
+         '093cc7454bd7ced88e844ca99b72781e'
+         '3688ec357050fae1fd30ccf9e67c2318'
+         '2337646bd3c898a6c8ff229c5d5993c5'
+         'fa847a84d6aa1220fae3e808fbd8c1b0'
+         'c5edc46c3181ded856eaddcc2945800a')
+
+package() {
+  cd "$srcdir/${_pluginname}-$pkgver"
+  patch -p1 < ../01_Makefile-fPIC-fix.patch  
+  patch -p1 < ../02_OOPS_Kill.patch  
+  patch -p1 < ../03_chanorg-0.0.6_fix-EbS-crash.patch  
+  patch -p1 < ../90_APIVERSION.patch  
+  patch -p1 < ../vdr-1.7.27.patch
+  cp $srcdir/../uk_UA.po $srcdir/chanorg-$pkgver/po  || return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
+  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+}
+
+

@@ -1,0 +1,86 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 2.0.0\n"
+"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
+"POT-Creation-Date: 2013-05-19 00:52+0200\n"
+"PO-Revision-Date: 2013-05-19 00:42+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"Language: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Move before group"
+msgstr "Помістити перед групою"
+
+msgid ":End"
+msgstr ":Кінець"
+
+msgid "Select Group for"
+msgstr "Вибір групи"
+
+msgid "Group"
+msgstr "Група"
+
+msgid "Name"
+msgstr "Назва"
+
+msgid "Number"
+msgstr "Номер"
+
+msgid "Channels Organizer"
+msgstr "Організатор каналів"
+
+msgid "Del Group"
+msgstr "Вид. групу"
+
+msgid "Edit Group"
+msgstr "Ред. групу"
+
+msgid "Sort Group"
+msgstr "Сорт. групу"
+
+msgid "Move"
+msgstr "Перемістити"
+
+msgid "Add Group"
+msgstr "Нова група"
+
+msgid "Affect"
+msgstr "Застосувати"
+
+msgid "Zap"
+msgstr "Переключити"
+
+msgid "Apply Changes?"
+msgstr "Застосувати зміни?"
+
+msgid "Cancel"
+msgstr "Відмінити"
+
+msgid "Before"
+msgstr "Перед"
+
+msgid "After"
+msgstr "Після"
+
+msgid "Sorting"
+msgstr "Сортування"
+
+msgid "Sort done"
+msgstr "Сортування закінчено"
+
+msgid "Alpha Up"
+msgstr "Зрост. алфавіту"
+
+msgid "Alpha Down"
+msgstr "Спад. алфавіту"
+
+msgid "Transp Up"
+msgstr "Трансп. зрост."
+
+msgid "Transp Down"
+msgstr "Трансп. спад."
+

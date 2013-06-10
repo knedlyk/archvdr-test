@@ -1,0 +1,12 @@
+#!/bin/sh /usr/share/dpatch/dpatch-run
+## 03_chanorg-0.0.6_fix-EbS-crash.dpatch by Thomas Günther <tom@toms-cafe.de>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Fixes crash while scanning channel EbS with 32 audio ids.
+
+@DPATCH@
+--- chanorg-0.0.6/chan-menu.c
++++ chanorg-0.0.6/chan-menu.c
+@@ -553 +553 @@
+-	char totext[255];
++	char totext[512];
