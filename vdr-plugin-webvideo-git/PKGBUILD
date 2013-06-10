@@ -1,7 +1,8 @@
 
 _pluginname=webvideo
-pkgname=vdr-plugin-${_pluginname}
-pkgver=0.5.0
+_date=`date +%Y%m%d`
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=`date +%Y%m%d`
 pkgrel=1
 pkgdesc="Webvi is a tool for downloading and playing videos from popular video sharing webvites such as YouTube"
 arch=('i686' 'x86_64')
@@ -11,13 +12,34 @@ depends=('vdr' 'curl' 'python2' 'python2-pycurl' 'python2-simplejson' 'python2-l
 makedepends=('vdr')
 optdepends=('mimms: for downloading mms URLs'
 	    'yle-downloader-gui: for downloading videos from Yle-Areena')
-source=(http://projects.vdr-developer.org/attachments/download/1355/vdr-webvideo-$pkgver.tgz)
+conflicts=(vdr-plugin-${_pluginname})
+provides=(vdr-plugin-${_pluginname})
+source=()
 backup=(etc/vdr/plugins/plugin.${_pluginname}.conf
 	etc/webvi.conf)
-conflicts=(vdr-plugin-${_pluginname}-git)
+
+_gitroot=git://projects.vdr-developer.org/vdr-plugin-webvideo.git
+_gitname=$_pluginname-git
 
 package() {
-  cd "$srcdir/${_pluginname}-$pkgver"
+  unset CXXFLAGS
+
+  cd $srcdir
+  msg "Connecting to GIT server...."
+
+  if [ -d $srcdir/${_gitname} ] ; then
+    cd ${_gitname} && git pull origin
+    msg "The local files are updated."
+  else
+    git clone ${_gitroot} ${_gitname}
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf $srcdir/$_gitname-build
+  cp -r $srcdir/$_gitname $srcdir/$_gitname-build
+  cd $srcdir/$_gitname-build
 
   sed -e "s:python setup.py:python2 setup.py:" -i Makefile
   sed -e "s:python-config:python2-config:" -i src/libwebvi/Makefile
@@ -37,4 +59,3 @@ package() {
   install -m 644 debian/plugin.webvideo.conf	$pkgdir/etc/vdr/plugins || return 1
 }
 
-md5sums=('8621164a87a3025a44cb2b14b7416062')
