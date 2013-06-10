@@ -1,1 +1,1 @@
-This is a mirror of Archvdr repo with my changes
+This is a mirror of Archvdr repo (http://sourceforge.net/apps/trac/archvdr/wiki/ArchVDR) with my changes.

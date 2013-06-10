@@ -15,14 +15,14 @@ backup=()
 source=(http://phivdr.dyndns.org/vdr/vdr-dummydevice/vdr-$_packagename-$pkgver.tgz)
 md5sums=('92b2bfaaaf0b4c98aa557dc263b1e581')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_packagename-${pkgver}
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
   
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1

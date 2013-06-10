@@ -1,6 +1,5 @@
 # Contributor: Sebastian Pohle <sepo at users dot berlios dot de>
 
-
 _pluginname=systeminfo
 pkgname=vdr-plugin-${_pluginname}
 pkgver=0.1.3
@@ -12,11 +11,10 @@ license=('GPL')
 depends=('vdr')
 optdepends=('lm_sensors' 'hddtemp')
 backup=('etc/vdr/plugins/systeminfo.sh')
-source=(
-  http://firefly.vdr-developer.org/systeminfo/vdr-$_pluginname-$pkgver.tar.bz2
-  systeminfo.sh
-  test-vdr-systeminfo.sh
-  plugin.systeminfo.conf
+source=(http://firefly.vdr-developer.org/systeminfo/vdr-$_pluginname-$pkgver.tar.bz2
+	systeminfo.sh
+	test-vdr-systeminfo.sh
+	plugin.systeminfo.conf
 )
 backup=('etc/vdr/plugins/plugin.systeminfo.conf')
 md5sums=('1fe264cf2059628103f134c9aba53529'
@@ -26,7 +24,7 @@ md5sums=('1fe264cf2059628103f134c9aba53529'
 
 package() {
   cd "$srcdir/${_pluginname}-$pkgver"
-  
+
   make VDRDIR="/usr/include/vdr" INCLUDES="-I/usr/include/vdr" LIBDIR="." \
     LOCALEDIR="$pkgdir/usr/share/locale" all || return 1
 
