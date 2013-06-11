@@ -1,7 +1,7 @@
 
 _pluginname=plugin
-pkgname=vdr-plugin-${_pluginname}
-pkgver=0.0.5
+pkgname=vdr-plugin-${_pluginname}-git
+pkgver=`date +%Y%m%d`
 pkgrel=1
 pkgdesc=""
 arch=('i686' 'x86_64')
@@ -14,8 +14,28 @@ source=()
 backup=('etc/vdr/plugins/plugin.${_pluginname}.conf')
 md5sums=()
 
+_gitroot=
+_gitname=$_pluginname-git
+
 package() {
-  cd "$srcdir/${_pluginname}-$pkgver"
+  unset CXXFLAGS
+
+  cd $srcdir
+  msg "Connecting to GIT server...."
+
+  if [ -d $srcdir/${_gitname} ] ; then
+    cd ${_gitname} && git pull origin
+    msg "The local files are updated."
+  else
+    git clone ${_gitroot} ${_gitname}
+  fi
+
+  msg "GIT checkout done or server timeout"
+  msg "Starting make..."
+
+  rm -rf $srcdir/$_gitname-build
+  cp -r $srcdir/$_gitname $srcdir/$_gitname-build
+  cd $srcdir/$_gitname-build
 
 #  cp $startdir/uk_UA.po po/  || return 1
 

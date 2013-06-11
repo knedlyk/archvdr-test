@@ -2,7 +2,7 @@
 
 _pkgname=mlist
 pkgname=vdr-plugin-$_pkgname
-pkgver=0.0.5
+pkgver=1.0.2
 revision=1
 pkgrel=1
 arch=(i686 x86_64)
@@ -13,9 +13,8 @@ makedepends=('vdr')
 depends=('vdr')
 backup=()
 source=("http://www.joachim-wilke.de/dl.htm?ct=gz&dir=vdr-mlist&file=vdr-$_pkgname-$pkgver.tgz")
-md5sums=('adf19d493ee71c19960550fd0eacca22')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
@@ -23,7 +22,7 @@ build() {
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
 
   sed -e 's/include\/vdr\///g' -i Makefile
-
+  cp $startdir/uk_UA.po po/  || return 1
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES="-I/usr/include -I/usr/include/vdr" \
@@ -31,5 +30,7 @@ build() {
        HASLOCALE="1" || return 1
   
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+#  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=$pkgdir/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
 }
+md5sums=('82f240fa8c73f52383444e3e6f477466')

@@ -1,0 +1,121 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 2.0.0\n"
+"POT-Creation-Date: 2013-05-19 00:52+0200\n"
+"PO-Revision-Date: 2013-05-19 00:42+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"Language: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "Zapping mode"
+msgstr "Режим перемикання"
+
+msgid "Move mode"
+msgstr "Режим переміщення"
+
+msgid "Normal mode"
+msgstr "Нормальний режим"
+
+msgid "Replay mode"
+msgstr "Режим повтору"
+
+msgid "Greyscale (16)"
+msgstr "Відтінки сірого (16)"
+
+msgid "Greyscale (256)"
+msgstr "Відтінки сірого (256)"
+
+msgid "Color (256, fixed)"
+msgstr "Колік (256, фіксовано)"
+
+msgid "Color (128, variable)"
+msgstr "Колір (128, змінно)"
+
+msgid "Color (256, dithered)"
+msgstr "Колір (256, згладження)"
+
+msgid "channel only"
+msgstr "тільки канал"
+
+msgid "simple"
+msgstr "простий"
+
+msgid "complete"
+msgstr "повний"
+
+msgid "top left"
+msgstr "верхній зліва"
+
+msgid "top right"
+msgstr "верхній справа"
+
+msgid "bottom left"
+msgstr "нижній зліва"
+
+msgid "bottom right"
+msgstr "нижній справа"
+
+msgid "automatic"
+msgstr "автоматично"
+
+msgid "none"
+msgstr "нічого"
+
+msgid "1 frame"
+msgstr "1 кадр"
+
+msgid "2 frames"
+msgstr "2 кадри"
+
+msgid "X Position"
+msgstr "Позиція по X"
+
+msgid "Y Position"
+msgstr "Позиція по Y"
+
+msgid "Crop left"
+msgstr "Обрізати зліва"
+
+msgid "Crop right"
+msgstr "Обрізати справа"
+
+msgid "Crop at top"
+msgstr "Обрізати зверху"
+
+msgid "Crop at bottom"
+msgstr "Обрізати знизу"
+
+msgid "Color depth"
+msgstr "Глибина кольору"
+
+msgid "Size"
+msgstr "Розмір"
+
+msgid "Frames to display"
+msgstr "Кадри для показу"
+
+msgid "Drop frames"
+msgstr "Відкинути кадри"
+
+msgid "Swap FFMPEG output"
+msgstr "Поміняти вихід FFMPEG"
+
+msgid "Show info window"
+msgstr "Показати інформац. вікно"
+
+msgid "Info window width"
+msgstr "Ширина інформац. вікна"
+
+msgid "Info window position"
+msgstr "Позиція інформац. вікна"
+
+msgid "OSD Picture-in-Picture"
+msgstr "Картинка в картинці OSD"
+
+msgid "Picture-in-Picture"
+msgstr "Картинка в картинці"

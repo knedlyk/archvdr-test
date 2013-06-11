@@ -3,7 +3,7 @@
 
 _pluginname=softhddevice
 pkgname=vdr-plugin-${_pluginname}-git
-pkgver=20121130
+pkgver=`date +%Y%m%d`
 pkgrel=1
 pkgdesc="Plugin that adds hd softdevice output"
 arch=('i686' 'x86_64' 'arm')
