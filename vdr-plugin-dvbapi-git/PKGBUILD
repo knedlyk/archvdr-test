@@ -2,7 +2,7 @@
 
 _pluginname=dvbapi
 pkgname=vdr-plugin-${_pluginname}-git
-pkgver=20120404
+pkgver=`date +%Y%m%d`
 pkgrel=1
 pkgdesc="VDR dvbapi plugin"
 arch=('i686' 'x86_64')
@@ -11,7 +11,7 @@ license=('GPL2')
 depends=('gcc' 'vdr' 'git')
 md5sums=()
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://github.com/manio"

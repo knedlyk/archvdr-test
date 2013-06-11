@@ -1,0 +1,90 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 2.0.0\n"
+"POT-Creation-Date: 2013-05-19 00:52+0200\n"
+"PO-Revision-Date: 2013-05-19 00:42+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"Language: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "Manage your channellists"
+msgstr "Організація списків каналів"
+
+msgid "Channellists"
+msgstr "Списки каналів"
+
+msgid "Menu"
+msgstr "Меню"
+
+msgid "close"
+msgstr "закрити"
+
+msgid "none"
+msgstr "нічого"
+
+msgid "Hide main menu entry"
+msgstr "Сховати в головному меню"
+
+msgid "Action after switch"
+msgstr "Дія після переключення"
+
+msgid "Button Red"
+msgstr "Червона кнопка"
+
+msgid "Rename"
+msgstr "Перейменувати"
+
+msgid "Script"
+msgstr "Скрипт"
+
+msgid "Button Green"
+msgstr "Зелена кнопка"
+
+msgid "Copy"
+msgstr "Копіювати"
+
+msgid "Name"
+msgstr "Назва"
+
+msgid "An error occurs, see syslog..."
+msgstr "Сталася помилка, дивіться системний журнал..."
+
+msgid "Switch current channellist?"
+msgstr "Переключити поточний список каналів?"
+
+msgid "Delete channellist?"
+msgstr "Вилучити список каналів?"
+
+msgid "Save"
+msgstr "Зберегти"
+
+msgid "Execute update script?"
+msgstr "Запустити скрипт оновлення?"
+
+msgid "Waiting..."
+msgstr "Очікування..."
+
+msgid "Button$Script"
+msgstr "Скрипт"
+
+msgid "Button$Rename"
+msgstr "Перейменувати"
+
+msgid "Button$Copy"
+msgstr "Копіювати"
+
+msgid "Button$Delete"
+msgstr "Вилучити"
+
+msgid "Button$Save"
+msgstr "Зберегти"

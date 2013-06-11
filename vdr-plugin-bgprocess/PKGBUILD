@@ -13,8 +13,10 @@ makedepends=('vdr')
 source=(http://www.htpc-forum.de/download/vdr-$_pluginname-$pkgver.tgz)
 md5sums=('0468dfeef5eeaa46bc1da856269feeed')
 
-build() {
+package() {
   cd "$startdir/src/${_pluginname}-$pkgver"
+
+  cp $startdir/uk_UA.po po/  || return 1
 
   make VDRDIR=/usr/include/vdr LIBDIR=. \
        VDRLOCALE="de_DE" \

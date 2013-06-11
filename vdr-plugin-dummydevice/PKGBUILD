@@ -2,7 +2,7 @@
 
 _packagename=dummydevice
 pkgname=vdr-plugin-$_packagename
-pkgver=1.0.2
+pkgver=1.0.3
 revision=1
 pkgrel=1
 arch=(i686 x86_64 arm)
@@ -13,7 +13,6 @@ makedepends=('vdr')
 depends=('vdr')
 backup=()
 source=(http://phivdr.dyndns.org/vdr/vdr-dummydevice/vdr-$_packagename-$pkgver.tgz)
-md5sums=('92b2bfaaaf0b4c98aa557dc263b1e581')
 
 package() {
   unset CXXFLAGS
@@ -27,3 +26,4 @@ package() {
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
 }
+md5sums=('cc594adf21bf91272c19e1f17ef44c8d')

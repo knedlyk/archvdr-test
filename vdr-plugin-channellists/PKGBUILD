@@ -20,6 +20,8 @@ md5sums=('20ab294c48164b513ed0557acee5c66c'
 
 package() {
   cd "$srcdir/${_pluginname}-$pkgver"
+
+  cp $startdir/uk_UA.po po/  || return 1
   make VDRDIR=/usr/include/vdr LIBDIR=. \
        LOCALEDIR=$pkgdir/usr/share/locale all || return 1
 
