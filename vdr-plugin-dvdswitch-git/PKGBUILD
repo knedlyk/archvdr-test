@@ -18,7 +18,7 @@ conflicts=(vdr-plugin-$_pluginname)
 md5sums=('589ba84fec5cac9c3c2a084aece452a0'
          '8b278f97f16dd52866d4c67792f64359')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd "$srcdir/"	|| return 1

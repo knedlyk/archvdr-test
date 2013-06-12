@@ -13,6 +13,7 @@ makedepends=('vdr' 'imagemagick')
 depends=('vdr')
 backup=('etc/vdr/plugins/plugin.skinelchi.conf')
 source=(http://firefly.vdr-developer.org/skinelchi/vdr-skinelchi-${pkgver}.tar.bz2
+	20_epgimage-path.patch
 	plugin.skinelchi.conf)
 
 md5sums=('b4d3160033fa6541eab55bbf7ad41276'
@@ -23,7 +24,7 @@ package() {
 
   cd ${srcdir}/$_pkgname-${pkgver}
 
-  mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
+  patch -p1 < ../20_epgimage-path.patch	|| return 1
 
   echo "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" >> Makefile
   echo "DEFINES += -D__KERNEL_STRICT_NAMES" >> Make.config
@@ -43,3 +44,6 @@ package() {
   mkdir -p $pkgdir/var/lib/vdr/themes							|| return 1
   install -m 644 themes/*.theme				$pkgdir/var/lib/vdr/themes/	|| return 1
 }
+md5sums=('b4d3160033fa6541eab55bbf7ad41276'
+         '6ca6ea3fea04dc29dfb32de43050c555'
+         'd41d8cd98f00b204e9800998ecf8427e')

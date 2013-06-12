@@ -11,7 +11,7 @@ depends=('vdr')
 makedepends=('vdr')
 install=
 source=()
-backup=('etc/vdr/plugins/plugin.${_pluginname}.conf')
+backup=(etc/vdr/plugins/plugin.${_pluginname}.conf)
 md5sums=()
 
 package() {

@@ -1,4 +1,3 @@
-# Maintainer : Edgar Hucek <gimli at dark-green dot com>
 
 _pkgname=iptv
 pkgname=vdr-plugin-$_pkgname
@@ -6,7 +5,7 @@ pkgver=2.0.0
 revision=1
 pkgrel=1
 arch=(i686 x86_64)
-pkgdesc="VDR-Plugin to display rss feeds."
+pkgdesc="This is an IPTV plugin for the Video Disk Recorder (VDR)"
 url="http://www.saunalahti.fi/~rahrenbe/vdr/iptv/"
 license="GPL"
 makedepends=('vdr' 'expat' 'curl')

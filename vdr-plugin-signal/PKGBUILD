@@ -16,7 +16,7 @@ backup=()
 source=(${pkgname}_${pkgver}-1.tar.gz)
 md5sums=('65092086ed73b6c73c7913ba88b1c67c')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$pkgname-${pkgver}

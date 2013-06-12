@@ -21,7 +21,7 @@ conflicts=(vdr-plugin-$_pluginname)
 md5sums=('90f93b9d138b85deef022d4559f3f1dc'
          'dac74d2ded9654228117785a094d0088')
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"

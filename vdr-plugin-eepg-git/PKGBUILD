@@ -2,9 +2,9 @@
 
 _pluginname=eepg
 pkgname=vdr-plugin-${_pluginname}-git
-pkgver=20121130
+pkgver=`date +%Y%m%d`
 pkgrel=1
-gitid=c0c90a946c0f5a6722f312e7156ba01c9e743d56
+#gitid=c0c90a946c0f5a6722f312e7156ba01c9e743d56
 pkgdesc="Extended EPG (EEPG) plugin for VDR."
 arch=('i686' 'x86_64')
 url="http://projects.vdr-developer.org/projects/plg-eepg"
@@ -16,7 +16,7 @@ source=()
 conflicts=()
 md5sums=('90f93b9d138b85deef022d4559f3f1dc')
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"
@@ -45,5 +45,6 @@ build() {
     INCLUDES="-I/usr/include/vdr" all || return 1
   
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
 }

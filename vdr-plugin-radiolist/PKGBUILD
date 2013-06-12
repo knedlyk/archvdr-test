@@ -10,15 +10,17 @@ url="http://www.unterbrecher.de/vdr/developer.php#radiolist"
 license=('GPL')
 depends=('vdr')
 makedepends=('vdr')
-source=(http://www.unterbrecher.de/vdr/download/vdr-$_pluginname-$pkgver.tgz
-	i18n.patch)
+source=(http://e-tobi.net/vdr-experimental/pool-wheezy/source/vdr-multipatch/vdr-plugin-radiolist_0.0.2.orig.tar.gz
+	vdr-1.7.27.patch)
 md5sums=('24f947f403daa3fb9a06cc50fe57d70c'
-         '9fd286ede999c3169084718766dbf7b7')
+         'd31473c7567dc551492b52ed7eadf79a')
 
-build() {
+package() {
   cd "$startdir/src/${_pluginname}-$pkgver"		|| return 1
 
-  patch -p1 -i ../i18n.patch				|| return 1
+  patch -p1 -i ../vdr-1.7.27.patch				|| return 1
+
+  cp $startdir/uk_UA.po po/  || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins			|| return 1
   mkdir -p $pkgdir/usr/share/locale			|| return 1

@@ -2,11 +2,11 @@
 
 _pkgname=filebrowser
 pkgname=vdr-plugin-$_pkgname
-pkgver=0.2.0
+pkgver=0.2.1
 pkgrel=1
 arch=(i686 x86_64)
 pkgdesc="VDR-Plugin filemanager."
-url="http://vdr.nasenbaeren.net/filebrowser/"
+url="http://opensource.holgerbrunn.net/vdr/filebrowser/"
 license="GPL"
 makedepends=('vdr')
 depends=('vdr')
@@ -14,17 +14,16 @@ backup=('etc/vdr/plugins/filebrowser/commands.conf'
 	'etc/vdr/plugins/filebrowser/order.conf'
 	'etc/vdr/plugins/filebrowser/othercommands.conf'
 	'etc/vdr/plugins/filebrowser/sources.conf')
-source=(http://vdr.nasenbaeren.net/filebrowser/vdr-$_pkgname-$pkgver.tgz
+source=(http://opensource.holgerbrunn.net/vdr/filebrowser/vdr-$_pkgname-$pkgver.tgz
         01_vdr1.7.9+gcc44.dpatch)
-md5sums=('c3600c38eebb45bf225b3b8226da57aa'
-       '99ab1081362748c89a4e55f1c0ab551a')
+
 
 build() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
 
-  patch -p1 -i ../01_vdr1.7.9+gcc44.dpatch    || return 1
+#  patch -p1 -i ../01_vdr1.7.9+gcc44.dpatch    || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
 
@@ -49,3 +48,5 @@ build() {
   ln -s ../../../../../etc/vdr/plugins/filebrowser/othercommands.conf    othercommands.conf	|| return 1
   ln -s ../../../../../etc/vdr/plugins/filebrowser/sources.conf          sources.conf		|| return 1
 }
+md5sums=('a1813fec39604b62c38c3ab44fe4aa5f'
+         '99ab1081362748c89a4e55f1c0ab551a')

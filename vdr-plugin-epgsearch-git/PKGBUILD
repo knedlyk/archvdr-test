@@ -23,7 +23,7 @@ md5sums=('25f21df320e3d508b03a33d30eea0b29'
          '777a7141278a54a22412c203a1039e64'
          '637c68e6a2717b61c42fa25ea7868f74')
 
-build() {
+package() {
   _githost="git://projects.vdr-developer.org"
   _gitrepo="vdr-plugin-epgsearch.git"
 

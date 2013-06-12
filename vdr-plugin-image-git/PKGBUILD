@@ -17,7 +17,7 @@ install=
 source=()
 md5sums=()
 
-build() {
+package() {
   unset CXXFLAGS
   unset CPPFLAGS
   unset CFLAGS
@@ -52,9 +52,7 @@ build() {
   make VDRDIR="/usr/include/vdr" LIBDIR="." \
     LOCALEDIR="$pkgdir/usr/share/locale" \
     INCLUDES="-I/usr/include -I/usr/include/vdr -I." all || return 1
-}
 
-package() {  
   cd $srcdir/vdr-plugin-${_pluginname}-build
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins 						|| return 1

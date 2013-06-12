@@ -16,11 +16,9 @@ backup=('var/lib/vdr/plugins/rssreader/rssreader.conf')
 md5sums=('92cf4f9a1ca2e85f61fec04cff5b5fdc')
 
 package() {
-#  unset CXXFLAGS
+  unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
-
-
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
 

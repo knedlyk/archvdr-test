@@ -24,7 +24,7 @@ md5sums=('2744c1746a9bb65f5631335133febc75'
          '99f655ec06b234c72946e8e39a501064'
          '94dc0097ca3f41bfdc925b1c22f852f7')
 
-build() {
+package() {
   cd $srcdir
   
   msg "Connecting to $_cvsmod.sourceforge.net CVS server...."

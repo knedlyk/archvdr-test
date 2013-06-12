@@ -1,23 +1,24 @@
 
 _pluginname=play
 pkgname=vdr-plugin-$_pluginname-git
-pkgver=20130219
+pkgver=`date +%Y%m%d`
 revision=1
 pkgrel=1
 arch=(i686 x86_64)
-pkgdesc="For archvdr project!!!"
+pkgdesc="Mediaplayer plugin for VDR and X11"
 url="http://projects.vdr-developer.org/projects/plg-play"
 license="GPL"
 makedepends=('git')
 depends=('vdr>=1.7.36' 'libxcb' 'xcb-util' 'xcb-util-image' 'xcb-util-keysyms' 'xcb-util-wm' 'mplayer')
+backup=(etc/vdr/plugins/plugin.${_pluginname}.conf)
+conflicts=('')
+
 _gitroot=https://github.com/flensrocker/vdr-plugin-play.git
 _gitroot="git://projects.vdr-developer.org/vdr-plugin-play.git"
 _gitname=${_pluginname}-git
 
-    
-
-build() {
-#  unset CXXFLAGS
+package() {
+  unset CXXFLAGS
   cd $srcdir
   msg "Connecting to GIT server...."
 
@@ -35,15 +36,13 @@ build() {
   cp -r $srcdir/$_gitname $srcdir/$_gitname-build
   cd $srcdir/$_gitname-build
 
-
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" -f Makefile-pre1.7.36 all || return 1
-}
-package() {
-  cd $srcdir/$_gitname-build
+       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
 }
 

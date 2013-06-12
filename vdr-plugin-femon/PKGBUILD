@@ -21,5 +21,5 @@ package() {
        LOCALEDIR=$pkgdir/usr/share/locale all || return 1
 
   make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
-  }
+}
 

@@ -1,0 +1,20 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## epgimage-path patch
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: Change path for epg images.
+
+@DPATCH@
+Index: vdr-plugin-skinelchi/config.c
+===================================================================
+--- vdr-plugin-skinelchi.orig/config.c	2012-05-16 18:44:18.000000000 +0200
++++ vdr-plugin-skinelchi/config.c	2013-03-10 22:34:00.000000000 +0100
+@@ -31,7 +31,7 @@
+ #ifdef SKINELCHI_HAVE_IMAGEMAGICK
+    EpgImageDisplayTime = 5;
+    ImgResizeAlgo = 0;
+-   SetEpgImageDir("/video/epgimages");
++   SetEpgImageDir("/var/cache/vdr/epgimages");
+    logox = 64; //TODO
+    logoy = 48;
+ #endif

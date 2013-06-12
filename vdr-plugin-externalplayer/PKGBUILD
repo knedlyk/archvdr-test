@@ -14,8 +14,11 @@ depends=('vdr')
 backup=('etc/vdr/plugins/externalplayer.conf')
 source=(http://www.uli-eckhardt.de/vdr/download/vdr-externalplayer-$pkgver.tgz
         externalplayer.conf)
-build() {
-#  unset CXXFLAGS
+md5sums=('0ad6ebeaedef66aac9564ba437c1f4e9'
+         'd8a47a80b0c1eb24fd376f6a24ecf57b')
+         
+package() {
+  unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
 
@@ -26,15 +29,10 @@ build() {
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
-}
 
-package() {
-  cd ${srcdir}/$_pkgname-${pkgver}
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
   install -m 644 ${srcdir}/externalplayer.conf $pkgdir/etc/vdr/plugins/		|| return 1
   cd $pkgdir/var/lib/vdr/plugins/						|| return 1
   ln -s ../../../../etc/vdr/plugins/externalplayer.conf .					|| return 1
 }
-md5sums=('0ad6ebeaedef66aac9564ba437c1f4e9'
-         'd8a47a80b0c1eb24fd376f6a24ecf57b')
