@@ -1,7 +1,7 @@
 # Maintainer : Edgar Hucek <gimli@dark-green.com>
 _packagename=xine
 pkgname=vdr-plugin-xine-git
-pkgver=20130416
+pkgver=`date +%Y%m%d`
 pkgrel=1
 pkgdesc="VDR-Plugin to use VDR with budget cards or over the network."
 arch=('i686' 'x86_64')

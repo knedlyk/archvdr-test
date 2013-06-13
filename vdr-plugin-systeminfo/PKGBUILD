@@ -10,20 +10,19 @@ url="http://firefly.vdr-developer.org/systeminfo/index.html"
 license=('GPL')
 depends=('vdr')
 optdepends=('lm_sensors' 'hddtemp')
-backup=('etc/vdr/plugins/systeminfo.sh')
+backup=('etc/vdr/plugins/systeminfo.sh'
+	etc/vdr/plugins/plugin.${_pluginname}.conf)
 source=(http://firefly.vdr-developer.org/systeminfo/vdr-$_pluginname-$pkgver.tar.bz2
 	systeminfo.sh
 	test-vdr-systeminfo.sh
 	plugin.systeminfo.conf
 )
 backup=('etc/vdr/plugins/plugin.systeminfo.conf')
-md5sums=('1fe264cf2059628103f134c9aba53529'
-         '0517862d8159daa59d409938eed944af'
-         '0367d911568071ae44447bbb6dc5c407'
-         'f28cf78032b2ab4db616cf89b1a474bf')
 
 package() {
   cd "$srcdir/${_pluginname}-$pkgver"
+
+  cp $startdir/uk_UA.po po/  || return 1
 
   make VDRDIR="/usr/include/vdr" INCLUDES="-I/usr/include/vdr" LIBDIR="." \
     LOCALEDIR="$pkgdir/usr/share/locale" all || return 1
@@ -37,3 +36,7 @@ package() {
   mkdir -p $pkgdir/etc/vdr/plugins									|| return 1
   install -m 644 ../plugin.systeminfo.conf		$pkgdir/etc/vdr/plugins				|| return 1
 }
+md5sums=('1fe264cf2059628103f134c9aba53529'
+         '44fa7337ac3b55bffbf1970f9f377918'
+         '0367d911568071ae44447bbb6dc5c407'
+         'f28cf78032b2ab4db616cf89b1a474bf')

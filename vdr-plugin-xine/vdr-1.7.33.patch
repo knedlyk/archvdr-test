@@ -1,0 +1,16 @@
+Index: vdr-plugin-xine/xineDevice.c
+===================================================================
+--- vdr-plugin-xine.orig/xineDevice.c	2011-10-29 16:36:24.000000000 +0200
++++ vdr-plugin-xine/xineDevice.c	2013-03-16 09:08:07.000000000 +0100
+@@ -1200,7 +1200,11 @@
+       int pid = TsPid(Data);
+       if (pid == 0)
+         patPmtParser.ParsePat(Data, TS_SIZE);
++#if VDRVERSNUM < 10733
+       else if (pid == patPmtParser.PmtPid())
++#else
++      else if (patPmtParser.IsPmtPid(pid))
++#endif
+         patPmtParser.ParsePmt(Data, TS_SIZE);
+       else if (pid == patPmtParser.Vpid())
+       {

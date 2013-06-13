@@ -17,7 +17,7 @@ conflicts=(vdr-plugin-text2skin)
 md5sums=('baecb2b5a791d20a40fcc76a02579543'
          '780c6fd796804aedc5c4a59937469df7')
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"

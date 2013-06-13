@@ -4,7 +4,7 @@ _pluginname=xvdr
 pkgname=vdr-plugin-${_pluginname}
 pkgver=20130104
 pkgrel=1
-gitid=166c221e14aa56b485ff3cf12ef8a0bafeff1e0c
+#gitid=166c221e14aa56b485ff3cf12ef8a0bafeff1e0c
 pkgdesc="VDR xvdr streaming server"
 arch=('i686' 'x86_64' 'arm')
 url="https://github.com/pipelka/vdr-plugin-xvdr"
@@ -50,9 +50,10 @@ package() {
   
   mkdir -p $pkgdir/etc/vdr/plugins/xvdr						|| return 1
   install -m 644 xvdr/allowed_hosts.conf $pkgdir/etc/vdr/plugins/xvdr/ || return 1
+  
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-  install -m 755 libvdr-*.so.*	$pkgdir/usr/lib/vdr/plugins/			|| return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
   
   mkdir -p $pkgdir/usr/share/vdr-plugin-xvdr					|| return 1
 

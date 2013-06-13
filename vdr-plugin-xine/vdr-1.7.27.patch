@@ -1,0 +1,12 @@
+Index: vdr-plugin-xine/xine.c
+===================================================================
+--- vdr-plugin-xine.orig/xine.c	2012-04-20 00:09:44.000000000 +0200
++++ vdr-plugin-xine/xine.c	2013-03-16 09:08:05.000000000 +0100
+@@ -13,7 +13,6 @@
+ #include "xineDevice.h"
+ #include "xineSettings.h"
+ #include "xineSetupPage.h"
+-#include "xineI18n.h"
+ 
+ 
+ 

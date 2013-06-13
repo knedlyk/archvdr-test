@@ -1,7 +1,7 @@
 
 _pluginname=upnp
 pkgname=vdr-plugin-$_pluginname-git
-pkgver=20130112
+pkgver=`date +Y%m%d`
 revision=1
 pkgrel=1
 arch=(i686 x86_64)

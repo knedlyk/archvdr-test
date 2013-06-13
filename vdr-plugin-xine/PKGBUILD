@@ -10,25 +10,23 @@ url="http://home.vrweb.de/~rnissl/"
 license=('GPL2')
 depends=('gcc' 'vdr' 'xine-lib')
 optdepends=('oxine-vdr' 'xine-ui-vdr')
-source=(http://home.vrweb.de/~rnissl/vdr-$_packagename-$pkgver.tgz
+source=(http://e-tobi.net/vdr-experimental/pool-wheezy/source/vdr-multipatch/vdr-plugin-xine_0.9.4.orig.tar.gz
 	plugin.xine.conf
-  01_debian.dpatch
-  remove_old_i18n.patch)
+	format-strings.patch  
+	vdr-1.7.27.patch  
+	vdr-1.7.33.patch)
+	
 backup=('etc/vdr/plugins/plugin.xine.conf')
 install=vdr-plugin-xine.install
-md5sums=('0374123d6991f55d91122b020361d8f6'
-         'ac26395efab835b305f02dec4962ccce'
-         '25b40fbb727f248e9ca9384d13f2acad'
-         'a77c81d2315ea39fdc29f02386c139be')
 
 package() {
-  
   cd "$srcdir/${_packagename}-$pkgver" || return 1
 
   unset CXXFLAGS
 
-  patch -p1 -i ${srcdir}/01_debian.dpatch || return 1
-  patch -p1 -i ${srcdir}/remove_old_i18n.patch || return 1
+  patch -p1 -i ${srcdir}/format-strings.patch  || return 1
+  patch -p1 -i ${srcdir}/vdr-1.7.27.patch   || return 1
+  patch -p1 -i ${srcdir}/vdr-1.7.33.patch  || return 1
 
   make VDRDIR=/usr/include/vdr \
   	LIBDIR=. \
@@ -56,3 +54,8 @@ package() {
   ln -s ../../../../../usr/share/vdr-plugin-xine/noSignal16x9.mpg	noSignal16x9.mpg		|| return 1
   ln -s ../../../../../usr/share/vdr-plugin-xine/noSignal16x9.mpg	noSignal.mpg		|| return 1
 }
+md5sums=('0374123d6991f55d91122b020361d8f6'
+         'ac26395efab835b305f02dec4962ccce'
+         '6409cf508fecc41f8fba99cf778b6828'
+         'c0eb1e86258eb9803df3b5a2b63be140'
+         '5f58702a262ea064810b0ec46e80e7b3')

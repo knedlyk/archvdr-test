@@ -1,8 +1,8 @@
 # Contributor: Edgar Hucek <gimli at dark-green dot com>
 
 _pluginname=xineliboutput
-pkgname=('vdr-plugin-xineliboutput-git')
-pkgver=20120911
+pkgname=vdr-plugin-$_pluginname-git
+pkgver=`date +%Y%m%d`
 pkgrel=1
 #_gitid='6d19034ee9b9d9141e4543048e3df5ac09f748dd'
 pkgdesc="VDR-Plugin to use VDR with budget cards. Alternative for vdr-xine."
@@ -11,6 +11,8 @@ arch=('i686' 'x86_64')
 license=('GPL')
 depends=('vdr' 'xine-lib' 'libbluray' 'libgl' 'libjpeg' 'libcap')
 makedepends=('git' 'vdr>=1.7.0')
+  backup=('etc/vdr/plugins/plugin.xineliboutput.conf'
+        'etc/vdr/plugins/xineliboutput/allowed_hosts.conf')
 source=(nosignal.mpg
         plugin.xineliboutput.conf
         remove_log_message.patch
@@ -29,8 +31,8 @@ md5sums=('eff2e86089b8dc182f16b2018d1fd080'
 
 conflicts=('vdr-plugin-xineliboutput' 'xine-plugin-bluray')
 
-build() {
-  
+package() {
+
   unset LDFLAGS
   unset CFLAGS
 
@@ -74,12 +76,7 @@ build() {
        LIBDIR=. \
        LOCALEDIR="$startdir/pkg/vdr-plugin-xineliboutput-git/usr/share/locale/" \
        NOSIGNAL_IMAGE_FILE=/usr/share/libxine-xvdr/nosignal.mpg all || return 1
-}
 
-package_vdr-plugin-xineliboutput-git() {
-
-  backup=('etc/vdr/plugins/plugin.xineliboutput.conf'
-        'etc/vdr/plugins/xineliboutput/allowed_hosts.conf')
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
   cp $srcdir/${_pluginname}-build/libvdr-*.so.* $pkgdir/usr/lib/vdr/plugins/ || return 1

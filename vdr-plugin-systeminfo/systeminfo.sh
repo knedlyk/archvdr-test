@@ -65,7 +65,7 @@ case "$1" in
 		device="eth0"
 		hostname=$(/bin/hostname)
 		dnsname=$(/bin/dnsdomainname)
-		IP=$(/sbin/ifconfig $device | /bin/grep inet | /bin/cut -d: -f2 | /bin/cut -d' ' -f1)
+		IP=$(/sbin/ifconfig $device | /bin/grep inet | /bin/cut -d: -f2 | /bin/cut -d' ' -f10)
 		echo -ne "s\tHostname:\t"${hostname:-<unbekannt>}"."${dnsname:-<unbekannt>}"\tIP: "${IP:-N/A}
 		exit
 	;;
@@ -73,14 +73,14 @@ case "$1" in
 	6)	# fan speeds
 		CPU=$(/usr/bin/sensors | /bin/grep -i 'CPU FAN' | /bin/tr -s ' ' | /bin/cut -d' ' -f 4)
 		CASE=$(/usr/bin/sensors | /bin/grep -i 'CHASSIS FAN' | /bin/tr -s ' ' | /bin/cut -d' ' -f 4)
-		echo -ne "Lüfter:\tCPU: "$CPU" rpm\tGehäuse: "$CASE" rpm"
+		echo -ne "Fan:\tCPU: "$CPU" rpm\tCase: "$CASE" rpm"
 		exit
 	;;
 
 	7)	# temperature of CPU and mainboard
 		CPU=$(/usr/bin/sensors | /bin/grep -i 'CPU Temp' | /bin/tr -s ' ' | /bin/cut -d' ' -f 3)
 		MB=$(/usr/bin/sensors | /bin/grep -i 'MB Temp' | /bin/tr -s ' ' | /bin/cut -d' ' -f 3)
-		echo -ne "Temperaturen:\tCPU: "$CPU"\tMB: "$MB
+		echo -ne "Temperature:\tCPU: "$CPU"\tMB: "$MB
 		exit
 	;;
 
@@ -98,7 +98,7 @@ case "$1" in
 	;;
 
 	10)	# header (static)
-		echo -ne "s\t\tgesamt / frei"
+		echo -ne "s\t\ttotal / free"
 		exit
 		;;
 

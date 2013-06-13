@@ -1,0 +1,13 @@
+Index: vdr-plugin-xine/vdr172h264parser.c
+===================================================================
+--- vdr-plugin-xine.orig/vdr172h264parser.c	2011-10-29 16:36:24.000000000 +0200
++++ vdr-plugin-xine/vdr172h264parser.c	2013-03-16 09:28:25.000000000 +0100
+@@ -456,7 +456,7 @@
+               }
+           catch (cException *e) {
+               if (!syncing) // suppress typical error messages while syncing
+-                 esyslog(e->Message());
++                 esyslog("%s", (const char *)e->Message());
+               delete e;
+               }
+           }

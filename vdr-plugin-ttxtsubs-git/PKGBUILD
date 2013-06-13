@@ -2,7 +2,7 @@
 
 _pluginname=ttxtsubs
 pkgname=vdr-plugin-${_pluginname}-git
-pkgver=20120404
+pkgver=`date +%Y%m%d`
 pkgrel=1
 #gitid=77808ab28a1dcd7f097c28906696e71cf12e8ac5
 pkgdesc="VDR Teletext Subtitles plugin"
