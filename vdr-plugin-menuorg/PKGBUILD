@@ -23,7 +23,7 @@ md5sums=('98b05f611d9854f778eee1df81fd84a9'
          'ae1ef24b7c2c467ff592ed5a4541fa0b'
          '3cd24c3762f3d88e844f934f406ac3b7')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
