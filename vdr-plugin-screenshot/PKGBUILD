@@ -1,0 +1,25 @@
+
+_pluginname=screenshot
+pkgname=vdr-plugin-${_pluginname}
+pkgver=0.0.15
+pkgrel=1
+pkgdesc="Pluging for taking still images of your screen in VDR"
+arch=('i686' 'x86_64')
+url="http://www.joachim-wilke.de/vdr-screenshot.htm"
+license=('GPL')
+depends=('vdr')
+makedepends=('vdr')
+install=
+source=(http://www.joachim-wilke.de/downloads/vdr-screenshot/vdr-screenshot-$pkgver.tgz)
+
+package() {
+  cd "$startdir/src/${_pluginname}-$pkgver"
+  cp $startdir/uk_UA.po po/  || return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=. \
+       LOCALEDIR=$pkgdir/usr/share/locale all || return 1
+
+  mkdir -p $pkgdir/usr/lib/vdr/plugins || return 1
+  make VDRDIR=/usr/include/vdr LIBDIR=$pkgdir/usr/lib/vdr/plugins DESTDIR=$pkgdir install || return 1
+}
+
+md5sums=('9024d4a2d31b82aabcce3e22b6bffdda')
