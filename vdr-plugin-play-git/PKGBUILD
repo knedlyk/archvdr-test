@@ -39,7 +39,7 @@ package() {
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        INCLUDES=-I/usr/include/vdr \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
 

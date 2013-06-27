@@ -48,7 +48,7 @@ build() {
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
-	     LOCALEDIR="$startdir/pkg/usr/share/locale/" \
+	     LOCALEDIR="$pkgdir/usr/share/locale/" \
 	     HAVE_IMAGEMAGICK=1 \
 	     HAVE_FREETYPE=1 \
 	     SKINENIGMA_USE_PLUGIN_MAILBOX=1 \

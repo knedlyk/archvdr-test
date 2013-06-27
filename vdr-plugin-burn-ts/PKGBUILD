@@ -33,7 +33,7 @@ build() {
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" \
+       LOCALEDIR="$pkgdir/usr/share/locale/" \
        TMPDIR=/var/cache/vdr-plugin-burn ISODIR=/video/iso all || return 1
   
   cp ${startdir}/files/pxsup2dast.c .								|| return 1

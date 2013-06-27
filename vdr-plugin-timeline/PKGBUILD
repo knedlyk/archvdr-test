@@ -25,7 +25,7 @@ build() {
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
   
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1

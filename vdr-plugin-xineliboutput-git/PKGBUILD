@@ -74,7 +74,7 @@ package() {
   make VDRDIR=/usr/include/vdr \
        VDRINCDIR=/usr/include/vdr \
        LIBDIR=. \
-       LOCALEDIR="$startdir/pkg/vdr-plugin-xineliboutput-git/usr/share/locale/" \
+       LOCALEDIR="$pkgdir/vdr-plugin-xineliboutput-git/usr/share/locale/" \
        NOSIGNAL_IMAGE_FILE=/usr/share/libxine-xvdr/nosignal.mpg all || return 1
 
 
