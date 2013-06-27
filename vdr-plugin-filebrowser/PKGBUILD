@@ -14,22 +14,22 @@ backup=('etc/vdr/plugins/filebrowser/commands.conf'
 	'etc/vdr/plugins/filebrowser/order.conf'
 	'etc/vdr/plugins/filebrowser/othercommands.conf'
 	'etc/vdr/plugins/filebrowser/sources.conf')
-source=(http://opensource.holgerbrunn.net/vdr/filebrowser/vdr-$_pkgname-$pkgver.tgz
-        01_vdr1.7.9+gcc44.dpatch)
+source=(http://opensource.holgerbrunn.net/vdr/filebrowser/vdr-$_pkgname-$pkgver.tgz)
 
+md5sums=('a1813fec39604b62c38c3ab44fe4aa5f')
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}
 
-#  patch -p1 -i ../01_vdr1.7.9+gcc44.dpatch    || return 1
+  cp $startdir/uk_UA.po po/  || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
 
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
-       LOCALEDIR="$startdir/pkg/usr/share/locale/" all || return 1
+       LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
   
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
@@ -48,5 +48,3 @@ build() {
   ln -s ../../../../../etc/vdr/plugins/filebrowser/othercommands.conf    othercommands.conf	|| return 1
   ln -s ../../../../../etc/vdr/plugins/filebrowser/sources.conf          sources.conf		|| return 1
 }
-md5sums=('a1813fec39604b62c38c3ab44fe4aa5f'
-         '99ab1081362748c89a4e55f1c0ab551a')

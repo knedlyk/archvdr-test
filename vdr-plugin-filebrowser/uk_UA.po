@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 2.0.0\n"
+"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
+"POT-Creation-Date: 2013-05-19 00:52+0200\n"
+"PO-Revision-Date: 2013-05-19 00:42+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"Language: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "The command has requested additional input"
+msgstr "Команда вимагає додаткового вводу"
+
+msgid "Input"
+msgstr "Ввід"
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Running threads"
+msgstr "Запущені процеси"
+
+msgid "Kill?"
+msgstr "Вбити?"
+
+msgid "Resume"
+msgstr "Відновити"
+
+msgid "Pause"
+msgstr "Пауза"
+
+msgid "Kill"
+msgstr "Вбити"
+
+msgid "Remove"
+msgstr "Вилучити"
+
+msgid "Active"
+msgstr "Активно"
+
+msgid "Finished"
+msgstr "Закінчено"
+
+msgid "Paused"
+msgstr "Призупинено"
+
+msgid "Running"
+msgstr "Запущено"
+
+msgid "Access code needed"
+msgstr "Потрібно код доступу"
+
+msgid "Code"
+msgstr "Код"
+
+msgid "Wrong code!"
+msgstr "Неправильний код!"
+
+msgid "Sources"
+msgstr "Джерела"
+
+msgid "Show hidden files"
+msgstr "Показати приховані файли"
+
+msgid "Show full path in title"
+msgstr "Показати повний шлях в заголовку"
+
+msgid "Filebrowser"
+msgstr "Переглядач файлів"
+
+msgid "Select Destination"
+msgstr "Вибрати ціль"
+
+msgid "Failed to load directory"
+msgstr "Помилка завантаження теки"
+
+msgid "New"
+msgstr "Нова"
+
+msgid "Mark"
+msgstr "Позначити"
+
+msgid "Mark all"
+msgstr "Позначити все"
+
+msgid "Unmark"
+msgstr "Зняти позначку"
+
+msgid "Unm. all"
+msgstr "Зняти всі позн."
+
+msgid "OK"
+msgstr "ОК"
+
+msgid "Abort"
+msgstr "Зупинити"
+
+msgid "New file"
+msgstr "Новий файл"
+
+msgid "Threads"
+msgstr "Процеси"
+
+#, c-format
+msgid "Threads (%d of %d running)"
+msgstr "Процеси (запущено %d з %d)"
+
+msgid "No Updates"
+msgstr "Немає оновлень"
+
+msgid "Updates"
+msgstr "Оновлення"
+
+msgid "Plugin to browse through files and execute actions on them"
+msgstr "Додаток для проглядання файлів і здійснення над ними дії"
+
+msgid "Other"
+msgstr "Інші"
+
+msgid "Other Commands"
+msgstr "Інші команди"
+
+msgid " to "
+msgstr " до "
+
+msgid "View"
+msgstr "Перегляд"
+
+msgid "Play"
+msgstr "Програвання"
