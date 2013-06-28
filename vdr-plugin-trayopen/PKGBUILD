@@ -16,7 +16,7 @@ source=(http://www.e-tobi.net/vdr-experimental/pool-sid/source/vdr-multipatch/${
 	http://www.e-tobi.net/vdr-experimental/pool-sid/source/vdr-multipatch/${pkgname}_${pkgver}.orig.tar.gz)
 md5sums=()
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}

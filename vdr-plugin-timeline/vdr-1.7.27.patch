@@ -1,0 +1,16 @@
+Index: vdr-plugin-timeline/checkerOsd.c
+===================================================================
+--- vdr-plugin-timeline.orig/checkerOsd.c	2012-05-18 02:41:24.000000000 +0200
++++ vdr-plugin-timeline/checkerOsd.c	2012-05-18 02:57:05.000000000 +0200
+@@ -350,11 +350,6 @@
+ 									for(int i=cDevice::NumDevices()-1;i>=0 && nofree;i--)
+ 									{
+ 										cdt=cDevice::GetDevice(i);
+-										if (cdt->IsPrimaryDevice() && !timelineCfg.ignorePrimary)
+-										{
+-											if (Setup.PrimaryLimit>ct2->Priority())
+-												continue;
+-										}
+ 										
+ 										if (cdt->ProvidesChannel(ch2) && cd1->DeviceNumber()!=cdt->DeviceNumber())
+ 										{

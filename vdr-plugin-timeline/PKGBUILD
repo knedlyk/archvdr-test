@@ -12,22 +12,27 @@ license="GPL"
 makedepends=('vdr')
 depends=('vdr')
 backup=()
-source=(http://www.u32.de/download/vdr-$_pkgname-$pkgver-kw160.tar.gz)
-#"http://www.js-home.org/download.php?URI=%2Fvdr%2Ftimeline%2Fvdr-$_pkgname-$pkgver-kw160.tar.gz")
-md5sums=('b33ee508a03a07431acc7d070d04fbd3')
+source=(http://www.u32.de/download/vdr-$_pkgname-$pkgver-kw160.tar.gz
+	i18n.patch
+	vdr-1.7.27.patch)
 
-build() {
+package() {
   unset CXXFLAGS
 
   cd ${srcdir}/$_pkgname-${pkgver}-kw160
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
-
+  patch -p1 < $srcdir/i18n.patch
+  patch -p1 < $srcdir/vdr-1.7.27.patch
+  
   make VDRDIR=/usr/include/vdr \
        LIBDIR=. \
        LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
-  
+
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
 
 }
+md5sums=('b33ee508a03a07431acc7d070d04fbd3'
+         '2290c8ecd5a27f6daab4bc4169f0c4fc'
+         '610f523b710c2135535d6f58c8e63bce')

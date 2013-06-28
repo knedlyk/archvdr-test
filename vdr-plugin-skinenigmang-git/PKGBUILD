@@ -4,7 +4,7 @@ _pluginname=skinenigmang
 pkgname=vdr-plugin-${_pluginname}-git
 pkgver=20120424
 pkgrel=1
-gitid=628df59c601fa0dd41577e1f0d3b9e56e9ebceab
+#gitid=628df59c601fa0dd41577e1f0d3b9e56e9ebceab
 arch=(i686 x86_64)
 pkgdesc=""EnigmaNG" skin for the Video Disk Recorder"
 url="http://projects.vdr-developer.org/projects/plg-skinenigmang"
@@ -22,7 +22,7 @@ provides=(vdr-plugin-skinenigmang)
 md5sums=('cab37170cc74c72e67e401f985cd77a0'
          'ee38202a5c1c86848fea9c9cc796ec3c')
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"
@@ -46,15 +46,15 @@ build() {
 
   cd $srcdir/vdr-plugin-${_pluginname}-build
 
-  make VDRDIR=/usr/include/vdr \
-       LIBDIR=. \
+  make	     VDRDIR=/usr/include/vdr \
+	     LIBDIR=. \
 	     LOCALEDIR="$pkgdir/usr/share/locale/" \
 	     HAVE_IMAGEMAGICK=1 \
 	     HAVE_FREETYPE=1 \
 	     SKINENIGMA_USE_PLUGIN_MAILBOX=1 \
 	     SKINENIGMA_USE_PLUGIN_EPGSEARCH=1 \
 	     VDRLOCALE=1 \
-	     INCLUDES="-I/usr/include/freetype2 -I/usr/include/ImageMagick/" all || return 1
+	     INCLUDES="-I/usr/include/freetype2 -I/usr/include/ImageMagick-6" all || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
   install -m 755 libvdr-*.so.*			$pkgdir/usr/lib/vdr/plugins/	|| return 1

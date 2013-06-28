@@ -123,7 +123,7 @@ msgid "Plugin to browse through files and execute actions on them"
 msgstr "Додаток для проглядання файлів і здійснення над ними дії"
 
 msgid "Other"
-msgstr "Інші"
+msgstr "Інше"
 
 msgid "Other Commands"
 msgstr "Інші команди"

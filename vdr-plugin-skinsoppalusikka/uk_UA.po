@@ -1,0 +1,128 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: VDR 2.0.0\n"
+"Report-Msgid-Bugs-To: <tobias.grimm@e-tobi.net>\n"
+"POT-Creation-Date: 2013-05-19 00:52+0200\n"
+"PO-Revision-Date: 2013-05-19 00:42+0200\n"
+"Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
+"Language-Team: <vdr@linuxtv.org>\n"
+"Language: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Soppalusikka skin"
+msgstr "Шкірка Soppalusikka"
+
+msgid "Button$Flush cache"
+msgstr "Очистити кеш"
+
+msgid "Show auxiliary information"
+msgstr "Показати додаткову інформацію"
+
+msgid "Define whether any auxiliary information is shown in info menus."
+msgstr "Визначити, чи показувати додаткову інформацію в інформ. меню"
+
+msgid "Show progressbar"
+msgstr "Показати поступ"
+
+msgid "Define whether a progressbar is shown in schedule menu."
+msgstr "Визначити, чи показувати поступ в меню телегіда"
+
+msgid "Show symbols"
+msgstr "Показати символи"
+
+msgid "Define whether symbols are shown in recordings and schedule menus."
+msgstr "Визначити, чи показувати символи в меню записів і меню телегіда"
+
+msgid "Show VPS in channel info"
+msgstr "Показувати VPS в інформації про канал"
+
+msgid "Define whether VPS information is shown in channel info menu."
+msgstr "Визначити, чи показувати VPS інформацію в меню інформації про канал"
+
+msgid "Show event duration in channel info"
+msgstr "Показати тривалість події в інформації про канал"
+
+msgid "remaining"
+msgstr "залишилося"
+
+msgid "total"
+msgstr "всього"
+
+msgid "Define whether remaining or total event duration is shown in channel info menu."
+msgstr "Визначити, чи показувати інформацію про тривалість події в меню інформації про канал"
+
+msgid "Show channel logos"
+msgstr "Показувати логотипи каналів"
+
+msgid ""
+"Define whether channels logos are shown in channel info menu.\n"
+"\n"
+"Only XPM format is accepted: 64x48 pixel and max. 13 colors."
+msgstr ""
+"Визначити, чи логотипи каналів показувати в меню інформації про канал"
+"\n"
+"Допускається тільки формат XPM: 64x48 пікселів і макс. 13 кольорів."
+
+msgid "Channel logo cache size"
+msgstr "Розмір кешу для логотипів каналів"
+
+msgid ""
+"Define the cache size for channel logos.\n"
+"\n"
+"The bigger cache results faster zapping."
+msgstr ""
+"Визначення розміру кешу для логотипів каналів.\n"
+"\n"
+"Більший кеш сприяє швидшому заппінгу."
+
+msgid "Flushing channel logo cache..."
+msgstr "Очишення кешу логотипів каналів..."
+
+msgid "Help"
+msgstr "Допомога"
+
+msgid "*** Invalid Channel ***"
+msgstr "*** Неправильний канал ***"
+
+msgid "min"
+msgstr "мін"
+
+msgid "VPS"
+msgstr "VPS"
+
+msgid "EBU"
+msgstr "EBU"
+
+msgid "Priority"
+msgstr "Пріоритет"
+
+msgid "Lifetime"
+msgstr "Час зберігання"
+
+msgid "Auxiliary information"
+msgstr "Додаткова інформація"
+
+msgid "Mute"
+msgstr "Викл. звук"
+
+msgid "Volume"
+msgstr "Гучність"
+
+msgid "Stereo"
+msgstr "Стерео"
+
+msgid "Left"
+msgstr "Зліва"
+
+msgid "Right"
+msgstr "Справа"
+
+msgid "Soppalusikka"
+msgstr "Soppalusikka"
