@@ -1,8 +1,8 @@
+# Maintainer  : Yarema aka Knedlyk <yupadmin at gmail dot com>
 # The vdr Package is heavily based on the 
 # Debian VDR Package from www.e-tobi.net
 # many thanks to him for the excelent work
 #
-# Contributor: Edgar Hucek <gimli at dark-green dot com>
 
 pkgname=vdr
 pkgver=2.0.2

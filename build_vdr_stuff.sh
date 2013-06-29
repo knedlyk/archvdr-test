@@ -1,3 +1,4 @@
+# Maintainer  : Yarema aka Knedlyk <yupadmin at gmail dot com>
 #!/bin/sh
 
 WORK=$PWD

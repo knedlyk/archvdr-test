@@ -1,10 +1,11 @@
+# Maintainer  : Yarema aka Knedlyk <yupadmin at gmail dot com>
 # Maintainer  : Edgar Hucek <gimli at dark-green dot com>
 
 _pluginname=markad
 pkgname=vdr-plugin-${_pluginname}-git
-pkgver=20121211
+pkgver=20130629
 pkgrel=1
-gitid=603c137849d0047c01a48867a2e5756e8242583d
+#gitid=603c137849d0047c01a48867a2e5756e8242583d
 pkgdesc="VDR plugin for automaticaly setting add marks"
 arch=('i686' 'x86_64')
 url="http://projects.vdr-developer.org/projects/show/plg-markad"
@@ -15,10 +16,9 @@ source=(plugin.markad.conf
 backup=('etc/vdr/plugins/plugin.markad.conf')
 install=vdr-plugin-$_pluginname-git.install
 conflicts=(vdr-plugin-$_pluginname)
-md5sums=('be81fd3da22f0c9794d45758dbbf7951'
-         '65952bac9161dcc3813ae6ba9f098561')
+md5sums=('be81fd3da22f0c9794d45758dbbf7951')
 
-build() {
+package() {
   cd "$srcdir/"	|| return 1
   
   _githost="git://projects.vdr-developer.org"

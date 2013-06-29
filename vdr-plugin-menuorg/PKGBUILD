@@ -1,4 +1,5 @@
-# Maintainer : Edgar Hucek <gimli at dark-green dot com>
+# Maintainer  : Yarema aka Knedlyk <yupadmin at gmail dot com>
+# Maintainer :Yarema aka Knedlyk <yupadmin at dark-green dot com>
 
 _pkgname=menuorg
 pkgname=vdr-plugin-$_pkgname
