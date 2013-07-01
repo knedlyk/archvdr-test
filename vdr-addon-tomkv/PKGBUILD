@@ -14,14 +14,10 @@ depends=('vdr' 'ffmpeg')
 makedepends=('vdr')
 source=(tomkv.sh
         reccmds.tomkv.conf
-        vdr-addon-tomkv.conf
-        tomkv.sh)
-md5sums=('77a83d8aff8be36a24ad38a590e80c9d'
-         '4555db83490ca5b0e403b8db91d2ed20'
-         'a6337770c609f8da1032ed8f1e777ffc'
-         '77a83d8aff8be36a24ad38a590e80c9d')
+        vdr-addon-tomkv.conf)
 
-build() {
+backup=(etc/vdr/vdr-addon-tomkv.conf)
+package() {
 
   mkdir -p $pkgdir/etc/vdr/command-hooks
   install -m 644 $srcdir/reccmds.tomkv.conf		$pkgdir/etc/vdr/command-hooks/		|| return 1
@@ -34,3 +30,6 @@ build() {
   mkdir -p $pkgdir/usr/share/vdr-addon-tomkv/
   install -m 0755 $srcdir/tomkv.sh $pkgdir/usr/share/vdr-addon-tomkv/ || return 1
 }
+md5sums=('dcc8aab2e416c5905aaa215a06e9dee3'
+         '4555db83490ca5b0e403b8db91d2ed20'
+         'a6337770c609f8da1032ed8f1e777ffc')
