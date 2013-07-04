@@ -24,7 +24,8 @@ package() {
   
   cat ../../oxine_0.7.1_triangle.patch | patch -p0
   patch -p1 < ../../oxine1.patch
-  ./configure --prefix=/usr --enable-vdr --without-imagemagick
-  make || return 1
+  sed -i configure src/download.c -e "s:#include <curl/types.h>::"
+  LANG=C ./configure --prefix=/usr --enable-vdr 
+  make all || return 1
   make DESTDIR=${pkgdir} install
 }
