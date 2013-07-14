@@ -3,21 +3,18 @@
 
 _pkgname=externalplayer
 pkgname=vdr-plugin-$_pkgname
-pkgver=0.2.0
+pkgver=0.3.2
 revision=1
 pkgrel=1
 arch=(i686 x86_64)
 pkgdesc="Externalplayer VDR-Plugin"
-url="http://sourceforge.net/projects/externalplayer/"
+url="http://www.uli-eckhardt.de/vdr/external.en.shtml"
 license="GPL"
 makedepends=('vdr')
 depends=('vdr')
-backup=('etc/vdr/plugins/externalplayer.conf')
-source=(http://www.uli-eckhardt.de/vdr/download/vdr-externalplayer-$pkgver.tgz
-        externalplayer.conf)
-md5sums=('0ad6ebeaedef66aac9564ba437c1f4e9'
-         'd8a47a80b0c1eb24fd376f6a24ecf57b')
-         
+backup=('var/lib/vdr/plugins/externalplayer.conf')
+source=(http://www.uli-eckhardt.de/vdr/download/vdr-externalplayer-$pkgver.tgz)
+
 package() {
   unset CXXFLAGS
 
@@ -28,12 +25,12 @@ package() {
   mkdir -p $pkgdir/etc/vdr/plugins/	|| return 1
 
   make VDRDIR=/usr/include/vdr \
-       LIBDIR=. \
+       LIBDIR=. CFGDIR=/var/lib/vdr/plugins \
        LOCALEDIR="$pkgdir/usr/share/locale/" all || return 1
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins						|| return 1
-  install -m 755 libvdr-*.so.*		$pkgdir/usr/lib/vdr/plugins/		|| return 1
-  install -m 644 ${srcdir}/externalplayer.conf $pkgdir/etc/vdr/plugins/		|| return 1
-  cd $pkgdir/var/lib/vdr/plugins/						|| return 1
-  ln -s ../../../../etc/vdr/plugins/externalplayer.conf .					|| return 1
+
+  make VDRDIR=/usr/include/vdr LIBDIR=/usr/lib/vdr/plugins DESTDIR=$pkgdir CFGDIR=/var/lib/vdr/plugins  install || return 1
+
 }
+md5sums=('fe51ca255507db0ea4d4bc45ee43aee9')
