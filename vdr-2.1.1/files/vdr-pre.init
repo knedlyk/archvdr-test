@@ -1,0 +1,35 @@
+#! /bin/bash
+
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=vdr-pre
+DESC="Linux Video Disk Recorder pre"
+
+DAEMON=/usr/sbin/runvdr
+PIDFILE=/var/run/runvdr.pid
+VDRPRG=/usr/bin/vdr
+
+test -x $DAEMON || exit 0
+test -x $VDRPRG || exit 0
+
+. /usr/lib/vdr/config-loader.sh
+
+# Set shutdown command
+test "$ENABLE_SHUTDOWN" = "1" && VDRSHUTDOWN="/usr/lib/vdr/vdr-shutdown.wrapper" \
+                              || VDRSHUTDOWN="/usr/lib/vdr/vdr-shutdown-message"
+
+case "$1" in
+    start)
+        echo -n "Starting $DESC: $NAME"
+        if [ "$ENABLED" != "0" ] ; then
+          su - vdr -c "/usr/bin/szap -r -x ORF1 > /dev/null"
+        fi
+        echo "."
+        ;;
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|force-reload}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

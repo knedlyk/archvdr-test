@@ -1,0 +1,34 @@
+04_newplugin.patch
+06_default_svdrp_port_0.patch
+12_osdbase-maxitems.patch
+#16_channels.conf.terr-fix.patch
+
+81_Make_config.patch
+82_valgrind.patch
+
+99_ncursesw-include.patch
+
+# Patch needed for the ttxtsubs plugin.
+opt-27_ttxtsubs.patch
+
+# Patch needed for the menuorg plugin.
+opt-37-x_menuorg.patch
+
+# Patch to show an info, if it is possible to record an event in the timer-info.
+opt-41-x_timer-info.patch
+
+# Patch to allow plugins to replace the VDR mainmenus
+opt-42-x_MainMenuHooks.patch
+
+# Patch needed for rotorng and actuator plugins
+opt-44_rotor.patch
+
+# Patch needed for the yaepg plugin.
+opt-45_yaepg.patch
+
+# Patch required for the GraphTFT plugin
+opt-50_graphtft.patch
+
+opt-56_eventdetails_v3.patch
+
+archlinux_fixes.patch

@@ -26,6 +26,7 @@ package() {
   cd ${srcdir}/$_pkgname-${pkgver}
 
   patch -p1 < ../20_epgimage-path.patch	|| return 1
+  patch -p1 < $srcdir/../skinelchi-imagemagick_fix.diff	|| return 1
 
   echo "DEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE" >> Makefile
   echo "DEFINES += -D__KERNEL_STRICT_NAMES" >> Make.config

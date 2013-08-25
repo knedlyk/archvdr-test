@@ -71,12 +71,13 @@ package() {
               --enable-libcap --enable-dlfcn --enable-pthread
 
   #echo "DEFINES += -DNO_HACKS" >> Makefile
-
+  mkdir -p $pkgdir/usr/lib/vdr/plugins
   make VDRDIR=/usr/include/vdr \
        VDRINCDIR=/usr/include/vdr \
-       LIBDIR=. \
+       LIBDIR=$pkgdir/usr/lib/vdr/plugins \
        LOCALEDIR="$pkgdir/vdr-plugin-xineliboutput-git/usr/share/locale/" \
-       NOSIGNAL_IMAGE_FILE=/usr/share/libxine-xvdr/nosignal.mpg all || return 1
+       NOSIGNAL_IMAGE_FILE=/usr/share/libxine-xvdr/nosignal.mpg \
+       DESTDIR=$pkgdir all || return 1
 
 
   mkdir -p $pkgdir/usr/lib/vdr/plugins/ || return 1
